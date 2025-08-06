@@ -65,7 +65,7 @@ const features = [
 
 export default function WorkSection() {
   return (
-    <div className="pt-14">
+    <div>
       <AboutNallakkar></AboutNallakkar>
       <div className="relative bg-white min-h-[540px] flex items-center justify-center py-10">
         {/* Watermark */}

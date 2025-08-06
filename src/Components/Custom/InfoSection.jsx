@@ -6,7 +6,7 @@ const InfoSection = ({ imageSrc, alt, title }) => (
     <img
       src={imageSrc}
       alt={alt}
-      className="w-full h-36 object-cover opacity-60"
+      className="w-full h-40 object-cover"
     />
     <div className="absolute inset-0 flex items-center justify-center">
       <h2 className="text-white text-xl font-bold drop-shadow text-center">
