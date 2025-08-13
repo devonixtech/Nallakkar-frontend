@@ -11,7 +11,7 @@ const paymentMethods = [
 ];
 
 const PaymentSecurity = () => (
-  <div className="min-h-screen px-2 sm:px-0">
+  <div className="min-h-screen">
     <div className="w-full mx-auto bg-white rounded-lg">
       {/* Header Image with Title */}
       <InfoSection
@@ -21,12 +21,12 @@ const PaymentSecurity = () => (
       />
 
       {/* Payment Security Description */}
-      <div className="p-12">
-        <section className="mt-8">
-          <h3 className="text-lg font-bold mb-2 text-gray-800">
+      <div className="px-4 sm:px-6 md:px-20 pb-6">
+        <section className="mt-12">
+          <h3 className="text-[22px] font-semibold mb-2 text-primary">
             Payment Security at Nallakkar :
           </h3>
-          <p className="text-gray-600">
+          <p className="text-[#565658] text-[18px] leading-tight">
             We are committed to providing a secure and streamlined payment
             experience. All transactions on our platform are protected by
             advanced encryption protocols, ensuring your information remains
@@ -37,14 +37,14 @@ const PaymentSecurity = () => (
         </section>
         {/* Accepted Payment Methods */}
         <section className="mt-6">
-          <h4 className="font-semibold text-md mb-2 text-gray-800">
+          <h4 className="font-semibold text-[22px] mb-2 text-primary">
             Accepted Payment Methods
           </h4>
           <div className="grid gap-2 grid-cols-1 sm:grid-cols-2">
             {paymentMethods.map((method, i) => (
               <div
                 key={i}
-                className="border rounded px-3 py-2 text-gray-700 bg-gray-100"
+                className="border rounded px-3 py-4 text-[22px] text-[#565658] shadow-md"
               >
                 {method}
               </div>
@@ -53,10 +53,10 @@ const PaymentSecurity = () => (
         </section>
         {/* Secure Payments */}
         <section className="mt-6">
-          <h4 className="font-semibold text-md mb-2 text-gray-800">
+          <h4 className="font-semibold text-md mb-2 text-primary text-[22px]">
             Secure Payments
           </h4>
-          <p className="text-gray-600">
+          <p className="text-[#565668] leading-tight text-[18px]">
             All transactions on Nallakkar are processed through trusted,
             encrypted payment gateways that comply with PCI-DSS standards,
             ensuring full data protection and a safe shopping experience.
@@ -64,10 +64,10 @@ const PaymentSecurity = () => (
         </section>
         {/* Order Confirmation */}
         <section className="mt-6">
-          <h4 className="font-semibold text-md mb-2 text-gray-800">
+          <h4 className="font-semibold text-md mb-2 text-primary text-[22px]">
             Order Confirmation
           </h4>
-          <ul className="list-disc list-inside text-gray-600">
+          <ul className="list-disc list-inside text-[#565658] text-[18px]">
             <li>
               You will receive an instant confirmation via email and/or SMS.
             </li>
@@ -79,10 +79,10 @@ const PaymentSecurity = () => (
         </section>
         {/* GST Invoice */}
         <section className="mt-6">
-          <h4 className="font-semibold text-md mb-2 text-gray-800">
+          <h4 className="font-semibold text-md mb-2 text-primary text-[22px]">
             GST Invoice
           </h4>
-          <p className="text-gray-600">
+          <p className="text-[#565658] text-[18px] leading-tight">
             A valid tax invoice, compliant with GST regulations, is
             automatically generated for every order. You will receive a copy via
             email after your purchase is confirmed.
@@ -90,14 +90,14 @@ const PaymentSecurity = () => (
         </section>
         {/* Payment Issues */}
         <section className="mt-6">
-          <h4 className="font-semibold text-md mb-2 text-gray-800">
+          <h4 className="font-semibold text-md mb-2 text-primary text-[22px]">
             Facing Payment Issues?
           </h4>
-          <p className="text-gray-600 mb-1">
+          <p className="text-[#565658] text-[18px] mb-1">
             If you encounter any problems during the payment process, we&apos;re
             here to help:
           </p>
-          <ul className="text-gray-600">
+          <ul className="text-[#565658] text-[18px]">
             <li>
               <span className="font-medium">Email:</span> support@nallakakar.com
             </li>

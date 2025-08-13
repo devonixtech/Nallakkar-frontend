@@ -1,76 +1,79 @@
-import React from "react";
 import testimonial from "../../assets/Testimonial.png";
+import avtar from "../../assets/avtar.png";
+import dotted from "../../assets/dotted.png";
 
-export default function Testimonial() {
+const TestimonialSection = () => {
   return (
-    <div className="relative font-montserrat flex flex-col h-[535px] items-center justify-center bg-[#efefef] overflow-hidden">
+    <section className="relative font-montserrat flex flex-col h-[500px] items-center justify-center bg-[#efefef] overflow-hidden">
+      {/* giant faded 'Testimonial' background */}
       <img
         src={testimonial}
-        alt="NALLAKKAR"
+        alt=""
+        aria-hidden="true"
         className="absolute inset-0 w-full h-full object-contain pointer-events-none z-0"
       />
-      {/* Heading */}
-      <h2 className="relative z-10 text-2xl font-bold mt-5 mb-28 text-gray-800">
-        What People Says
-      </h2>
-      {/* Testimonial card */}
-      <div className="relative bg-white rounded shadow-md px-8 py-4 max-w-2xl flex flex-col items-center z-10">
-        {/* Profile image */}
-        <img
-          src="https://randomuser.me/api/portraits/women/95.jpg"
-          alt="profile"
-          className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-lg absolute -top-12"
-        />
-        <div className="mt-16 flex flex-col items-center">
-          {/* Opening quote */}
-          <div className="flex">
-            <span className="text-2xl">“</span>
-          </div>
-          <p className="text-center text-base mt-2 mb-2">
-            <span className="font-bold">— Priya S. Verified Buyer</span>
-            <br />
-            "I absolutely adore my new dress! The fit is perfect, and the fabric
-            feels so luxurious. I received so many compliments when I wore it.
-            Definitely my new favorite go-to for special occasions!"
-          </p>
-          {/* Closing quote */}
-          <div className="flex">
-            <span className="text-2xl ml-2">”</span>
-          </div>
-        </div>
-        {/* Decorative dot grid, top right */}
-        <div className="absolute top-4 right-6">
-          <svg width="50" height="50">
-            <circle cx="5" cy="5" r="2" fill="#9ca3af" />
-            <circle cx="15" cy="5" r="2" fill="#9ca3af" />
-            <circle cx="25" cy="5" r="2" fill="#9ca3af" />
-            <circle cx="35" cy="5" r="2" fill="#9ca3af" />
-            <circle cx="45" cy="5" r="2" fill="#9ca3af" />
-            <circle cx="5" cy="15" r="2" fill="#9ca3af" />
-            <circle cx="15" cy="15" r="2" fill="#9ca3af" />
-            <circle cx="25" cy="15" r="2" fill="#9ca3af" />
-            <circle cx="35" cy="15" r="2" fill="#9ca3af" />
-            <circle cx="45" cy="15" r="2" fill="#9ca3af" />
-          </svg>
-        </div>
-      </div>
-      {/* Carousel dots */}
-      <div className="mt-6 flex space-x-2 z-10">
-        <span className="w-3 h-3 bg-pink-400 rounded-full block"></span>
-        <span className="w-3 h-3 bg-pink-200 rounded-full block"></span>
-      </div>
+      <div className="container mx-auto px-4">
+        {/* Heading */}
+        <h2 className="relative z-10 text-2xl font-bold text-center mb-28 text-black">
+          What People Says
+        </h2>
 
-      <div className="flex justify-center gap-2">
-        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-pinkLight hover:bg-pink text-sm text-white">
-          &lt;
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-darkpink text-white text-sm">
-          1
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-pinkLight hover:bg-pink text-sm text-white">
-          &gt;
-        </button>
+        {/* Card wrapper (to center and control width) */}
+        <div className="relative z-10 mx-auto mt-8 w-full max-w-3xl">
+          {/* dotted square decor on right */}
+          <img
+            src={dotted}
+            alt=""
+            aria-hidden="true"
+            className="absolute -right-6 -top-6 hidden h-24 w-24 md:block"
+          />
+
+          {/* Card */}
+          <div className="relative mx-auto rounded-xl bg-white pb-[3rem] pt-[2rem] shadow-[0_6px_20px_rgba(0,0,0,0.08)]">
+            {/* avatar */}
+            <div className="absolute -top-12 left-1/2 z-10 -translate-x-1/2">
+              <img
+                src={avtar}
+                alt="Customer avatar"
+                className="h-24 w-24 rounded-full border-4 border-white shadow-md object-cover"
+              />
+            </div>
+
+            {/* opening quote */}
+            <span className="absolute left-6 top-6 text-4xl text-primary select-none">
+              &quot;
+            </span>
+
+            {/* closing quote */}
+            <span className="absolute bottom-3 right-6 text-4xl text-primary select-none">
+              &quot;
+            </span>
+
+            {/* Name + badge */}
+            <p className="mt-4 text-center text-[15px] font-semibold text-gray-800">
+              — Priya S. <span className="font-bold">Verified Buyer</span>
+            </p>
+
+            {/* Review text */}
+            <p className="mx-auto mt-3 max-w-2xl text-center text-[16px] leading-7 text-[#414141]">
+              I absolutely adore my new dress! The fit is perfect, and the
+              fabric feels so luxurious. I received so many compliments when I
+              wore it. Definitely my new favorite go-to for special occasions!
+            </p>
+
+            {/* small underline accent (as in screenshot) */}
+            <div className="pointer-events-none mx-auto mt-4 h-[2px] w-32 bg-[#D9D9D9]" />
+          </div>
+
+          {/* dots/pagination under card */}
+          <div className="mt-5 flex items-center justify-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#F06292]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#E0E0E0]" />
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default TestimonialSection;

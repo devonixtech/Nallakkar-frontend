@@ -1,71 +1,69 @@
-import {
-  FaShippingFast,
-  FaGem,
-  FaHandsHelping,
-  FaShieldAlt,
-} from "react-icons/fa";
+import React from "react";
+import create from "../../assets/createUnique.png";
+import patience from "../../assets/patience (1).png";
+import assurance from "../../assets/assurance.png";
+import fastDevliry from "../../assets/fast-delivery.png";
+
+const featuresBar = [
+  {
+    title: "Fast Shipping",
+    body:
+      "Get your order fast with our lightning‑quick shipping! We're committed to getting your items to you as soon as possible.",
+    icon: fastDevliry,
+  },
+  {
+    title: "Create Unique",
+    body:
+      "Uncover unique treasures and experiences tailored just for you. We're here to help you find what you truly love.",
+    icon: create,
+  },
+  {
+    title: "Flexibility And Patience",
+    body:
+      "Your needs come first. We offer flexible solutions and the patience to ensure you're always satisfied.",
+    icon: patience,
+  },
+  {
+    title: "Quality And Security",
+    body:
+      "Experience peace of mind with our unwavering commitment to top‑tier quality and ironclad security.",
+    icon: assurance,
+  },
+];
 
 export default function Features() {
   return (
-    <div className="flex justify-center items-start font-montserrat bg-white px-8 py-12">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12">
-        {/* Fast Shipping */}
-        <div className="flex-1 flex flex-col items-start p-4">
-          <div className="flex items-center mb-4">
-            <div className="p-2 rounded-full bg-gray-100 mr-4">
-              <FaShippingFast className="text-2xl text-[#1a214c]" />
-            </div>
-            <h2 className="font-bold text-lg text-[#1a214c]">Fast Shipping</h2>
-          </div>
-          <p className="leading-relaxed text-gray-700">
-            Get your order fast with our lightning-quick shipping! We&apos;re
-            committed to getting your items to you as soon as possible.
-          </p>
-        </div>
+    <section className="w-full bg-white">
+      {/* Subtle pattern background (optional) */}
+      <div className="relative">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-7">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {featuresBar.map((f, idx) => (
+              <article key={idx} className="flex items-start gap-4">
+                {/* Icon in small rounded badge */}
+                <div className="shrink-0">
+                  <div className="h-8 w-8 rounded-full border border-gray-200 bg-white shadow-md grid place-items-center">
+                    <img
+                      src={f.icon}
+                      alt=""
+                      className="h-5 w-5 object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
 
-        {/* Create Unique */}
-        <div className="flex-1 flex flex-col items-start p-4">
-          <div className="flex items-center mb-4">
-            <div className="p-2 rounded-full bg-gray-100 mr-4">
-              <FaGem className="text-2xl text-[#1a214c]" />
-            </div>
-            <h2 className="font-bold text-lg text-[#1a214c]">Create Unique</h2>
+                {/* Texts */}
+                <div className="space-y-1">
+                  <h3 className="text-[21px] font-bold tracking-tight text-primary text-nowrap">
+                    {f.title}
+                  </h3>
+                  <p className="text-sm leading-5 text-[#17171A">{f.body}</p>
+                </div>
+              </article>
+            ))}
           </div>
-          <p className="leading-relaxed text-gray-700">
-            Uncover unique treasures and experiences tailored just for you.
-            We&apos;re here to help you find what you truly love.
-          </p>
-        </div>
-
-        {/* Flexibility And Patience */}
-        <div className="flex-1 flex flex-col items-start p-4">
-          <div className="flex items-center mb-4">
-            <div className="p-2 rounded-full bg-gray-100 mr-4">
-              <FaHandsHelping className="text-2xl text-[#1a214c]" />
-            </div>
-            <h2 className="font-bold text-lg text-[#1a214c]">Flexibility And Patience</h2>
-          </div>
-          <p className="leading-relaxed text-gray-700">
-            Your needs come first. We offer flexible solutions and the patience to
-            ensure you&apos;re always satisfied.
-          </p>
-        </div>
-
-        {/* Quality And Security */}
-        <div className="flex-1 flex flex-col items-start p-4">
-          <div className="flex items-center mb-4">
-            <div className="p-2 rounded-full bg-gray-100 mr-4">
-              <FaShieldAlt className="text-2xl text-[#1a214c]" />
-            </div>
-            <h2 className="font-bold text-lg text-[#1a214c]">Quality And Security</h2>
-          </div>
-          <p className="leading-relaxed text-gray-700">
-            Experience peace of mind with our unwavering commitment to top-tier
-            quality and ironclad security. Your satisfaction and safety are our
-            highest priorities.
-          </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

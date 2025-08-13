@@ -7,7 +7,7 @@ export default function HomeLayout() {
   return (
     <>
       <MainNavbar />
-      <main className="min-h-[calc(100vh-200px)] py-20">
+      <main className="min-h-[calc(100vh-200px)] pt-20">
         <Outlet />
       </main>
       <Footer />

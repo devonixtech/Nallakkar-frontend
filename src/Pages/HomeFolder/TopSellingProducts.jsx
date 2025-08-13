@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Heart } from "lucide-react";
 import man from "../../assets/man.png";
 import shoes from "../../assets/mens.png";
 import jacket from "../../assets/women-white.png";
@@ -11,7 +12,7 @@ const products = [
     price: "₹ 529.00",
     discount: "(off 35%)",
     rating: "4.2",
-    reviews: "12K",
+    reviews: "1.2K",
     image: man,
   },
   {
@@ -19,7 +20,7 @@ const products = [
     price: "₹ 529.00",
     discount: "(off 35%)",
     rating: "4.2",
-    reviews: "12K",
+    reviews: "1.2K",
     image: shoes,
   },
   {
@@ -27,7 +28,7 @@ const products = [
     price: "₹ 529.00",
     discount: "(off 35%)",
     rating: "4.2",
-    reviews: "12K",
+    reviews: "1.2K",
     image: jacket,
   },
   {
@@ -35,7 +36,7 @@ const products = [
     price: "₹ 529.00",
     discount: "(off 35%)",
     rating: "4.2",
-    reviews: "12K",
+    reviews: "1.2K",
     image: women,
   },
   {
@@ -43,47 +44,7 @@ const products = [
     price: "₹ 529.00",
     discount: "(off 35%)",
     rating: "4.2",
-    reviews: "12K",
-    image: doll,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "12K",
-    image: man,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "12K",
-    image: shoes,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "12K",
-    image: jacket,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "12K",
-    image: women,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "12K",
+    reviews: "1.2K",
     image: doll,
   },
 ];
@@ -91,20 +52,32 @@ const products = [
 const tabs = ["Featured", "Latest", "Best Sellers"];
 
 export default function TopSellingProducts() {
+  const [wishlist, setWishlist] = useState([]);
+  const [activeCard, setActiveCard] = useState(null);
+
+  const toggleWishlist = (index) => {
+    setWishlist((prev) =>
+      prev.includes(index)
+        ? prev.filter((id) => id !== index)
+        : [...prev, index]
+    );
+  };
+
   return (
-    <section className="px-6 py-10 font-montserrat">
-      <h2 className="text-center text-2xl font-semibold mb-6">
+    <section className="px-4 md:px-6 py-11 font-montserrat">
+      <h2 className="text-center text-[22px] md:text-[30px] font-semibold mb-6">
         Top Selling Products
       </h2>
 
-      <div className="flex justify-center gap-4 mb-10">
+      {/* Tabs */}
+      <div className="flex justify-center gap-3 md:gap-4 mb-8">
         {tabs.map((tab, idx) => (
           <button
             key={idx}
-            className={`px-4 py-1 text-sm font-semibold ${
+            className={`px-3 md:px-4 py-1 text-sm md:text-[18px] font-semibold ${
               tab === "Featured"
-                ? "bg-darkpink text-white"
-                : "text-gray-600 hover:text-black"
+                ? "bg-rose text-white"
+                : "text-black hover:text-rose"
             }`}
           >
             {tab}
@@ -112,40 +85,55 @@ export default function TopSellingProducts() {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10 px-12">
+      {/* Products */}
+      <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-10 px-2 md:px-12 scrollbar-hide">
         {products.map((item, index) => (
-          <div key={index} className="text-center">
-            <div className="relative">
+          <div
+            key={index}
+            className={`text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
+              activeCard === index
+                ? "shadow-xl scale-[1.02]"
+                : "hover:shadow-lg hover:-translate-y-1"
+            }`}
+            onMouseDown={() => setActiveCard(index)}
+            onMouseUp={() => setActiveCard(null)}
+            onMouseLeave={() => setActiveCard(null)}
+          >
+            <div className="relative overflow-hidden rounded-t-lg">
               <img
                 src={item.image}
                 alt={item.title}
-                className="w-full h-[300px] object-cover"
+                className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
+                  activeCard === index ? "scale-105" : "hover:scale-105"
+                }`}
               />
-              <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700">
+              {/* Rating */}
+              <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                 <span>{item.rating}</span> • <span>{item.reviews}</span>
               </div>
-              <button className="absolute top-2 right-2">
-                <svg
-                  className="w-5 h-5 text-gray-400 hover:text-pink-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 15l7-7 7 7"
-                  />
-                </svg>
+              {/* Heart Icon */}
+              <button
+                onClick={() => toggleWishlist(index)}
+                className="absolute top-2 right-2  p-1 transition hover:scale-110"
+              >
+                <Heart
+                  className={`w-5 h-5 transition-colors ${
+                    wishlist.includes(index)
+                      ? "fill-rose text-rose"
+                      : "text-white"
+                  }`}
+                  strokeWidth={2}
+                />
               </button>
             </div>
-            <p className="text-sm text-gray-500 mt-1 text-left">Nallakkar</p>
-            <p className="text-sm font-medium text-gray-800 mt-1 text-left">
+            <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
+              Nallakkar
+            </p>
+            <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
               {item.title}
             </p>
-            <div className="flex justify-between items-center gap-2 mt-1">
-              <span className="text-pink-600 font-semibold text-sm">
+            <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
+              <span className="text-darkpink font-semibold text-sm">
                 {item.price}
               </span>
               <span className="text-gray-500 text-xs">{item.discount}</span>
@@ -154,8 +142,8 @@ export default function TopSellingProducts() {
         ))}
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2">
+      {/* Pagination (hidden on mobile) */}
+      <div className="hidden md:flex justify-center gap-2">
         <button className="w-8 h-8 flex items-center justify-center rounded-full bg-pinkLight hover:bg-pink text-sm text-white">
           &lt;
         </button>
@@ -166,6 +154,17 @@ export default function TopSellingProducts() {
           &gt;
         </button>
       </div>
+
+      {/* Hide scrollbar */}
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 }

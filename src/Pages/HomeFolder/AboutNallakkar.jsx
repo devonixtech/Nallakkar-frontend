@@ -4,12 +4,10 @@ import background from "../../assets/background.png";
 
 export default function AboutNallakkar() {
   return (
-    <div className="flex flex-col md:flex-row bg-white px-[7rem] py-16 items-center md:items-start">
+    <div className="flex flex-col md:flex-row bg-white px-[2rem] md:px-[7rem] py-10 md:py-16 items-center md:items-start overflow-x-hidden">
       {/* Left: Text Content */}
-      <div className="md:w-1/2 mt-5 font-montserrat">
-        <h2 className="text-2xl font-bold mb-6 text-[#222654]">
-          About Nallakkar
-        </h2>
+      <div className="md:w-1/2 mt-5 text-primary font-montserrat">
+        <h2 className="text-2xl font-bold mb-6">About Nallakkar</h2>
         <p className="mb-4 font-[500] leading-tight">
           At Nallakkar, we believe in creating more than just products—we build
           a brand experience rooted in originality, quality, and cultural
@@ -43,10 +41,10 @@ export default function AboutNallakkar() {
               className="h-12 w-12 rounded-full object-cover ring-2 ring-[#1e2241]"
             />
             <div>
-              <div className="font-bold text-primary">
-                Sumedha NR
+              <div className="font-bold text-primary">Sumedha NR</div>
+              <div className="text-primary text-xs font-medium">
+                Founder & CEO
               </div>
-              <div className="text-primary text-xs font-medium">Founder & CEO</div>
             </div>
           </div>
           {/* Profile 2 */}
@@ -57,9 +55,7 @@ export default function AboutNallakkar() {
               className="h-12 w-12 rounded-full object-cover ring-2 ring-[#1e2241]"
             />
             <div>
-              <div className="font-bold text-primary">
-                Boomika T.S
-              </div>
+              <div className="font-bold text-primary">Boomika T.S</div>
               <div className="text-primary text-xs font-medium">
                 Co-Founder & Managing Director
               </div>
@@ -68,10 +64,9 @@ export default function AboutNallakkar() {
         </div>
       </div>
 
-      {/* Right: Images */}
-      <div className="md:w-1/2">
-        {/* Pink blob shape behind (you can use an SVG or bg image) */}
-        <div className="relative flex items-center justify-center min-h-[540px] w-[420px] mx-[10rem]">
+      {/* Right: Images (hidden on mobile) */}
+      <div className="hidden md:block md:w-1/2">
+        <div className="relative flex items-center justify-center min-h-[540px] w-[420px] mx-[13rem]">
           {/* Pink Paint Blob */}
           <img
             src={path}
@@ -81,7 +76,7 @@ export default function AboutNallakkar() {
           />
 
           {/* Top Oval - Background */}
-          <div className="absolute -left-10 top-0 w-[250px] h-[370px] rounded-[50%/40%] overflow-hidden z-10 shadow-md border-4 border-white">
+          <div className="absolute -left-11 top-0 w-[250px] h-[390px] rounded-[55%/40%] overflow-hidden z-10 shadow-md">
             <img
               src={background}
               alt=""
@@ -91,7 +86,7 @@ export default function AboutNallakkar() {
           </div>
 
           {/* Main Oval - People */}
-          <div className="absolute left-0 top-[85px] w-[250px] h-[410px] rounded-[50%/40%] overflow-hidden z-20 border-4 border-white shadow-xl bg-white">
+          <div className="absolute left-0 top-[85px] w-[250px] h-[410px] rounded-[55%/40%] overflow-hidden z-20 border-4 border-white shadow-xl bg-white">
             <img
               src="https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?auto=format&fit=facearea&w=400&q=80"
               alt=""

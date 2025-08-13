@@ -27,6 +27,11 @@ import Orders from "../pages/Admin/Orders";
 import Users from "../pages/Admin/Users";
 import AboutUs from "../Pages/AboutUs";
 import PaymentSecurity from "../Pages/PaymentSecurity";
+import ShippingPolicy from "../Pages/ShippingPolicy";
+import TermsAndConditions from "../Pages/TermsAndConditions";
+import FAQSection from "../Pages/FAQSection";
+import ContactSection from "../Pages/ContactSection";
+import MainHome from "../Pages/Categories/MainHome";
 
 export default function AppRoutes() {
   return (
@@ -38,10 +43,24 @@ export default function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/PaymentSecurity" element={<PaymentSecurity />} />
+        <Route
+          path="/ShippingPolicy"
+          element={<ShippingPolicy></ShippingPolicy>}
+        ></Route>
+        <Route
+          path="/TermsAndConditions"
+          element={<TermsAndConditions></TermsAndConditions>}
+        ></Route>
+        <Route path="/FAQSection" element={<FAQSection></FAQSection>}></Route>
+        <Route
+          path="/ContactSection"
+          element={<ContactSection></ContactSection>}
+        ></Route>
       </Route>
 
       {/* ✅ Main user routes (with CategoryNavbar) */}
       <Route element={<MainLayout />}>
+        <Route path="/MainHome" element={<MainHome></MainHome>}></Route>
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/category/kids" element={<Kids />} />
