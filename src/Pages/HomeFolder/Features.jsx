@@ -1,8 +1,8 @@
 import React from "react";
-import create from "../../assets/createUnique.png";
-import patience from "../../assets/patience (1).png";
-import assurance from "../../assets/assurance.png";
-import fastDevliry from "../../assets/fast-delivery.png";
+import create from "../../assets/svg/Create Unique.svg";
+import patience from "../../assets/svg/Flexibility And Patience.svg";
+import assurance from "../../assets/svg/Quality And Security.svg";
+import fastDevliry from "../../assets/svg/fast-delivery.svg";
 
 const featuresBar = [
   {
@@ -36,7 +36,7 @@ export default function Features() {
     <section className="w-full bg-white">
       {/* Subtle pattern background (optional) */}
       <div className="relative">
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-7">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 pt-7 pb-16">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuresBar.map((f, idx) => (
               <article key={idx} className="flex items-start gap-4">

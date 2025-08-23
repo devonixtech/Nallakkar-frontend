@@ -1,7 +1,7 @@
 // import banner1 from "../../assets/Group 328.png";
 // import blackgirl from "../../assets/fashionale.png";
 // import couple from "../../assets/couple.png";
-// import mainImage from "../../assets/sunglasses.png"; // Image with three children
+// 
 // import backgroundImage from "../../assets/Rectangle.png"; // Grayish background rectangle
 // import playfulText from "../../assets/Playful.png"; // "Playful" text graphic
 // import fashionText from "../../assets/FASHION.png"; // "FASHION" text graphic
@@ -126,10 +126,7 @@
 import banner1 from "../../assets/Group 328.png";
 import blackgirl from "../../assets/fashionale.png";
 import couple from "../../assets/couple.png";
-import mainImage from "../../assets/sunglasses.png"; // Image with three children
-import backgroundImage from "../../assets/Rectangle.png"; // Grayish background rectangle
-import playfulText from "../../assets/Playful.png"; // "Playful" text graphic
-import fashionText from "../../assets/FASHION.png"; // "FASHION" text graphic
+import bannerlast from "../../assets/Bannerlast.png";
 
 const images = {
   main: banner1,
@@ -195,12 +192,14 @@ export default function FashionLayout() {
               alt="Find your Style"
               className="object-cover w-full h-44 sm:h-56 md:h-72 opacity-100"
             />
-            <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-12 md:px-10">
+
+            {/* Text + Button */}
+            <div className="absolute inset-0 flex flex-col justify-center items-end mt-11 text-right px-2 sm:px-12 md:px-3">
               <h2 className="text-white font-bold text-lg sm:text-2xl md:text-2xl leading-tight">
                 Find your <br />
                 <span className="text-white">style</span>
               </h2>
-              <button className="mt-2 sm:mt-4 py-1.5 px-4 bg-white text-black text-xs sm:text-sm md:text-base font-semibold w-fit tracking-wide">
+              <button className="mt-2 sm:mt-4 py-1 px-3 bg-white text-black text-xs sm:text-sm md:text-base font-semibold tracking-wide">
                 SHOP NOW
               </button>
             </div>
@@ -208,27 +207,27 @@ export default function FashionLayout() {
         </div>
 
         {/* Bottom banner section: unchanged same as desktop (same height/width) */}
-        <div className="hidden md:flex gap-3 md:gap-4 items-stretch">
+        <div className="md:flex gap-3 md:gap-4 items-stretch">
           <div
             className="w-full flex items-center justify-center"
             style={{
-              backgroundImage: `url(${backgroundImage})`,
+              backgroundImage: `url(${bannerlast})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               height: "248px",
             }}
           >
             {/* Left: Image */}
-            <div className="w-full sm:w-1/2 h-full flex items-center justify-center px-4 sm:px-0">
+            {/* <div className="w-full sm:w-1/2 h-full flex items-center justify-center px-4 sm:px-0">
               <img
                 src={mainImage}
                 alt="Children in playful fashion"
                 className="h-[80%] sm:h-full w-auto object-contain"
               />
-            </div>
+            </div> */}
 
             {/* Right: Text and button */}
-            <div className="w-full sm:w-1/2 flex flex-col items-start justify-center px-6 sm:px-8 mt-2 sm:mt-0">
+            {/* <div className="w-full sm:w-1/2 flex flex-col items-start justify-center px-6 sm:px-8 mt-2 sm:mt-0">
               <img
                 src={playfulText}
                 alt="Playful"
@@ -242,7 +241,7 @@ export default function FashionLayout() {
               <button className="bg-black text-white px-3 py-1 sm:ml-32 mt-2 font-semibold hover:bg-gray-800 transition">
                 SHOP NOW
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -14,6 +14,7 @@ export default {
         darkpink:'#d2267c'      // Reddish rose
       },
       fontFamily: {
+         sans: ['Montserrat', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
          poppins: ['Poppins', 'sans-serif'],
       },

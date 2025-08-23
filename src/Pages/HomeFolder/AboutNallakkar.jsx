@@ -4,7 +4,7 @@ import background from "../../assets/background.png";
 
 export default function AboutNallakkar() {
   return (
-    <div className="flex flex-col md:flex-row bg-white px-[2rem] md:px-[7rem] py-10 md:py-16 items-center md:items-start overflow-x-hidden">
+    <div className="flex flex-col md:flex-row bg-white px-[2rem] md:px-[7rem] pt-10 md:pt-16 items-center md:items-start overflow-x-hidden">
       {/* Left: Text Content */}
       <div className="md:w-1/2 mt-5 text-primary font-montserrat">
         <h2 className="text-2xl font-bold mb-6">About Nallakkar</h2>
@@ -31,37 +31,6 @@ export default function AboutNallakkar() {
           This is more than a brand. This is a movement of good people, building
           good things, with good intent.
         </p>
-
-        <div className="flex gap-8 items-center mt-6">
-          {/* Profile 1 */}
-          <div className="flex items-center gap-3">
-            <img
-              src="https://randomuser.me/api/portraits/women/68.jpg"
-              alt="Sumedha NR"
-              className="h-12 w-12 rounded-full object-cover ring-2 ring-[#1e2241]"
-            />
-            <div>
-              <div className="font-bold text-primary">Sumedha NR</div>
-              <div className="text-primary text-xs font-medium">
-                Founder & CEO
-              </div>
-            </div>
-          </div>
-          {/* Profile 2 */}
-          <div className="flex items-center gap-3">
-            <img
-              src="https://randomuser.me/api/portraits/women/82.jpg"
-              alt="Boomika T.S"
-              className="h-12 w-12 rounded-full object-cover ring-2 ring-[#1e2241]"
-            />
-            <div>
-              <div className="font-bold text-primary">Boomika T.S</div>
-              <div className="text-primary text-xs font-medium">
-                Co-Founder & Managing Director
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Right: Images (hidden on mobile) */}

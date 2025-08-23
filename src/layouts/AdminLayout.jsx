@@ -1,13 +1,16 @@
-import AdminSidebar from "../components/layout/AdminSidebar";
+import { useState } from "react";
+import AdminSidebar from "../Components/layout/AdminSidebar";
 import AdminNavbar from "../components/layout/AdminNavbar";
 
 export default function AdminLayout({ children }) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex min-h-screen">
-      <AdminSidebar />
-      <div className="flex-1">
-        <AdminNavbar />
-        <main className="p-4">{children}</main>
+    <div className="min-h-screen bg-gray-50">
+      <AdminSidebar isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <div className="lg:ml-64">
+        {/* <AdminNavbar /> */}
+        <AdminNavbar onMenuToggle={() => setIsOpen(true)} title="Dashboard" />
+        <main className="p-6">{children}</main>
       </div>
     </div>
   );

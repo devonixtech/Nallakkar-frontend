@@ -14,6 +14,7 @@ import toys from "../assets/toys.png";
 import { Link } from "react-router-dom";
 import HeroDesktop from "./HomeFolder/HeroDesktop";
 import HeroMobile from "./HomeFolder/HeroMobile";
+import FashionMobile from "./HomeFolder/FashionMobile";
 
 export default function Home() {
   return (
@@ -90,8 +91,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Banner Grid */}
-      <FashionLayout></FashionLayout>
+      <div className="hidden md:block">
+        <FashionLayout></FashionLayout>
+      </div>
+      <div className="block md:hidden">
+        <FashionMobile></FashionMobile>
+      </div>
 
       {/* Top Selling Products */}
       <TopSellingProducts></TopSellingProducts>

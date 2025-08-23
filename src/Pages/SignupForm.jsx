@@ -9,7 +9,9 @@ const SignupForm = ({ switchToLogin }) => {
       <h2 className="text-[37px] font-semibold text-center text-primary leading-tight">
         Create an account
       </h2>
-      <p className="text-center mb-4 text-[16px] text-primary font-normal leading-tight">Please enter your details</p>
+      <p className="text-center mb-4 text-[16px] text-primary font-normal leading-tight">
+        Please enter your details
+      </p>
 
       {/* Form */}
       <form className="space-y-2">
@@ -59,6 +61,13 @@ const SignupForm = ({ switchToLogin }) => {
           <FaFacebook size={20} className="text-[#1877F2]" /> Facebook
         </button>
       </div>
+
+      <p className="text-center text-[12px] mt-4">
+        Already have an account?{" "}
+        <button onClick={switchToLogin} className="text-rose cursor-pointer">
+          Login
+        </button>
+      </p>
     </div>
   );
 };

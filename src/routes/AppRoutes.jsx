@@ -12,7 +12,6 @@ import Login from "../Pages/Login";
 // Pages
 import Home from "../pages/Home";
 import Wishlist from "../pages/Wishlist";
-import ProductDetails from "../pages/ProductDetails";
 
 // Categories
 import Kids from "../pages/Categories/Kids";
@@ -32,6 +31,19 @@ import TermsAndConditions from "../Pages/TermsAndConditions";
 import FAQSection from "../Pages/FAQSection";
 import ContactSection from "../Pages/ContactSection";
 import MainHome from "../Pages/Categories/MainHome";
+import ProductDetailsPage from "../Pages/Categories/ProductDetailsPage";
+import Cart from "../Pages/Cart";
+import SelectAddress from "../Pages/SelectAddress";
+import AddDeliveryAddress from "../Pages/AddDeliveryAddress";
+import ProductOverview from "../Pages/ProductOverview";
+import PaymentPage from "../Pages/PaymentPage";
+import Profile from "../Pages/Profile";
+import BuyNow from "../Pages/Categories/BuyNow";
+import Categories from "../Pages/admin/Categories";
+import AddCategory from "../Pages/admin/AddCategory";
+import ProductDetails from "../Pages/admin/ProductDetails";
+import OrderHistory from "../Pages/OrderHistroy";
+
 
 export default function AppRoutes() {
   return (
@@ -62,10 +74,31 @@ export default function AppRoutes() {
       <Route element={<MainLayout />}>
         <Route path="/MainHome" element={<MainHome></MainHome>}></Route>
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/category/kids" element={<Kids />} />
+        <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/category/women" element={<Women />} />
         <Route path="/category/toys" element={<Toys />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/buyNow" element={<BuyNow />} />
+        <Route
+          path="/SelectAddress"
+          element={<SelectAddress></SelectAddress>}
+        ></Route>
+        <Route
+          path="/AddDeliveryAddress"
+          element={<AddDeliveryAddress></AddDeliveryAddress>}
+        ></Route>
+        <Route path="/ProductOverview" element={<ProductOverview />} />
+        <Route
+          path="/PaymentPage"
+          element={<PaymentPage></PaymentPage>}
+        ></Route>
+        <Route path="/profile" element={<Profile></Profile>}></Route>
+
+        <Route
+          path="/orderHistory"
+          element={<OrderHistory></OrderHistory>}
+        ></Route>
       </Route>
 
       {/* ✅ Admin Panel routes */}
@@ -75,6 +108,15 @@ export default function AppRoutes() {
         <Route path="products/add" element={<AddProduct />} />
         <Route path="orders" element={<Orders />} />
         <Route path="users" element={<Users />} />
+        <Route path="categories" element={<Categories></Categories>}></Route>
+        <Route
+          path="categories/add"
+          element={<AddCategory></AddCategory>}
+        ></Route>
+        <Route
+          path="productsDetails"
+          element={<ProductDetails></ProductDetails>}
+        ></Route>
       </Route>
     </Routes>
   );

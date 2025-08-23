@@ -2,10 +2,14 @@ import { useState } from "react";
 import { FaUser, FaHeart, FaShoppingCart, FaSearch } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import logo from "../../assets/logo.png"; // Replace with your N logo image
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function CategoryNavbar() {
   const [category, setCategory] = useState("All Categories");
+  const location = useLocation();
+
+  const linkClass = (path) =>
+    `${location.pathname === path ? "text-darkpink font-bold" : ""}`;
 
   return (
     <nav className="fixed z-40 font-[Montserrat] bg-white w-full h-[80px] flex items-center justify-between px-4 md:px-[5rem] border-b-2 shadow-md">
@@ -21,23 +25,23 @@ export default function CategoryNavbar() {
 
         {/* Menu Links */}
         <div className="flex space-x-6 text-sm font-semibold text-gray-800">
-          <Link to={"/category/kids"} className="hover:text-gray-900">
+          <Link to="/category/kids" className={linkClass("/category/kids")}>
             Kids
           </Link>
-          <Link to="/category/women" className="hover:text-gray-900">
+          <Link to="/category/women" className={linkClass("/category/women")}>
             Women
           </Link>
-          <a href="#" className="hover:text-gray-900">
+          <Link to="/category/toys" className={linkClass("/category/toys")}>
             Toys
-          </a>
-          <a href="#" className="hover:text-gray-900">
+          </Link>
+          <Link to="/category/kids" className={linkClass("/category/kids")}>
             Home Decors
-          </a>
+          </Link>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className="hidden md:flex items-center ml-[14rem] gap-4">
+      <div className="hidden lg:flex items-center ml-[14rem] gap-4">
         {/* Categories + Search combined */}
         <div className="relative group flex items-center border border-gray-300 rounded-full px-4 py-2 w-[200px] lg:w-[320px] bg-white">
           {/* Desktop-only categories trigger */}
@@ -70,7 +74,7 @@ export default function CategoryNavbar() {
               </li>
               <li>
                 <Link
-                  to="/category/women"
+                  to="/category/kids"
                   className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
                 >
                   Women
@@ -78,7 +82,7 @@ export default function CategoryNavbar() {
               </li>
               <li>
                 <Link
-                  to="/category/toys"
+                  to="/category/kids"
                   className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
                 >
                   Toys
@@ -86,7 +90,7 @@ export default function CategoryNavbar() {
               </li>
               <li>
                 <Link
-                  to="/category/accessories"
+                  to="/category/kids"
                   className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
                 >
                   Accessories
@@ -121,9 +125,18 @@ export default function CategoryNavbar() {
       {/* Right Section */}
       <div className="flex items-center space-x-6 text-sm">
         <span className="text-gray-800 font-medium">Hi, Naveena</span>
-        <FaUser className="text-gray-800 text-lg cursor-pointer" />
-        <FaHeart className="text-gray-800 text-lg cursor-pointer" />
-        <FaShoppingCart className="text-gray-800 text-lg cursor-pointer" />
+        <Link to={"/profile"}>
+          {" "}
+          <FaUser className="text-gray-800 text-lg cursor-pointer" />
+        </Link>
+
+        <Link to={"/wishlist"}>
+          <FaHeart className="text-gray-800 text-lg cursor-pointer" />
+        </Link>
+
+        <Link to={"/cart"}>
+          <FaShoppingCart className="text-gray-800 text-lg cursor-pointer" />
+        </Link>
       </div>
     </nav>
   );

@@ -21,7 +21,7 @@ const Footer = () => {
         {/* Left: Logo and Description */}
         <div className="md:w-1/3 mb-8 md:mb-0">
           <div className="flex items-center gap-2 mb-3">
-            <img src={logo} alt="Nallakkar" />
+            <img src={logo} alt="Nallakkar" className="ml-[-14px]" />
           </div>
           <p className="mb-4 text-xs font-light leading-relaxed">
             At Nallakkar, we create original, quality products with cultural
@@ -59,14 +59,14 @@ const Footer = () => {
               <div className="font-semibold mb-3 text-base">ABOUT</div>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className={hoverClasses}>
+                  <Link to="/about" className={hoverClasses}>
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className={hoverClasses}>
+                  <Link to={"ContactSection"} className={hoverClasses}>
                     Contact Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="#" className={hoverClasses}>

@@ -9,6 +9,112 @@ import map from "../assets/map.png";
 import call from "../assets/call.png";
 import msg from "../assets/msg.png";
 
+const LocationIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-7 w-7 text-black"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+    />
+  </svg>
+);
+
+const PhoneIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-7 w-7 text-black"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+    />
+  </svg>
+);
+
+const MailIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-7 w-7 text-black"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+    />
+  </svg>
+);
+
+// Card Data
+const contactData = [
+  {
+    icon: <LocationIcon />,
+    bgImage: women,
+    content: (
+      <>
+        <p>Flat No.: 1, Ward Number 8/5, Karyappa</p>
+        <p>Badavane, Lingenahalli, Madhugiri,</p>
+        <p>Tumakuru, Karnataka-572132. Nearby</p>
+        <p>Landmark: Assistant Executive Engineer</p>
+        <p>Office.</p>
+      </>
+    ),
+  },
+  {
+    icon: <PhoneIcon />,
+    bgImage: laptop,
+    content: <p className="text-xl font-semibold">+91-8884665337</p>,
+  },
+  {
+    icon: <MailIcon />,
+    bgImage: women,
+    content: <p className="text-xl font-semibold">contact@nallakkar.com</p>,
+  },
+];
+
+// Reusable Card Component
+const ContactCard = ({ icon, bgImage, content }) => (
+  <div className="relative w-[380px] h-[240px]">
+    {/* Icon */}
+    <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-10 bg-primary p-1 rounded-full shadow-md">
+      <div className="bg-white w-14 h-14 rounded-full flex items-center justify-center">
+        {icon}
+      </div>
+    </div>
+
+    {/* Card Body */}
+    <div
+      className="relative w-full h-full rounded-2xl bg-cover bg-center overflow-hidden shadow-xl"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
+      <div className="absolute inset-0 bg-gray-800 bg-opacity-70"></div>
+      <div className="relative h-full flex items-center justify-center text-white text-center p-4">
+        <div className="leading-tight font-medium text-md">{content}</div>
+      </div>
+    </div>
+  </div>
+);
+
 const ContactSection = () => {
   return (
     <section className="w-full bg-white">
@@ -25,10 +131,10 @@ const ContactSection = () => {
 
       {/* Help Text */}
       <div className="text-center px-6 py-10">
-        <h3 className="text-lg md:text-xl font-semibold text-[#1a214c] mb-4">
+        <h3 className="text-2xl md:text-3xl font-bold text-[#1a214c] mb-4">
           We’re Here to Help You
         </h3>
-        <p className="text-sm md:text-base max-w-2xl mx-auto text-gray-700">
+        <p className=" md:text-base max-w-5xl mx-auto text-primary">
           We’d love to hear from you! Whether you have product questions or need
           help with an order from Nallakkar, our local team is dedicated to
           providing prompt assistance. Get in touch today.
@@ -36,14 +142,17 @@ const ContactSection = () => {
       </div>
 
       {/* Contact Cards */}
-      <div className="flex flex-col md:flex-row justify-center items-center gap-6 px-6">
-        <ContactCard
-          icon={map}
-          text="Flat No:1, Ward Number 85, Kariyappa Badavane, Linganahalli - Madhugiri, Tumakuru, Karnataka-572132. Nearby Landmark: Assistant Executive Engineer Office."
-          image={women}
-        />
-        <ContactCard icon={call} text="+91-8884665337" image={women} />
-        <ContactCard icon={msg} text="contact@nallakkar.com" image={laptop} />
+      <div className=" w-full flex items-center justify-center py-8 px-4">
+        <div className="flex flex-wrap items-center justify-center gap-16 md:gap-8">
+          {contactData.map((card, index) => (
+            <ContactCard
+              key={index}
+              icon={card.icon}
+              bgImage={card.bgImage}
+              content={card.content}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Feedback Quote */}
@@ -136,33 +245,33 @@ const ContactSection = () => {
   );
 };
 
-const ContactCard = ({ icon, text, image }) => (
-  <div className="relative w-[300px] h-[170px] mx-auto">
-    {/* Floating Icon */}
-    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-30 bg-white p-2 border-2 border-primary rounded-full shadow-md">
-      <img src={icon} alt="Icon" className="w-7 h-7" />
-    </div>
+// const ContactCard = ({ icon, text, image }) => (
+//   <div className="relative w-[300px] h-[170px] mx-auto">
+//     {/* Floating Icon */}
+//     <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-30 bg-white p-2 border-2 border-primary rounded-full shadow-md">
+//       <img src={icon} alt="Icon" className="w-7 h-7" />
+//     </div>
 
-    {/* Card */}
-    <div className="relative w-full h-full rounded-xl overflow-hidden shadow-lg z-10">
-      {/* Background Image */}
-      <img
-        src={image}
-        alt="Background"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+//     {/* Card */}
+//     <div className="relative w-full h-full rounded-xl overflow-hidden shadow-lg z-10">
+//       {/* Background Image */}
+//       <img
+//         src={image}
+//         alt="Background"
+//         className="absolute inset-0 w-full h-full object-cover"
+//       />
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+//       {/* Overlay */}
+//       <div className="absolute inset-0 bg-primary bg-opacity-50"></div>
 
-      {/* Text Content */}
-      <div className="relative z-20 flex items-center justify-center w-full h-full px-4 text-center">
-        <p className="text-white font-semibold text-sm leading-relaxed">
-          {text}
-        </p>
-      </div>
-    </div>
-  </div>
-);
+//       {/* Text Content */}
+//       <div className="relative z-20 flex items-center justify-center w-full h-full px-4 text-center">
+//         <p className="text-white font-semibold text-sm leading-relaxed">
+//           {text}
+//         </p>
+//       </div>
+//     </div>
+//   </div>
+// );
 
 export default ContactSection;
