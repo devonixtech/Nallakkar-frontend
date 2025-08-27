@@ -43,7 +43,13 @@ import Categories from "../Pages/admin/Categories";
 import AddCategory from "../Pages/admin/AddCategory";
 import ProductDetails from "../Pages/admin/ProductDetails";
 import OrderHistory from "../Pages/OrderHistroy";
-
+import KidsWrapper from "../Pages/Categories/KidsWrapper";
+import PaymentSuccess from "../Pages/PaymentSuccess";
+import OrderConfirmation from "../Pages/OrderConfirmation";
+import WriteReview from "../Pages/WriteReview";
+import WomenWrapper from "../Pages/Categories/WomenWrapper";
+import ToyWrapper from "../Pages/Categories/ToyWrapper";
+import HomeDecorWrapper from "../Pages/Categories/HomeDecorWrapper";
 
 export default function AppRoutes() {
   return (
@@ -74,10 +80,11 @@ export default function AppRoutes() {
       <Route element={<MainLayout />}>
         <Route path="/MainHome" element={<MainHome></MainHome>}></Route>
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/category/kids" element={<Kids />} />
+        <Route path="/category/kids" element={<KidsWrapper />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
-        <Route path="/category/women" element={<Women />} />
-        <Route path="/category/toys" element={<Toys />} />
+        <Route path="/category/women" element={<WomenWrapper />} />
+        <Route path="/category/toys" element={<ToyWrapper />} />
+        <Route path="/category/home-decors" element={<HomeDecorWrapper />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/buyNow" element={<BuyNow />} />
         <Route
@@ -99,6 +106,16 @@ export default function AppRoutes() {
           path="/orderHistory"
           element={<OrderHistory></OrderHistory>}
         ></Route>
+
+        <Route
+          path="/PaymentSuccess"
+          element={<PaymentSuccess></PaymentSuccess>}
+        ></Route>
+        <Route
+          path="/OrderConfirmation"
+          element={<OrderConfirmation></OrderConfirmation>}
+        ></Route>
+        <Route path="WriteReview" element={<WriteReview></WriteReview>}></Route>
       </Route>
 
       {/* ✅ Admin Panel routes */}

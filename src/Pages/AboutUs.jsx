@@ -16,6 +16,7 @@ import sustainableImg from "../assets/svg/Sustainable by Design.svg";
 import support from "../assets/svg/Support 247.svg";
 import path from "../assets/Path.png";
 import background from "../assets/background.png";
+import MissionVision from "./MissionVision";
 
 const features = [
   {
@@ -159,6 +160,7 @@ export default function WorkSection() {
         </div>
       </div>
 
+      <MissionVision></MissionVision>
       <div className="relative bg-white min-h-[540px] flex items-center justify-center py-10 px-4 sm:px-6 md:px-8">
         {/* Watermark */}
         <img

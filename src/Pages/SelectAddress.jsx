@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SelectAddress() {
   const [selected, setSelected] = useState(0);
+  const navigate = useNavigate();
 
   const addresses = [
     {
@@ -27,9 +28,12 @@ export default function SelectAddress() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto px-4 pt-8 lg:pb-8 pb-24">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-3 mb-6"
+      >
         <FaArrowLeft className="text-lg cursor-pointer" />
         <h2 className="text-xl font-bold">SELECT DELIVERY ADDRESS</h2>
       </div>
@@ -63,15 +67,23 @@ export default function SelectAddress() {
 
               {/* Edit button (only for selected) */}
               {selected === index && (
-                <button className="text-rose font-semibold">Edit</button>
+                <Link
+                  to={"/AddDeliveryAddress"}
+                  className="text-rose font-semibold"
+                >
+                  Edit
+                </Link>
               )}
             </div>
 
             {/* Deliver Here Button (only for selected address) */}
             {selected === index && (
-              <button className="mt-4 bg-primary hover:bg-rose text-white px-4 py-2">
+              <Link
+                to={"/ProductOverview"}
+                className="inline-block mt-4 bg-primary hover:bg-rose text-white px-4 py-2"
+              >
                 Deliver Here
-              </button>
+              </Link>
             )}
           </div>
         ))}

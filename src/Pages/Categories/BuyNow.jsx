@@ -1,150 +1,7 @@
-// import { useState } from "react";
-// import img3 from "../../assets/details3.png";
-// import { Link } from "react-router-dom";
-
-// export default function BuyNow() {
-//   const [cartItems, setCartItems] = useState([
-//     {
-//       id: 1,
-//       name: "Girl Jacket Jacket",
-//       price: 1500,
-//       size: "S",
-//       image: img1,
-//       qty: 1,
-//     },
-//     {
-//       id: 2,
-//       name: "Kids Winter Hoodie",
-//       price: 1200,
-//       size: "M",
-//       image: img3,
-//       qty: 1,
-//     },
-//   ]);
-
-//   // Increase Qty
-//   const increaseQty = (id) => {
-//     setCartItems((prev) =>
-//       prev.map((item) =>
-//         item.id === id ? { ...item, qty: item.qty + 1 } : item
-//       )
-//     );
-//   };
-
-//   // Decrease Qty
-//   const decreaseQty = (id) => {
-//     setCartItems((prev) =>
-//       prev.map((item) =>
-//         item.id === id && item.qty > 1 ? { ...item, qty: item.qty - 1 } : item
-//       )
-//     );
-//   };
-
-//   // Calculate totals
-//   const totalPrice = cartItems.reduce(
-//     (sum, item) => sum + item.price * item.qty,
-//     0
-//   );
-
-//   return (
-//     <div className="max-w-6xl mx-auto px-4 py-8">
-//       <h2 className="text-xl font-semibold mb-6">Product Details</h2>
-
-//       <div className="grid md:grid-cols-3 gap-6">
-//         {/* -------- Left Product List -------- */}
-//         <div className="md:col-span-2 space-y-4">
-//           {cartItems.map((item) => (
-//             <div
-//               key={item.id}
-//               className="flex gap-6 bg-white shadow border rounded-lg p-4"
-//             >
-//               {/* Product Image */}
-//               <img
-//                 src={item.image}
-//                 alt={item.name}
-//                 className="w-28 h-28 object-cover rounded-md"
-//               />
-
-//               {/* Product Details */}
-//               <div className="flex-1 space-y-2">
-//                 <h3 className="font-semibold">{item.name}</h3>
-//                 <p className="font-bold text-gray-800">₹{item.price}</p>
-//                 <p className="text-gray-500 text-sm">Nallakkar</p>
-
-//                 {/* Quantity + Size */}
-//                 <div className="flex items-center gap-4 text-sm">
-//                   <span>Qty:</span>
-//                   <div className="flex items-center border rounded">
-//                     <button
-//                       onClick={() => decreaseQty(item.id)}
-//                       className="px-2"
-//                     >
-//                       -
-//                     </button>
-//                     <input
-//                       type="text"
-//                       value={item.qty}
-//                       readOnly
-//                       className="w-10 text-center border-x"
-//                     />
-//                     <button
-//                       onClick={() => increaseQty(item.id)}
-//                       className="px-2"
-//                     >
-//                       +
-//                     </button>
-//                   </div>
-//                   <span>Size: {item.size}</span>
-//                 </div>
-
-//                 <p className="text-green-600 text-sm">Free Delivery</p>
-//                 <button className="text-pink-600 text-sm font-medium">
-//                   Edit
-//                 </button>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-
-//         {/* -------- Right Price Details -------- */}
-//         <div className="bg-white shadow border rounded-lg p-4 space-y-3 pb-14">
-//           <h4 className="font-semibold text-gray-800">
-//             Price Details ({cartItems.length} items)
-//           </h4>
-//           {cartItems.map((item) => (
-//             <div
-//               key={item.id}
-//               className="flex justify-between text-sm text-gray-600"
-//             >
-//               <span>
-//                 {item.name} x {item.qty}
-//               </span>
-//               <span>₹{item.price * item.qty}</span>
-//             </div>
-//           ))}
-//           <hr />
-//           <div className="flex justify-between font-semibold">
-//             <span>Order Total</span>
-//             <span>₹{totalPrice}</span>
-//           </div>
-//           <p className="text-xs text-gray-500">
-//             Clicking on Continue will not deduct any money
-//           </p>
-//           <Link
-//             to="/SelectAddress"
-//             className="block w-full bg-primary text-white py-2 rounded text-center hover:bg-rose transition"
-//           >
-//             ADD DELIVERY ADDRESS
-//           </Link>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-import React, { useState } from "react";
+import { useState } from "react";
 import img1 from "../../assets/details2.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
@@ -161,12 +18,17 @@ const ProductDetails = () => {
   const totalProductPrice = price * quantity;
   const orderTotal = totalProductPrice; // Assuming no other fees for now
 
+  const navigate = useNavigate();
   return (
     <div className="py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">
-          Product Details
-        </h1>
+        <div
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-3 mb-6"
+        >
+          <FaArrowLeft className="text-lg cursor-pointer" />
+          <h2 className="text-2xl font-bold text-gray-800">Product Details</h2>
+        </div>
         <div className="bg-white p-6 rounded-lg border shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-3">
             {/* Left Section: Product Info */}

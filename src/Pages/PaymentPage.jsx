@@ -3,6 +3,7 @@ import { IoChevronUp, IoChevronDown, IoLocationSharp } from "react-icons/io5";
 import { SiGooglepay } from "react-icons/si";
 import { ArrowLeft } from "lucide-react";
 import img1 from "../assets/details2.png";
+import { Link, useNavigate } from "react-router-dom";
 
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
@@ -102,6 +103,7 @@ const RadioInput = ({ id, value, checked, onChange, label, icon }) => (
 
 const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
   const [openSection, setOpenSection] = useState("upi");
+  const navigate = useNavigate();
 
   const handleToggle = (section) => {
     setOpenSection(openSection === section ? null : section);
@@ -109,7 +111,10 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
 
   return (
     <div className="lg:w-2/3 w-full bg-white p-6">
-      <div className="flex items-center mb-4 -ml-6">
+      <div
+        onClick={() => navigate(-1)}
+        className="flex items-center mb-4 -ml-6"
+      >
         <ArrowLeft className="text-2xl" />
         <h1 className="text-xl font-bold">Select Payment method</h1>
       </div>
@@ -310,9 +315,12 @@ const OrderSummary = () => (
         <p>Order Total</p>
         <p>₹1500</p>
       </div>
-      <button className="w-full bg-primary text-white py-3 font-bold text-lg mt-2 hover:bg-[#283593] transition-colors">
+      <Link
+        to={"/PaymentSuccess"}
+        className="block text-center w-full bg-primary text-white py-3 font-bold text-lg mt-2 hover:bg-rose transition-colors"
+      >
         Pay Now
-      </button>
+      </Link>
     </div>
   </div>
 );

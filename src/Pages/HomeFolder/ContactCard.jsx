@@ -22,13 +22,16 @@ export default function ContactCard() {
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             to={"/ContactSection"}
-            className="bg-[#EF4252] text-white px-6 py-2 rounded-sm font-semibold hover:opacity-90 transition"
+            className="bg-[#EF4252] text-white px-6 py-2 rounded-sm font-semibold hover:bg-primary transition"
           >
             Contact Us
           </Link>
-          <button className="bg-[#1B1F3B] text-white px-6 py-2 rounded-sm font-semibold hover:opacity-90 transition">
+          <Link
+            to={"/about"}
+            className="bg-primary text-white px-6 py-2 rounded-sm font-semibold hover:bg-rose transition"
+          >
             Know More
-          </button>
+          </Link>
         </div>
       </div>
     </div>

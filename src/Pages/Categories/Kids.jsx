@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { Heart } from "lucide-react";
@@ -57,7 +57,7 @@ const products = [
     image: doll,
   },
 ];
-// --- MOCK DATA (No changes here) ---
+
 const categories = [
   {
     name: "Girl",
@@ -81,48 +81,6 @@ const categories = [
   },
 ];
 
-// const products = [
-//   {
-//     id: 1,
-//     brand: "Nallakkar",
-//     name: "Men Regular Fit Self Design Light Shirt",
-//     price: 529.0,
-//     originalPrice: 920.0,
-//     discount: 35,
-//     rating: 4.2,
-//     reviews: "1.2k",
-//     img:
-//       "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=600",
-//   },
-//   {
-//     id: 2,
-//     brand: "Nallakkar",
-//     name: "Men Regular Fit Self Design Light Shirt",
-//     price: 529.0,
-//     discount: 35,
-//     img:
-//       "https://images.pexels.com/photos/1232459/pexels-photo-1232459.jpeg?auto=compress&cs=tinysrgb&w=600",
-//   },
-//   {
-//     id: 3,
-//     brand: "Nallakkar",
-//     name: "Men Regular Fit Self Design Light Shirt",
-//     price: 529.0,
-//     discount: 35,
-//     img:
-//       "https://images.pexels.com/photos/1381556/pexels-photo-1381556.jpeg?auto=compress&cs=tinysrgb&w=600",
-//   },
-//   {
-//     id: 4,
-//     brand: "Nallakkar",
-//     name: "Men Regular Fit Self Design Light Shirt",
-//     price: 529.0,
-//     discount: 35,
-//     img:
-//       "https://images.pexels.com/photos/1852382/pexels-photo-1852382.jpeg?auto=compress&cs=tinysrgb&w=600",
-//   },
-// ];
-
 const appliedFiltersData = [
   "Girl",
   "Clothing Set",
@@ -142,9 +100,7 @@ const colorsData = [
   "#EF4444",
 ];
 
-// --- SUB-COMPONENTS ---
 
-// [CHANGED] This component is updated to handle clicks and selection state
 const CategoryPill = ({ name, img, isSelected, onClick }) => (
   <div
     className="text-center flex-shrink-0 cursor-pointer"
@@ -421,7 +377,10 @@ export default function ProductListingPage() {
                     <Link to={`/product/${item.id}`}>
                       {" "}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <button className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition">
+                        <Link
+                          to={"/cart"}
+                          className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-4 w-4"
@@ -437,7 +396,7 @@ export default function ProductListingPage() {
                             />
                           </svg>
                           ADD TO CART
-                        </button>
+                        </Link>
                       </div>
                     </Link>
 

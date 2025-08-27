@@ -1,6 +1,7 @@
 import { FiMapPin, FiSearch, FiCamera } from "react-icons/fi";
 import modelImg from "../../assets/banner.png";
 import NallakkarSVG from "../../assets/NALLAKKAR.png";
+import { Link } from "react-router-dom";
 
 const HeroMobile = () => {
   return (
@@ -23,9 +24,9 @@ const HeroMobile = () => {
               placeholder="Search for more products"
               className="w-full pl-10 pr-10 py-2 border rounded-full shadow-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
             />
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+            {/* <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
               <FiCamera className="text-gray-900" />
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -51,9 +52,12 @@ const HeroMobile = () => {
               discover your next <br /> signature look.
             </p>
 
-            <button className="bg-primary text-white text-[9px] font-bold py-1 px-3 w-max hover:bg-rose mt-2 transition-colors">
+            <Link
+              to="/login"
+              className="bg-primary text-white text-[9px] font-bold py-1 px-3 w-max hover:bg-rose mt-2 transition-colors"
+            >
               SHOP NOW
-            </button>
+            </Link>
           </div>
 
           {/* Model Image */}

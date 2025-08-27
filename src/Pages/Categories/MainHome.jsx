@@ -1,6 +1,4 @@
 import { Helmet } from "react-helmet-async";
-import modelImg from "../../assets/banner1.png";
-import NallakkarSVG from "../../assets/NALLAKKAR.png";
 import FashionLayout from "../HomeFolder/FashionLayout";
 import Banner from "../HomeFolder/Banner";
 import ContactCard from "../HomeFolder/ContactCard";
@@ -14,6 +12,7 @@ import TopSellingProducts from "../HomeFolder/TopSellingProducts";
 import PromoGrid from "./PromoGrid";
 import HeroDesktop from "../HomeFolder/HeroDesktop";
 import HeroMobile from "../HomeFolder/HeroMobile";
+import FashionMobile from "../HomeFolder/FashionMobile";
 
 export default function MainHome() {
   return (
@@ -89,8 +88,12 @@ export default function MainHome() {
         </div>
       </section>
 
-      {/* Banner Grid */}
-      <FashionLayout></FashionLayout>
+      <div className="hidden md:block">
+        <FashionLayout></FashionLayout>
+      </div>
+      <div className="block md:hidden">
+        <FashionMobile></FashionMobile>
+      </div>
 
       {/* Top Selling Products */}
       <TopSellingProducts></TopSellingProducts>
@@ -101,7 +104,10 @@ export default function MainHome() {
       <PromoGrid></PromoGrid>
 
       {/* ContactCard */}
-      <ContactCard></ContactCard>
+      <div className="mb-11">
+        {" "}
+        <ContactCard></ContactCard>
+      </div>
     </>
   );
 }

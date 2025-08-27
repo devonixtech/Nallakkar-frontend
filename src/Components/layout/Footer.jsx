@@ -110,24 +110,24 @@ const Footer = () => {
               </div>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className={hoverClasses}>
+                  <Link to={"/category/kids"} className={hoverClasses}>
                     Kids
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className={hoverClasses}>
+                  <Link to={"/category/women"} className={hoverClasses}>
                     Women
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className={hoverClasses}>
+                  <Link to={"/category/toys"} className={hoverClasses}>
                     Toys
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className={hoverClasses}>
+                  <Link to={"/category/home-decors"} className={hoverClasses}>
                     Home Decors
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="#" className={hoverClasses}>

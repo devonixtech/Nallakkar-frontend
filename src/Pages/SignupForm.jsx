@@ -2,7 +2,7 @@ import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 
-const SignupForm = ({ switchToLogin }) => {
+const SignupForm = ({ switchToLogin, goToSuccess }) => {
   return (
     <div className="w-full">
       {/* Heading */}
@@ -45,7 +45,7 @@ const SignupForm = ({ switchToLogin }) => {
 
         {/* Submit Button */}
         <button
-          type="submit"
+          onClick={goToSuccess}
           className="w-full bg-primary text-[24px] text-white py-2 hover:bg-rose"
         >
           Sign Up

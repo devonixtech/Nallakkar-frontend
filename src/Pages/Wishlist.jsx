@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import banner from "../assets/wishlist.png";
 import wishlist1 from "../assets/whishlist1.png";
 import wishlist2 from "../assets/whishlist2.png";
 import { Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
-// --- Mock Data ---
-// In a real application, you would fetch this data from an API.
+
 const wishlistItems = [
   {
     id: 1,
@@ -139,7 +139,9 @@ const Wishlist = () => {
           <div className="absolute inset-0 bg-opacity-90"></div>
           <div className="relative h-full flex flex-col justify-center items-start text-white p-8 sm:p-12 lg:p-24">
             <h1 className="text-5xl md:text-6xl font-bold">Wishlist</h1>
-            <p className="mt-2 text-base">Home | Wishlist</p>
+            <p className="mt-2 text-base">
+              <Link to={"/MainHome"}>Home </Link>| Wishlist
+            </p>
           </div>
         </div>
 
@@ -148,7 +150,7 @@ const Wishlist = () => {
           {wishlistItems.map((item, index) => (
             <div
               key={index}
-              className={`text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
+              className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
                 activeCard === index
                   ? "shadow-xl scale-[1.02]"
                   : "hover:shadow-lg hover:-translate-y-1"
@@ -158,38 +160,75 @@ const Wishlist = () => {
               onMouseLeave={() => setActiveCard(null)}
             >
               <div className="relative overflow-hidden rounded-t-lg">
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className={`w-full h-[200px] sm:h-[250px] border md:h-[300px] object-cover transition-transform duration-300 ${
-                    activeCard === index ? "scale-105" : "hover:scale-105"
-                  }`}
-                />
+                <Link to={`/product/${item.id}`}>
+                  {" "}
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
+                      activeCard === index
+                        ? "scale-105"
+                        : "group-hover:scale-105"
+                    }`}
+                  />
+                </Link>
+
+                {/* Hover Add to Cart Button with Icon */}
+                <Link to={`/product/${item.id}`}>
+                  {" "}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <Link
+                      to={"/cart"}
+                      className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
+                        />
+                      </svg>
+                      ADD TO CART
+                    </Link>
+                  </div>
+                </Link>
+
                 {/* Rating */}
                 <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                   <span>{item.rating}</span> • <span>{item.reviews}</span>
                 </div>
+
                 {/* Heart Icon */}
                 <button
                   onClick={() => toggleWishlist(index)}
-                  className="absolute top-2 right-2  p-1 transition hover:scale-110"
+                  className="absolute top-2  right-2 p-1 transition hover:scale-110"
                 >
                   <Heart
                     className={`w-5 h-5 transition-colors ${
                       wishlist.includes(index)
                         ? "fill-rose text-rose"
-                        : "text-white"
+                        : "text-gray-400"
                     }`}
                     strokeWidth={2}
                   />
                 </button>
               </div>
+
               <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
                 Nallakkar
               </p>
+
               <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
                 {item.title}
               </p>
+
               <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                 <span className="text-darkpink font-semibold text-sm">
                   {item.price}

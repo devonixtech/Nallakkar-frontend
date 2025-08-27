@@ -1,7 +1,7 @@
 // import banner1 from "../../assets/Group 328.png";
 // import blackgirl from "../../assets/fashionale.png";
 // import couple from "../../assets/couple.png";
-// 
+//
 // import backgroundImage from "../../assets/Rectangle.png"; // Grayish background rectangle
 // import playfulText from "../../assets/Playful.png"; // "Playful" text graphic
 // import fashionText from "../../assets/FASHION.png"; // "FASHION" text graphic
@@ -127,6 +127,7 @@ import banner1 from "../../assets/Group 328.png";
 import blackgirl from "../../assets/fashionale.png";
 import couple from "../../assets/couple.png";
 import bannerlast from "../../assets/Bannerlast.png";
+import { Link } from "react-router-dom";
 
 const images = {
   main: banner1,
@@ -175,9 +176,9 @@ export default function FashionLayout() {
                   Trendy
                 </span>
               </h2>
-              <button className="mt-2 sm:mt-4 py-1.5 px-4 bg-white text-black text-xs sm:text-sm md:text-base font-semibold w-fit tracking-wide">
+              <Link to={'/category/women'} className="mt-2 sm:mt-4 py-1.5 px-4 bg-white text-black text-xs sm:text-sm md:text-base font-semibold w-fit tracking-wide">
                 SHOP NOW
-              </button>
+              </Link>
             </div>
             {/* Vertical Side Text */}
             <div className="absolute top-1/2 right-1 md:right-0 -translate-y-1/2 text-[10px] sm:text-xs md:text-sm text-gray-300 rotate-90 tracking-widest">
@@ -208,7 +209,8 @@ export default function FashionLayout() {
 
         {/* Bottom banner section: unchanged same as desktop (same height/width) */}
         <div className="md:flex gap-3 md:gap-4 items-stretch">
-          <div
+          <Link
+            to={"/category/kids"}
             className="w-full flex items-center justify-center"
             style={{
               backgroundImage: `url(${bannerlast})`,
@@ -242,7 +244,7 @@ export default function FashionLayout() {
                 SHOP NOW
               </button>
             </div> */}
-          </div>
+          </Link>
         </div>
       </div>
     </div>

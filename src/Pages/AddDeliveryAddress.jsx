@@ -1,10 +1,11 @@
 import { ArrowLeft, MapPin } from "lucide-react";
 import FetchingLocation from "./FetchingLocation";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function AddDeliveryAddress() {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleUseCurrentLocation = () => {
     setLoading(true);
@@ -19,7 +20,10 @@ export default function AddDeliveryAddress() {
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-20 lg:pb-6">
       {/* Header */}
-      <div className="flex items-center gap-2 mb-6">
+      <div
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 mb-6"
+      >
         <ArrowLeft className="w-5 h-5 cursor-pointer" />
         <h1 className="text-xl font-semibold">ADD DELIVERY ADDRESS</h1>
       </div>

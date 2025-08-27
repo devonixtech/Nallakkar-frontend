@@ -256,13 +256,13 @@ export default function Header() {
             />
           )}
           {modalType === "signup" && (
-            <SignupForm switchToLogin={() => setModalType("login")} />
-          )}
-          {modalType === "otp" && (
-            <OtpForm
-              changeNumber={() => setModalType("changeNumber")}
+            <SignupForm
+              switchToLogin={() => setModalType("login")}
               goToSuccess={() => setModalType("success")}
             />
+          )}
+          {modalType === "otp" && (
+            <OtpForm changeNumber={() => setModalType("changeNumber")} />
           )}
           {modalType === "changeNumber" && (
             <ChangeNumberForm

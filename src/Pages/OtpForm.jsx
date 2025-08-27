@@ -1,7 +1,7 @@
 // OtpForm.jsx
 import React from "react";
 
-const OtpForm = ({ changeNumber, goToSuccess }) => {
+const OtpForm = ({ changeNumber }) => {
   return (
     <div className="w-full">
       <h2 className="text-[24px] font-poppins font-semibold text-center mb-4 text-primary">
@@ -14,10 +14,7 @@ const OtpForm = ({ changeNumber, goToSuccess }) => {
         className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2 focus:outline-none placeholder-primary mb-3 placeholder:opacity-[55%]"
       />
 
-      <button
-        onClick={goToSuccess}
-        className="bg-primary text-[24px] text-white py-2 w-full font-medium hover:opacity-90 transition mb-3"
-      >
+      <button className="bg-primary text-[24px] text-white py-2 w-full font-medium hover:opacity-90 transition mb-3">
         Submit
       </button>
 

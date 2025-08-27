@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import newoffer from "../../assets/newoffer.png";
 import banner from "../../assets/portrat.png";
 
@@ -26,9 +27,12 @@ const Banner = () => (
           Shop more, save more. Get fast, free delivery right to your door Get
           fast, free delivery.
         </p>
-        <button className="bg-primary px-5 py-2 md:px-6 font-bold text-white w-32 md:w-36 shadow hover:bg-rose transition mx-auto md:mx-0 text-nowrap">
+        <Link
+          to={"/category/kids"}
+          className="bg-primary px-5 py-2 md:px-6 font-bold text-white w-32 md:w-36 shadow hover:bg-rose transition mx-auto md:mx-0 text-nowrap"
+        >
           SHOP NOW
-        </button>
+        </Link>
       </div>
 
       {/* Right Side Spacer for desktop */}

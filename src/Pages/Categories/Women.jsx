@@ -3,17 +3,15 @@ import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { Heart } from "lucide-react";
 import ShoppingBag from "../../assets/shopping-bags.png";
-import man from "../../assets/man.png";
-import shoes from "../../assets/mens.png";
-import jacket from "../../assets/women-white.png";
-import women from "../../assets/dancing-team-studio.png";
-import doll from "../../assets/3d-children.png";
-import girls from "../../assets/girls.png";
-import boy from "../../assets/boys.png";
-import infant from "../../assets/infant.png";
-import toy from "../../assets/access.png";
-import access from "../../assets/toy.png";
 import { Link } from "react-router-dom";
+import women1 from "../../assets/sarees/26310.jpg";
+import women2 from "../../assets/sarees/40764.jpg";
+import women3 from "../../assets/sarees/8550.jpg";
+import women4 from "../../assets/sarees/indian-traditional-beautiful-young-girl-saree-posing-outdoors-park.jpg";
+import women5 from "../../assets/sarees/woman-red-sari-stands-front-statue-horse.jpg";
+import sub1 from "../../assets/sarees/subcategrios1.png";
+import sub2 from "../../assets/sarees/subcategrios2.png";
+import sub3 from "../../assets/sarees/subcategrios3.png";
 
 const products = [
   {
@@ -22,7 +20,7 @@ const products = [
     discount: "(off 35%)",
     rating: "4.2",
     reviews: "1.2K",
-    image: man,
+    image: women1,
   },
   {
     title: "Men Regular Fit Self Design Light Shirt",
@@ -30,7 +28,7 @@ const products = [
     discount: "(off 35%)",
     rating: "4.2",
     reviews: "1.2K",
-    image: shoes,
+    image: women2,
   },
   {
     title: "Men Regular Fit Self Design Light Shirt",
@@ -38,7 +36,7 @@ const products = [
     discount: "(off 35%)",
     rating: "4.2",
     reviews: "1.2K",
-    image: jacket,
+    image: women3,
   },
   {
     title: "Men Regular Fit Self Design Light Shirt",
@@ -46,7 +44,7 @@ const products = [
     discount: "(off 35%)",
     rating: "4.2",
     reviews: "1.2K",
-    image: women,
+    image: women4,
   },
   {
     title: "Men Regular Fit Self Design Light Shirt",
@@ -54,14 +52,22 @@ const products = [
     discount: "(off 35%)",
     rating: "4.2",
     reviews: "1.2K",
-    image: doll,
+    image: women5,
   },
 ];
 // --- MOCK DATA (No changes here) ---
 const categories = [
   {
-    name: "Women",
-    img: girls,
+    name: "Girl",
+    img: sub1,
+  },
+  {
+    name: "Ethnic wear",
+    img: sub2,
+  },
+  {
+    name: "party wear",
+    img: sub3,
   },
 ];
 
@@ -218,7 +224,7 @@ export default function Women() {
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-11">
           {/* [CHANGED] The mapping now passes selection state and click handler to each pill */}
-          <div className="flex gap-8 overflow-x-auto pb-4 -mx-4 px-4 lg:px-[10rem] hide-scrollbar pt-0 lg:pt-0 md:pt-16">
+          <div className="flex gap-8 overflow-x-auto pb-4 px-4 lg:px-[10rem] hide-scrollbar pt-0 lg:pt-0 md:pt-16">
             {categories.map((cat) => (
               <CategoryPill
                 key={cat.name}

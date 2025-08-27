@@ -34,7 +34,7 @@ export default function CategoryNavbar() {
           <Link to="/category/toys" className={linkClass("/category/toys")}>
             Toys
           </Link>
-          <Link to="/category/kids" className={linkClass("/category/kids")}>
+          <Link to="/category/home-decors" className={linkClass("/category/home-decors")}>
             Home Decors
           </Link>
         </div>
@@ -74,7 +74,7 @@ export default function CategoryNavbar() {
               </li>
               <li>
                 <Link
-                  to="/category/kids"
+                  to="/category/women"
                   className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
                 >
                   Women
@@ -82,7 +82,7 @@ export default function CategoryNavbar() {
               </li>
               <li>
                 <Link
-                  to="/category/kids"
+                  to="/category/toys"
                   className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
                 >
                   Toys
@@ -98,7 +98,7 @@ export default function CategoryNavbar() {
               </li>
               <li>
                 <Link
-                  to="/category/home-decor"
+                  to="/category/home-decors"
                   className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
                 >
                   Home Decor
