@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { Heart } from "lucide-react";
 import man from "../../assets/man.png";
 import shoes from "../../assets/mens.png";
@@ -6,7 +6,8 @@ import jacket from "../../assets/women-white.png";
 import women from "../../assets/dancing-team-studio.png";
 import doll from "../../assets/3d-children.png";
 import { Link } from "react-router-dom";
-
+import { fetchAllProducts } from "../../Redux/slices/productSlice";
+import { useSelector , useDispatch } from "react-redux";
 const products = [
   {
     title: "Men Regular Fit Self Design Light Shirt",
@@ -55,7 +56,11 @@ const tabs = ["Featured", "Latest", "Best Sellers"];
 export default function TopSellingProducts() {
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+  const products = useSelector((state) => state?.products?.products);
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
       prev.includes(index)
@@ -63,7 +68,7 @@ export default function TopSellingProducts() {
         : [...prev, index]
     );
   };
-
+  
   return (
     <section className="px-4 md:px-6 py-11 font-montserrat">
       <h2 className="text-center text-[22px] md:text-[30px] font-semibold mb-6">
@@ -88,7 +93,7 @@ export default function TopSellingProducts() {
 
       {/* Products */}
       <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-10 px-2 md:px-12 scrollbar-hide">
-        {products.map((item, index) => (
+        {products?.map((item, index) => (
           <div
             key={index}
             className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
@@ -104,8 +109,8 @@ export default function TopSellingProducts() {
               <Link to={`/product/${item.id}`}>
                 {" "}
                 <img
-                  src={item.image}
-                  alt={item.title}
+                  src={item?.image[0]}
+                  alt={item?.name}
                   className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
                     activeCard === index ? "scale-105" : "group-hover:scale-105"
                   }`}
@@ -141,7 +146,7 @@ export default function TopSellingProducts() {
 
               {/* Rating */}
               <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                <span>{item.rating}</span> • <span>{item.reviews}</span>
+                <span>{item.rating}</span>  <span>{item.reviews}</span>
               </div>
 
               {/* Heart Icon */}
@@ -172,7 +177,7 @@ export default function TopSellingProducts() {
               <span className="text-darkpink font-semibold text-sm">
                 {item.price}
               </span>
-              <span className="text-gray-500 text-xs">{item.discount}</span>
+              <span className="text-gray-500 text-xs"> ( {item.discount}% )</span>
             </div>
           </div>
         ))}

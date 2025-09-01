@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { Heart } from "lucide-react";
@@ -14,7 +14,8 @@ import infant from "../../assets/infant.png";
 import toy from "../../assets/access.png";
 import access from "../../assets/toy.png";
 import { Link } from "react-router-dom";
-
+import { useSelector , useDispatch } from "react-redux";
+import { fetchSubcategoryById } from "../../Redux/slices/subcategorySlice";
 const products = [
   {
     title: "Men Regular Fit Self Design Light Shirt",
@@ -115,7 +116,6 @@ const CategoryPill = ({ name, img, isSelected, onClick }) => (
         </div>
       )}
     </div>
-    {/* The text color below the oval also changes on selection */}
     <p
       className={`mt-2 text-sm font-semibold ${
         isSelected ? "bg-opacity-35" : "text-gray-700"
@@ -221,7 +221,14 @@ export default function ProductListingPage() {
         : [...prev, index]
     );
   };
-
+  const dispatch = useDispatch();
+  const selectedCategoryId = localStorage.getItem("selectedCategoryId");
+  useEffect(()=>{
+    dispatch(fetchSubcategoryById(selectedCategoryId));
+  },[dispatch])
+  const subcategory  =  useSelector((state) => state?.subcategory
+  ?.subcategoryData?.data);
+  console.log("sub",subcategory);
   return (
     <div className="bg-[#FCFCFC] font-sans">
       <div
@@ -233,9 +240,10 @@ export default function ProductListingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-11">
           {/* [CHANGED] The mapping now passes selection state and click handler to each pill */}
           <div className="flex gap-8 overflow-x-auto pb-4 -mx-4 px-4 lg:px-[10rem] hide-scrollbar pt-0 lg:pt-0 md:pt-16">
-            {categories.map((cat) => (
+            {subcategory?.map((cat) => (
               <CategoryPill
                 key={cat.name}
+                img = {cat?.image[0]}
                 {...cat}
                 isSelected={selectedCategory === cat.name}
                 onClick={setSelectedCategory}

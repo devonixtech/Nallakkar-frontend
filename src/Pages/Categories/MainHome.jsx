@@ -13,8 +13,21 @@ import PromoGrid from "./PromoGrid";
 import HeroDesktop from "../HomeFolder/HeroDesktop";
 import HeroMobile from "../HomeFolder/HeroMobile";
 import FashionMobile from "../HomeFolder/FashionMobile";
-
+import { useSelector , useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchAllCategories } from "../../Redux/slices/categorySlice";
+import { useNavigate } from "react-router-dom";
+import { fetchAllProducts } from "../../Redux/slices/productSlice";
 export default function MainHome() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+    useEffect(()=>{
+      dispatch(fetchAllCategories());
+      dispatch(fetchAllProducts())
+    },[dispatch])
+    const categories  = useSelector((state) => state?.ctegory?.categories);
+    const products = useSelector((state) => state?.products?.products);
+  console.log(products)
   return (
     <>
       <Helmet>
@@ -50,30 +63,36 @@ export default function MainHome() {
         px-1
       "
           >
-            {[
-              { name: "Kids", img: kids, link: "/category/kids" },
-              { name: "Women", img: women, link: "/category/women" },
-              { name: "Toys", img: toys, link: "/category/toys" },
-              {
-                name: "Accessories",
-                img: accessories,
-                link: "/category/accessories",
-              },
-              {
-                name: "Home Decor",
-                img: homedecor,
-                link: "/category/home-decor",
-              },
-            ].map((cat) => (
+            {
+            // [
+            //   { name: "Kids", img: kids, link: "/category/kids" },
+            //   { name: "Women", img: women, link: "/category/women" },
+            //   { name: "Toys", img: toys, link: "/category/toys" },
+            //   {
+            //     name: "Accessories",
+            //     img: accessories,
+            //     link: "/category/accessories",
+            //   },
+            //   {
+            //     name: "Home Decor",
+            //     img: homedecor,
+            //     link: "/category/home-decor",
+            //   },
+            // ]
+            categories?.map((cat) => (
               <Link
-                to={cat.link}
+                to={"/category/kids"}
                 key={cat.name}
                 className="flex flex-col items-center cursor-pointer group flex-shrink-0"
+                onClick={() => {localStorage.setItem("selectedCategoryId", cat?.id)
+                  navigate("category/kids")}
+                }
+
               >
                 {/* Image */}
                 <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-white transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:border-gray-300">
                   <img
-                    src={cat.img}
+                    src={cat.image[0]}
                     alt={cat.name}
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
                   />
