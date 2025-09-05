@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-
+import React, { useState , useEffect} from "react";
+import { useDispatch } from "react-redux";
+import { createCategory } from "../../Redux/slices/categorySlice";
 export default function AddCategory() {
   const [name, setName] = useState("");
   const [parent, setParent] = useState("");
@@ -8,6 +9,7 @@ export default function AddCategory() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log({ name, parent, active });
+
   };
 
   return (

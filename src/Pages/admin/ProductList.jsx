@@ -1,60 +1,70 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { fetchAllProducts } from "../../Redux/slices/productSlice";
+import { useSelector , useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 
 export default function ProductList() {
-  const products = [
-    {
-      id: 1,
-      name: "Wireless Bluetooth Headphones",
-      category: "Electronics",
-      price: "$299.99",
-      stock: 45,
-      status: "Active",
-      image:
-        "https://readdy.ai/api/search-image?query=modern%20wireless%20bluetooth%20headphones%20with%20sleek%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20minimalist%20style&width=80&height=80&seq=prod1&orientation=squarish",
-    },
-    {
-      id: 2,
-      name: "Smartphone Case",
-      category: "Accessories",
-      price: "$29.99",
-      stock: 120,
-      status: "Active",
-      image:
-        "https://readdy.ai/api/search-image?query=premium%20smartphone%20protective%20case%20transparent%20clear%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting&width=80&height=80&seq=prod2&orientation=squarish",
-    },
-    {
-      id: 3,
-      name: "Laptop Stand Adjustable",
-      category: "Office",
-      price: "$89.99",
-      stock: 8,
-      status: "Low Stock",
-      image:
-        "https://readdy.ai/api/search-image?query=adjustable%20aluminum%20laptop%20stand%20ergonomic%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20modern%20office%20accessory&width=80&height=80&seq=prod3&orientation=squarish",
-    },
-    {
-      id: 4,
-      name: "USB-C Cable 6ft",
-      category: "Accessories",
-      price: "$15.99",
-      stock: 0,
-      status: "Out of Stock",
-      image:
-        "https://readdy.ai/api/search-image?query=premium%20USB-C%20charging%20cable%20white%20braided%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20tech%20accessory&width=80&height=80&seq=prod4&orientation=squarish",
-    },
-    {
-      id: 5,
-      name: "Wireless Mouse",
-      category: "Electronics",
-      price: "$49.99",
-      stock: 67,
-      status: "Active",
-      image:
-        "https://readdy.ai/api/search-image?query=ergonomic%20wireless%20computer%20mouse%20black%20modern%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20office%20equipment&width=80&height=80&seq=prod5&orientation=squarish",
-    },
-  ];
-
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(fetchAllProducts());
+    dispatch(fetchAllCategories());
+  },[dispatch])
+  const products = useSelector((state) => state?.products?.products);
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "Wireless Bluetooth Headphones",
+  //     category: "Electronics",
+  //     price: "$299.99",
+  //     stock: 45,
+  //     status: "Active",
+  //     image:
+  //       "https://readdy.ai/api/search-image?query=modern%20wireless%20bluetooth%20headphones%20with%20sleek%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20minimalist%20style&width=80&height=80&seq=prod1&orientation=squarish",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Smartphone Case",
+  //     category: "Accessories",
+  //     price: "$29.99",
+  //     stock: 120,
+  //     status: "Active",
+  //     image:
+  //       "https://readdy.ai/api/search-image?query=premium%20smartphone%20protective%20case%20transparent%20clear%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting&width=80&height=80&seq=prod2&orientation=squarish",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Laptop Stand Adjustable",
+  //     category: "Office",
+  //     price: "$89.99",
+  //     stock: 8,
+  //     status: "Low Stock",
+  //     image:
+  //       "https://readdy.ai/api/search-image?query=adjustable%20aluminum%20laptop%20stand%20ergonomic%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20modern%20office%20accessory&width=80&height=80&seq=prod3&orientation=squarish",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "USB-C Cable 6ft",
+  //     category: "Accessories",
+  //     price: "$15.99",
+  //     stock: 0,
+  //     status: "Out of Stock",
+  //     image:
+  //       "https://readdy.ai/api/search-image?query=premium%20USB-C%20charging%20cable%20white%20braided%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20tech%20accessory&width=80&height=80&seq=prod4&orientation=squarish",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Wireless Mouse",
+  //     category: "Electronics",
+  //     price: "$49.99",
+  //     stock: 67,
+  //     status: "Active",
+  //     image:
+  //       "https://readdy.ai/api/search-image?query=ergonomic%20wireless%20computer%20mouse%20black%20modern%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20office%20equipment&width=80&height=80&seq=prod5&orientation=squarish",
+  //   },
+  // ];
+  const categories  = useSelector((state) => state?.ctegory?.categories);
   const getStatusColor = (status) => {
     switch (status) {
       case "Delivered":
@@ -102,12 +112,14 @@ export default function ProductList() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
-                <option value="">All Categories</option>
-                <option value="electronics">Electronics</option>
-                <option value="accessories">Accessories</option>
-                <option value="office">Office</option>
-              </select>
+               <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
+  <option value="">All Categories</option>
+  {categories?.map((cat) => (
+    <option key={cat._id} value={cat._id}>
+      {cat.name}
+    </option>
+  ))}
+</select>
               <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
                 <option value="">All Status</option>
                 <option value="active">Active</option>
@@ -142,13 +154,13 @@ export default function ProductList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                {products?.map((product) => (
+                  <tr key={product?.id} className="hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="flex items-center">
                         <img
-                          src={product.image}
-                          alt={product.name}
+                          src={product?.image[0]}
+                          alt={product?.name}
                           className="w-12 h-12 rounded-lg object-cover object-top mr-4"
                         />
                         <div>
@@ -162,7 +174,7 @@ export default function ProductList() {
                       </div>
                     </td>
                     <td className="py-4 px-4 text-sm text-gray-700">
-                      {product.category}
+                      {product?.categoryName}
                     </td>
                     <td className="py-4 px-4 text-sm font-medium text-gray-900">
                       {product.price}

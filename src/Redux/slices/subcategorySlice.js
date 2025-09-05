@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
-const BASE_URL = "/subcategory";
+const BASE_URL = "/subCategory";
 
 // ✅ Create subcategory
 export const createSubcategory = createAsyncThunk(
@@ -34,7 +34,7 @@ export const fetchSubcategoryById = createAsyncThunk(
   "subcategories/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const res = await api.get(`subCategory/getSubCategoryByCategoryId/${id}`);
+      const res = await api.get(`${BASE_URL}/getSubCategoryByCategoryId/${id}`);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

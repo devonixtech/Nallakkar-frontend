@@ -1,62 +1,71 @@
 'use client';
 
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
-
+import { fetchAllCategories } from '../../Redux/slices/categorySlice';
+import { useSelector , useDispatch } from "react-redux";
+import { fetchSubcategoryById } from '../../Redux/slices/subcategorySlice';
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([
-    {
-      id: 1,
-      name: 'Electronics',
-      slug: 'electronics',
-      description: 'Digital devices and electronic gadgets',
-      status: 'Active',
-      image: 'https://readdy.ai/api/search-image?query=modern%20electronics%20category%20icon%20with%20smartphones%20laptops%20headphones%20on%20clean%20white%20background%2C%20minimal%20design%2C%20tech%20products%20arrangement&width=60&height=60&seq=cat1&orientation=squarish',
-      subcategories: 5,
-      productsCount: 24
-    },
-    {
-      id: 2,
-      name: 'Accessories',
-      slug: 'accessories',
-      description: 'Phone cases, cables, and tech accessories',
-      status: 'Active',
-      image: 'https://readdy.ai/api/search-image?query=tech%20accessories%20category%20icon%20with%20cables%20cases%20chargers%20on%20clean%20white%20background%2C%20minimal%20design%2C%20organized%20layout&width=60&height=60&seq=cat2&orientation=squarish',
-      subcategories: 3,
-      productsCount: 18
-    },
-    {
-      id: 3,
-      name: 'Office Supplies',
-      slug: 'office-supplies',
-      description: 'Desk accessories and office equipment',
-      status: 'Active',
-      image: 'https://readdy.ai/api/search-image?query=office%20supplies%20category%20icon%20with%20desk%20accessories%20laptop%20stand%20notebooks%20on%20clean%20white%20background%2C%20minimal%20design%2C%20professional%20layout&width=60&height=60&seq=cat3&orientation=squarish',
-      subcategories: 4,
-      productsCount: 12
-    },
-    {
-      id: 4,
-      name: 'Gaming',
-      slug: 'gaming',
-      description: 'Gaming peripherals and accessories',
-      status: 'Inactive',
-      image: 'https://readdy.ai/api/search-image?query=gaming%20category%20icon%20with%20gaming%20mouse%20keyboard%20headset%20on%20clean%20white%20background%2C%20minimal%20design%2C%20gaming%20setup&width=60&height=60&seq=cat4&orientation=squarish',
-      subcategories: 2,
-      productsCount: 8
-    },
-    {
-      id: 5,
-      name: 'Home & Garden',
-      slug: 'home-garden',
-      description: 'Smart home devices and garden tools',
-      status: 'Active',
-      image: 'https://readdy.ai/api/search-image?query=home%20garden%20category%20icon%20with%20smart%20home%20devices%20plants%20tools%20on%20clean%20white%20background%2C%20minimal%20design%2C%20household%20items&width=60&height=60&seq=cat5&orientation=squarish',
-      subcategories: 6,
-      productsCount: 15
-    }
-  ]);
+  const dispatch = useDispatch();
+   useEffect(()=>{
+        dispatch(fetchAllCategories());
+      },[dispatch])
+    const categories  = useSelector((state) => state?.ctegory?.categories);
+    const subcategoryById  = useSelector((state) => state?.subcategory?.subcategoryData?.data);
+    // console.log("subcategory",subcategory)
+  // const [categories, setCategories] = useState([
+  //   {
+  //     id: 1,
+  //     name: 'Electronics',
+  //     slug: 'electronics',
+  //     description: 'Digital devices and electronic gadgets',
+  //     status: 'Active',
+  //     image: 'https://readdy.ai/api/search-image?query=modern%20electronics%20category%20icon%20with%20smartphones%20laptops%20headphones%20on%20clean%20white%20background%2C%20minimal%20design%2C%20tech%20products%20arrangement&width=60&height=60&seq=cat1&orientation=squarish',
+  //     subcategories: 5,
+  //     productsCount: 24
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Accessories',
+  //     slug: 'accessories',
+  //     description: 'Phone cases, cables, and tech accessories',
+  //     status: 'Active',
+  //     image: 'https://readdy.ai/api/search-image?query=tech%20accessories%20category%20icon%20with%20cables%20cases%20chargers%20on%20clean%20white%20background%2C%20minimal%20design%2C%20organized%20layout&width=60&height=60&seq=cat2&orientation=squarish',
+  //     subcategories: 3,
+  //     productsCount: 18
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Office Supplies',
+  //     slug: 'office-supplies',
+  //     description: 'Desk accessories and office equipment',
+  //     status: 'Active',
+  //     image: 'https://readdy.ai/api/search-image?query=office%20supplies%20category%20icon%20with%20desk%20accessories%20laptop%20stand%20notebooks%20on%20clean%20white%20background%2C%20minimal%20design%2C%20professional%20layout&width=60&height=60&seq=cat3&orientation=squarish',
+  //     subcategories: 4,
+  //     productsCount: 12
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'Gaming',
+  //     slug: 'gaming',
+  //     description: 'Gaming peripherals and accessories',
+  //     status: 'Inactive',
+  //     image: 'https://readdy.ai/api/search-image?query=gaming%20category%20icon%20with%20gaming%20mouse%20keyboard%20headset%20on%20clean%20white%20background%2C%20minimal%20design%2C%20gaming%20setup&width=60&height=60&seq=cat4&orientation=squarish',
+  //     subcategories: 2,
+  //     productsCount: 8
+  //   },
+  //   {
+  //     id: 5,
+  //     name: 'Home & Garden',
+  //     slug: 'home-garden',
+  //     description: 'Smart home devices and garden tools',
+  //     status: 'Active',
+  //     image: 'https://readdy.ai/api/search-image?query=home%20garden%20category%20icon%20with%20smart%20home%20devices%20plants%20tools%20on%20clean%20white%20background%2C%20minimal%20design%2C%20household%20items&width=60&height=60&seq=cat5&orientation=squarish',
+  //     subcategories: 6,
+  //     productsCount: 15
+  //   }
+  // ]);
 
   const [subcategories, setSubcategories] = useState([
     { id: 1, name: 'Smartphones', slug: 'smartphones', description: 'Mobile phones and accessories', status: 'Active', parentCategoryId: 1, parentCategoryName: 'Electronics', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=smartphone%20subcategory%20icon%20modern%20mobile%20phone%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub1&orientation=squarish' },
@@ -68,7 +77,7 @@ export default function CategoriesPage() {
     { id: 7, name: 'Cables', slug: 'cables', description: 'Charging and data cables', status: 'Active', parentCategoryId: 2, parentCategoryName: 'Accessories', productsCount: 18, image: 'https://readdy.ai/api/search-image?query=cable%20subcategory%20icon%20charging%20data%20cord%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub7&orientation=squarish' },
     { id: 8, name: 'Chargers', slug: 'chargers', description: 'Power adapters and wireless chargers', status: 'Active', parentCategoryId: 2, parentCategoryName: 'Accessories', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=charger%20subcategory%20icon%20power%20adapter%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub8&orientation=squarish' }
   ]);
-
+    
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -87,21 +96,22 @@ export default function CategoriesPage() {
   const [subcategoryStatusFilter, setSubcategoryStatusFilter] = useState('');
 
   const filteredCategories = categories.filter(category => {
-    const matchesSearch = category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         category.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = category.name.toLowerCase().includes(searchTerm.toLowerCase())
+                          
     const matchesStatus = statusFilter === '' || category.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const getSubcategoriesForCategory = (categoryId) => {
-    return subcategories.filter(sub => {
-      const belongsToCategory = sub.parentCategoryId === categoryId;
-      const matchesSearch = sub.name.toLowerCase().includes(subcategorySearchTerm.toLowerCase()) ||
-                           sub.description.toLowerCase().includes(subcategorySearchTerm.toLowerCase());
-      const matchesStatus = subcategoryStatusFilter === '' || sub.status === subcategoryStatusFilter;
-      return belongsToCategory && matchesSearch && matchesStatus;
-    });
-  };
+  return subcategoryById?.filter(sub => {
+    const belongsToCategory = sub.categoryId === categoryId;
+    const matchesSearch = sub.name.toLowerCase().includes(subcategorySearchTerm.toLowerCase()) ||
+                         sub.description.toLowerCase().includes(subcategorySearchTerm.toLowerCase());
+    const matchesStatus = subcategoryStatusFilter === '' || sub.status === subcategoryStatusFilter;
+    return belongsToCategory && matchesSearch && matchesStatus;
+  });
+};
+
 
   const toggleCategoryStatus = (id) => {
     setCategories(prev => prev.map(cat => 
@@ -110,7 +120,7 @@ export default function CategoriesPage() {
         : cat
     ));
   };
-
+   
   const toggleSubcategoryStatus = (id) => {
     setSubcategories(prev => prev.map(sub => 
       sub.id === id 
@@ -163,21 +173,25 @@ export default function CategoriesPage() {
       setSubcategoryToDelete(null);
     }
   };
-
-  const toggleSubcategories = (id) => {
-    setExpandedRows(prev => 
-      prev.includes(id) 
-        ? prev.filter(rowId => rowId !== id)
-        : [...prev, id]
+  
+    const toggleSubcategories = (categoryId) => {
+    if (!expandedRows.includes(categoryId)) {
+      dispatch(fetchSubcategoryById(categoryId));
+    }
+    setExpandedRows((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId]
     );
   };
+
 
   const getStatusColor = (status) => {
     return status === 'Active' 
       ? 'bg-green-100 text-green-800'
       : 'bg-red-100 text-red-800';
   };
-
+  
   return (
     <>
       <div className="space-y-6">
@@ -239,7 +253,7 @@ export default function CategoriesPage() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Category</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Description</th>
+                  {/* <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Description</th> */}
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Status</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Products</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Subcategories</th>
@@ -265,9 +279,9 @@ export default function CategoriesPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-4 text-sm text-gray-700 max-w-xs">
+                      {/* <td className="py-4 px-4 text-sm text-gray-700 max-w-xs">
                         <div className="truncate">{category.description}</div>
-                      </td>
+                      </td> */}
                       <td className="py-4 px-4">
                         <button
                           onClick={() => toggleCategoryStatus(category.id)}

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
-
+import { fetchAllUsers } from '../../Redux/slices/userSlice';
+import { useSelector , useDispatch } from "react-redux";
 export default function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('All');
@@ -10,7 +11,8 @@ export default function UsersPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const [users, setUsers] = useState([
+  const [users, setUsers] = useState(
+    [
     {
       id: '1',
       name: 'John Anderson',
@@ -95,8 +97,14 @@ export default function UsersPage() {
       phone: '+1 (555) 567-8901',
       location: 'Nevada, USA'
     }
-  ]);
-
+  ]
+);
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(fetchAllUsers());
+  },[dispatch])
+  const users1 = useSelector((state) => state?.users?.users);
+  console.log(users1)
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
@@ -106,13 +114,13 @@ export default function UsersPage() {
     location: ''
   });
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = roleFilter === 'All' || user.role === roleFilter;
-    const matchesStatus = statusFilter === 'All' || user.status === statusFilter;
+  const filteredUsers = users?.filter(user => {
+    const matchesSearch = user?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user?.email.toLowerCase().includes(searchTerm.toLowerCase());
+    // const matchesRole = roleFilter === 'All' || user?.role === roleFilter;
+    // const matchesStatus = statusFilter === 'All' || user?.status === statusFilter;
     
-    return matchesSearch && matchesRole && matchesStatus;
+    return matchesSearch;
   });
 
   const getStatusColor = (status) => {
@@ -226,7 +234,7 @@ export default function UsersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900 mt-2">{users.length}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-2">{users?.length}</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <i className="ri-user-line text-blue-600 text-xl"></i>
@@ -238,7 +246,7 @@ export default function UsersPage() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Active Users</p>
                 <p className="text-2xl font-bold text-green-600 mt-2">
-                  {users.filter(u => u.status === 'Active').length}
+                  {users?.filter(u => u.status === 'Active').length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -251,7 +259,7 @@ export default function UsersPage() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Customers</p>
                 <p className="text-2xl font-bold text-gray-900 mt-2">
-                  {users.filter(u => u.role === 'Customer').length}
+                  {users?.filter(u => u.role === 'Customer').length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -341,49 +349,49 @@ export default function UsersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredUsers.map((user) => (
+                {filteredUsers?.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <img
-                          src={user.avatar}
-                          alt={user.name}
+                          src={user?.avatar}
+                          alt={user?.name}
                           className="w-10 h-10 rounded-full object-cover object-top mr-4"
                         />
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
-                          <div className="text-xs text-gray-400">{user.phone}</div>
+                          <div className="text-sm font-medium text-gray-900">{user?.name}</div>
+                          <div className="text-sm text-gray-500">{user?.email}</div>
+                          <div className="text-xs text-gray-400">{user?.phone}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleColor(user.role)}`}>
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleColor(user?.role)}`}>
                           {user.role}
                         </span>
                         <br />
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.status)}`}>
-                          {user.status}
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user?.status)}`}>
+                          {user?.status}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
-                      {new Date(user.joinDate).toLocaleDateString()}
+                      {new Date(user?.joinDate).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
-                      {user.lastLogin === 'Never' ? 'Never' : new Date(user.lastLogin).toLocaleDateString()}
+                      {user?.lastLogin === 'Never' ? 'Never' : new Date(user.lastLogin).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">{user.orders} orders</div>
-                      <div className="text-sm font-medium text-green-600">{user.totalSpent}</div>
+                      <div className="text-sm text-gray-900">{user?.orders} orders</div>
+                      <div className="text-sm font-medium text-green-600">{user?.totalSpent}</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => toggleUserStatus(user.id)}
+                          onClick={() => toggleUserStatus(user?.id)}
                           className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
-                            user.status === 'Active' 
+                            user?.status === 'Active' 
                               ? 'text-red-600 hover:bg-red-50' 
                               : 'text-green-600 hover:bg-green-50'
                           }`}
@@ -399,7 +407,7 @@ export default function UsersPage() {
                           <i className="ri-edit-line"></i>
                         </button>
                         <Link
-                          to={`/admin/users/${user.id}`}
+                          to={`/admin/users/${user?.id}`}
                           className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
                           title="View Details"
                         >
