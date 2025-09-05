@@ -187,7 +187,7 @@ export default function CategoriesPage() {
 
 
   const getStatusColor = (status) => {
-    return status === 'Active' 
+    return status ==1 
       ? 'bg-green-100 text-green-800'
       : 'bg-red-100 text-red-800';
   };
@@ -266,16 +266,16 @@ export default function CategoriesPage() {
                     <tr key={category.id} className="hover:bg-gray-50">
                       <td className="py-4 px-4">
                         <div className="flex items-center">
-                          {category.image && (
+                          {category?.image && (
                             <img
-                              src={category.image}
-                              alt={category.name}
+                              src={category?.image}
+                              alt={category?.name}
                               className="w-12 h-12 rounded-lg object-cover object-top mr-4"
                             />
                           )}
                           <div>
-                            <h4 className="text-sm font-medium text-gray-900">{category.name}</h4>
-                            <p className="text-sm text-gray-500">/{category.slug}</p>
+                            <h4 className="text-sm font-medium text-gray-900">{category?.name}</h4>
+                            {/* <p className="text-sm text-gray-500">/{category.slug}</p> */}
                           </div>
                         </div>
                       </td>
@@ -287,7 +287,7 @@ export default function CategoriesPage() {
                           onClick={() => toggleCategoryStatus(category.id)}
                           className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(category.status)}`}
                         >
-                          {category.status}
+                          {category?.status==1?'Active':'Inactive'}
                         </button>
                       </td>
                       <td className="py-4 px-4 text-sm text-gray-700">{category.productsCount}</td>
@@ -374,7 +374,7 @@ export default function CategoriesPage() {
                                 <thead className="bg-gray-100">
                                   <tr>
                                     <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Subcategory</th>
-                                    <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Description</th>
+                                    {/* <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Description</th> */}
                                     <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Status</th>
                                     <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Products</th>
                                     <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Actions</th>
@@ -385,28 +385,28 @@ export default function CategoriesPage() {
                                     <tr key={subcategory.id} className="hover:bg-gray-50">
                                       <td className="py-3 px-3">
                                         <div className="flex items-center">
-                                          {subcategory.image && (
+                                          {subcategory?.image && (
                                             <img
-                                              src={subcategory.image}
-                                              alt={subcategory.name}
+                                              src={subcategory?.image}
+                                              alt={subcategory?.name}
                                               className="w-8 h-8 rounded-md object-cover object-top mr-3"
                                             />
                                           )}
                                           <div>
                                             <h6 className="text-sm font-medium text-gray-900">{subcategory.name}</h6>
-                                            <p className="text-xs text-gray-500">/{subcategory.slug}</p>
+                                            {/* <p className="text-xs text-gray-500">/{subcategory.slug}</p> */}
                                           </div>
                                         </div>
                                       </td>
-                                      <td className="py-3 px-3 text-sm text-gray-700 max-w-xs">
+                                      {/* <td className="py-3 px-3 text-sm text-gray-700 max-w-xs">
                                         <div className="truncate">{subcategory.description}</div>
-                                      </td>
+                                      </td> */}
                                       <td className="py-3 px-3">
                                         <button
                                           onClick={() => toggleSubcategoryStatus(subcategory.id)}
                                           className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(subcategory.status)}`}
                                         >
-                                          {subcategory.status}
+                                          {subcategory.status==1?'Active':'Inactive'}
                                         </button>
                                       </td>
                                       <td className="py-3 px-3 text-sm text-gray-700">{subcategory.productsCount}</td>

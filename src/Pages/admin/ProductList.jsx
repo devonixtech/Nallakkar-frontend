@@ -167,9 +167,9 @@ export default function ProductList() {
                           <h4 className="text-sm font-medium text-gray-900">
                             {product.name}
                           </h4>
-                          <p className="text-sm text-gray-500">
+                          {/* <p className="text-sm text-gray-500">
                             ID: {product.id}
-                          </p>
+                          </p> */}
                         </div>
                       </div>
                     </td>
@@ -180,7 +180,7 @@ export default function ProductList() {
                       {product.price}
                     </td>
                     <td className="py-4 px-4 text-sm text-gray-700">
-                      {product.stock}
+                      {product?.stock}
                     </td>
                     <td className="py-4 px-4">
                       <span
@@ -188,7 +188,7 @@ export default function ProductList() {
                           product.status
                         )}`}
                       >
-                        {product.status}
+                        {product?.status==1? 'Active':'Inactive'}
                       </span>
                     </td>
                     <td className="py-4 px-4">

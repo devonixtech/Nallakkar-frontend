@@ -11,100 +11,100 @@ export default function UsersPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const [users, setUsers] = useState(
-    [
-    {
-      id: '1',
-      name: 'John Anderson',
-      email: 'john.anderson@gmail.com',
-      role: 'Admin',
-      status: 'Active',
-      joinDate: '2023-01-15',
-      lastLogin: '2024-01-20',
-      orders: 0,
-      totalSpent: '$0',
-      avatar: 'https://readdy.ai/api/search-image?query=professional%20business%20man%20portrait%20headshot%20clean%20background%20corporate%20style&width=80&height=80&seq=user1&orientation=squarish',
-      phone: '+1 (555) 123-4567',
-      location: 'New York, USA'
-    },
-    {
-      id: '2',
-      name: 'Sarah Williams',
-      email: 'sarah.williams@yahoo.com',
-      role: 'Customer',
-      status: 'Active',
-      joinDate: '2023-03-22',
-      lastLogin: '2024-01-19',
-      orders: 12,
-      totalSpent: '$1,847',
-      avatar: 'https://readdy.ai/api/search-image?query=professional%20business%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20friendly%20smile&width=80&height=80&seq=user2&orientation=squarish',
-      phone: '+1 (555) 987-6543',
-      location: 'California, USA'
-    },
-    {
-      id: '3',
-      name: 'Michael Chen',
-      email: 'michael.chen@outlook.com',
-      role: 'Manager',
-      status: 'Active',
-      joinDate: '2023-02-08',
-      lastLogin: '2024-01-18',
-      orders: 0,
-      totalSpent: '$0',
-      avatar: 'https://readdy.ai/api/search-image?query=professional%20asian%20business%20man%20portrait%20headshot%20clean%20background%20corporate%20style%20confident&width=80&height=80&seq=user3&orientation=squarish',
-      phone: '+1 (555) 456-7890',
-      location: 'Texas, USA'
-    },
-    {
-      id: '4',
-      name: 'Emily Davis',
-      email: 'emily.davis@gmail.com',
-      role: 'Customer',
-      status: 'Active',
-      joinDate: '2023-06-12',
-      lastLogin: '2024-01-17',
-      orders: 8,
-      totalSpent: '$924',
-      avatar: 'https://readdy.ai/api/search-image?query=professional%20young%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20modern&width=80&height=80&seq=user4&orientation=squarish',
-      phone: '+1 (555) 234-5678',
-      location: 'Florida, USA'
-    },
-    {
-      id: '5',
-      name: 'Robert Johnson',
-      email: 'robert.johnson@hotmail.com',
-      role: 'Customer',
-      status: 'Inactive',
-      joinDate: '2023-09-03',
-      lastLogin: '2023-12-15',
-      orders: 3,
-      totalSpent: '$287',
-      avatar: 'https://readdy.ai/api/search-image?query=professional%20middle%20aged%20man%20portrait%20headshot%20clean%20background%20corporate%20style%20serious&width=80&height=80&seq=user5&orientation=squarish',
-      phone: '+1 (555) 345-6789',
-      location: 'Illinois, USA'
-    },
-    {
-      id: '6',
-      name: 'Lisa Thompson',
-      email: 'lisa.thompson@gmail.com',
-      role: 'Customer',
-      status: 'Suspended',
-      joinDate: '2023-11-18',
-      lastLogin: '2024-01-05',
-      orders: 1,
-      totalSpent: '$45',
-      avatar: 'https://readdy.ai/api/search-image?query=professional%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20professional&width=80&height=80&seq=user6&orientation=squarish',
-      phone: '+1 (555) 567-8901',
-      location: 'Nevada, USA'
-    }
-  ]
-);
+//   const [users, setUsers] = useState(
+//     [
+//     {
+//       id: '1',
+//       name: 'John Anderson',
+//       email: 'john.anderson@gmail.com',
+//       role: 'Admin',
+//       status: 'Active',
+//       joinDate: '2023-01-15',
+//       lastLogin: '2024-01-20',
+//       orders: 0,
+//       totalSpent: '$0',
+//       avatar: 'https://readdy.ai/api/search-image?query=professional%20business%20man%20portrait%20headshot%20clean%20background%20corporate%20style&width=80&height=80&seq=user1&orientation=squarish',
+//       phone: '+1 (555) 123-4567',
+//       location: 'New York, USA'
+//     },
+//     {
+//       id: '2',
+//       name: 'Sarah Williams',
+//       email: 'sarah.williams@yahoo.com',
+//       role: 'Customer',
+//       status: 'Active',
+//       joinDate: '2023-03-22',
+//       lastLogin: '2024-01-19',
+//       orders: 12,
+//       totalSpent: '$1,847',
+//       avatar: 'https://readdy.ai/api/search-image?query=professional%20business%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20friendly%20smile&width=80&height=80&seq=user2&orientation=squarish',
+//       phone: '+1 (555) 987-6543',
+//       location: 'California, USA'
+//     },
+//     {
+//       id: '3',
+//       name: 'Michael Chen',
+//       email: 'michael.chen@outlook.com',
+//       role: 'Manager',
+//       status: 'Active',
+//       joinDate: '2023-02-08',
+//       lastLogin: '2024-01-18',
+//       orders: 0,
+//       totalSpent: '$0',
+//       avatar: 'https://readdy.ai/api/search-image?query=professional%20asian%20business%20man%20portrait%20headshot%20clean%20background%20corporate%20style%20confident&width=80&height=80&seq=user3&orientation=squarish',
+//       phone: '+1 (555) 456-7890',
+//       location: 'Texas, USA'
+//     },
+//     {
+//       id: '4',
+//       name: 'Emily Davis',
+//       email: 'emily.davis@gmail.com',
+//       role: 'Customer',
+//       status: 'Active',
+//       joinDate: '2023-06-12',
+//       lastLogin: '2024-01-17',
+//       orders: 8,
+//       totalSpent: '$924',
+//       avatar: 'https://readdy.ai/api/search-image?query=professional%20young%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20modern&width=80&height=80&seq=user4&orientation=squarish',
+//       phone: '+1 (555) 234-5678',
+//       location: 'Florida, USA'
+//     },
+//     {
+//       id: '5',
+//       name: 'Robert Johnson',
+//       email: 'robert.johnson@hotmail.com',
+//       role: 'Customer',
+//       status: 'Inactive',
+//       joinDate: '2023-09-03',
+//       lastLogin: '2023-12-15',
+//       orders: 3,
+//       totalSpent: '$287',
+//       avatar: 'https://readdy.ai/api/search-image?query=professional%20middle%20aged%20man%20portrait%20headshot%20clean%20background%20corporate%20style%20serious&width=80&height=80&seq=user5&orientation=squarish',
+//       phone: '+1 (555) 345-6789',
+//       location: 'Illinois, USA'
+//     },
+//     {
+//       id: '6',
+//       name: 'Lisa Thompson',
+//       email: 'lisa.thompson@gmail.com',
+//       role: 'Customer',
+//       status: 'Suspended',
+//       joinDate: '2023-11-18',
+//       lastLogin: '2024-01-05',
+//       orders: 1,
+//       totalSpent: '$45',
+//       avatar: 'https://readdy.ai/api/search-image?query=professional%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20professional&width=80&height=80&seq=user6&orientation=squarish',
+//       phone: '+1 (555) 567-8901',
+//       location: 'Nevada, USA'
+//     }
+//   ]
+// );
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(fetchAllUsers());
   },[dispatch])
-  const users1 = useSelector((state) => state?.users?.users);
-  console.log(users1)
+  const users = useSelector((state) => state?.users?.users);
+  console.log(users)
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
@@ -115,8 +115,8 @@ export default function UsersPage() {
   });
 
   const filteredUsers = users?.filter(user => {
-    const matchesSearch = user?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user?.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user?.email?.toLowerCase().includes(searchTerm.toLowerCase());
     // const matchesRole = roleFilter === 'All' || user?.role === roleFilter;
     // const matchesStatus = statusFilter === 'All' || user?.status === statusFilter;
     
@@ -331,15 +331,15 @@ export default function UsersPage() {
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     User
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {/* <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Role & Status
-                  </th>
+                  </th> */}
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Join Date
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {/* <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Last Login
-                  </th>
+                  </th> */}
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Orders
                   </th>
@@ -350,11 +350,11 @@ export default function UsersPage() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {filteredUsers?.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                  <tr key={user?.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <img
-                          src={user?.avatar}
+                          src={user?.image || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                           alt={user?.name}
                           className="w-10 h-10 rounded-full object-cover object-top mr-4"
                         />
@@ -365,7 +365,7 @@ export default function UsersPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    {/* <td className="px-6 py-4">
                       <div className="space-y-1">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleColor(user?.role)}`}>
                           {user.role}
@@ -375,13 +375,13 @@ export default function UsersPage() {
                           {user?.status}
                         </span>
                       </div>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 text-sm text-gray-900">
-                      {new Date(user?.joinDate).toLocaleDateString()}
+                      {new Date(user?.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    {/* <td className="px-6 py-4 text-sm text-gray-900">
                       {user?.lastLogin === 'Never' ? 'Never' : new Date(user.lastLogin).toLocaleDateString()}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">{user?.orders} orders</div>
                       <div className="text-sm font-medium text-green-600">{user?.totalSpent}</div>
