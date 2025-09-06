@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
-const BASE_URL = "/subCategory";
+const BASE_URL = "/category";
 
 // ✅ Create category
 export const createCategory = createAsyncThunk(
   "categories/create",
   async (categoryData, { rejectWithValue }) => {
     try {
-      const res = await api.post(BASE_URL, categoryData);
-      return res.data;
+      const res = await api.post(`${BASE_URL}/createCategory`, categoryData);
+      return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -21,7 +21,7 @@ export const fetchAllCategories = createAsyncThunk(
   "categories/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("category/getAllCategories");
+      const res = await api.get(`${BASE_URL}/getAllCategories`);
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -60,7 +60,7 @@ export const deleteCategory = createAsyncThunk(
   "categories/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`${BASE_URL}/${id}`);
+      await api.delete(`${BASE_URL}/deleteCategory/${id}`);
       return id;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

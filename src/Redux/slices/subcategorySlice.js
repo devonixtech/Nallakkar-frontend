@@ -4,11 +4,11 @@ import api from "../../utils/api";
 const BASE_URL = "/subCategory";
 
 // ✅ Create subcategory
-export const createSubcategory = createAsyncThunk(
+export const    createSubcategory = createAsyncThunk(
   "subcategories/create",
   async (subcategoryData, { rejectWithValue }) => {
     try {
-      const res = await api.post(BASE_URL, subcategoryData);
+      const res = await api.post(`${BASE_URL}/createSubCategory`, subcategoryData);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

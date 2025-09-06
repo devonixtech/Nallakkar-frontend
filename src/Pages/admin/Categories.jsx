@@ -2,10 +2,9 @@
 
 import { useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
-import { fetchAllCategories } from '../../Redux/slices/categorySlice';
+import { fetchAllCategories , createCategory, deleteCategory} from '../../Redux/slices/categorySlice';
 import { useSelector , useDispatch } from "react-redux";
-import { fetchSubcategoryById } from '../../Redux/slices/subcategorySlice';
-
+import { fetchSubcategoryById , createSubcategory } from '../../Redux/slices/subcategorySlice';
 export default function CategoriesPage() {
   const dispatch = useDispatch();
    useEffect(()=>{
@@ -13,59 +12,8 @@ export default function CategoriesPage() {
       },[dispatch])
     const categories  = useSelector((state) => state?.ctegory?.categories);
     const subcategoryById  = useSelector((state) => state?.subcategory?.subcategoryData?.data);
-    // console.log("subcategory",subcategory)
-  // const [categories, setCategories] = useState([
-  //   {
-  //     id: 1,
-  //     name: 'Electronics',
-  //     slug: 'electronics',
-  //     description: 'Digital devices and electronic gadgets',
-  //     status: 'Active',
-  //     image: 'https://readdy.ai/api/search-image?query=modern%20electronics%20category%20icon%20with%20smartphones%20laptops%20headphones%20on%20clean%20white%20background%2C%20minimal%20design%2C%20tech%20products%20arrangement&width=60&height=60&seq=cat1&orientation=squarish',
-  //     subcategories: 5,
-  //     productsCount: 24
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Accessories',
-  //     slug: 'accessories',
-  //     description: 'Phone cases, cables, and tech accessories',
-  //     status: 'Active',
-  //     image: 'https://readdy.ai/api/search-image?query=tech%20accessories%20category%20icon%20with%20cables%20cases%20chargers%20on%20clean%20white%20background%2C%20minimal%20design%2C%20organized%20layout&width=60&height=60&seq=cat2&orientation=squarish',
-  //     subcategories: 3,
-  //     productsCount: 18
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Office Supplies',
-  //     slug: 'office-supplies',
-  //     description: 'Desk accessories and office equipment',
-  //     status: 'Active',
-  //     image: 'https://readdy.ai/api/search-image?query=office%20supplies%20category%20icon%20with%20desk%20accessories%20laptop%20stand%20notebooks%20on%20clean%20white%20background%2C%20minimal%20design%2C%20professional%20layout&width=60&height=60&seq=cat3&orientation=squarish',
-  //     subcategories: 4,
-  //     productsCount: 12
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'Gaming',
-  //     slug: 'gaming',
-  //     description: 'Gaming peripherals and accessories',
-  //     status: 'Inactive',
-  //     image: 'https://readdy.ai/api/search-image?query=gaming%20category%20icon%20with%20gaming%20mouse%20keyboard%20headset%20on%20clean%20white%20background%2C%20minimal%20design%2C%20gaming%20setup&width=60&height=60&seq=cat4&orientation=squarish',
-  //     subcategories: 2,
-  //     productsCount: 8
-  //   },
-  //   {
-  //     id: 5,
-  //     name: 'Home & Garden',
-  //     slug: 'home-garden',
-  //     description: 'Smart home devices and garden tools',
-  //     status: 'Active',
-  //     image: 'https://readdy.ai/api/search-image?query=home%20garden%20category%20icon%20with%20smart%20home%20devices%20plants%20tools%20on%20clean%20white%20background%2C%20minimal%20design%2C%20household%20items&width=60&height=60&seq=cat5&orientation=squarish',
-  //     subcategories: 6,
-  //     productsCount: 15
-  //   }
-  // ]);
+    
+  
 
   const [subcategories, setSubcategories] = useState([
     { id: 1, name: 'Smartphones', slug: 'smartphones', description: 'Mobile phones and accessories', status: 'Active', parentCategoryId: 1, parentCategoryName: 'Electronics', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=smartphone%20subcategory%20icon%20modern%20mobile%20phone%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub1&orientation=squarish' },
@@ -95,10 +43,10 @@ export default function CategoriesPage() {
   const [subcategorySearchTerm, setSubcategorySearchTerm] = useState('');
   const [subcategoryStatusFilter, setSubcategoryStatusFilter] = useState('');
 
-  const filteredCategories = categories.filter(category => {
-    const matchesSearch = category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCategories = categories?.filter(category => {
+    const matchesSearch = category?.name?.toLowerCase().includes(searchTerm.toLowerCase())
                           
-    const matchesStatus = statusFilter === '' || category.status === statusFilter;
+    const matchesStatus = statusFilter === '' || category?.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -113,13 +61,7 @@ export default function CategoriesPage() {
 };
 
 
-  const toggleCategoryStatus = (id) => {
-    setCategories(prev => prev.map(cat => 
-      cat.id === id 
-        ? { ...cat, status: cat.status === 'Active' ? 'Inactive' : 'Active' }
-        : cat
-    ));
-  };
+   
    
   const toggleSubcategoryStatus = (id) => {
     setSubcategories(prev => prev.map(sub => 
@@ -140,6 +82,8 @@ export default function CategoriesPage() {
   };
 
   const handleDelete = (id) => {
+    dispatch(deleteCategory(id));
+    dispatch(fetchAllCategories());
     setCategoryToDelete(id);
     setShowDeleteConfirm(true);
   };
@@ -151,7 +95,8 @@ export default function CategoriesPage() {
 
   const confirmDelete = () => {
     if (categoryToDelete) {
-      setCategories(prev => prev.filter(cat => cat.id !== categoryToDelete));
+      // setCategories(prev => prev.filter(cat => cat.id !== categoryToDelete));
+      dispatch(fetchAllCategories());
       setShowDeleteConfirm(false);
       setCategoryToDelete(null);
     }
@@ -163,11 +108,11 @@ export default function CategoriesPage() {
       // Update category subcategories count
       const deletedSub = subcategories.find(sub => sub.id === subcategoryToDelete);
       if (deletedSub) {
-        setCategories(prev => prev.map(cat => 
-          cat.id === deletedSub.parentCategoryId 
-            ? { ...cat, subcategories: cat.subcategories - 1 }
-            : cat
-        ));
+        // setCategories(prev => prev.map(cat => 
+        //   cat.id === deletedSub.parentCategoryId 
+        //     ? { ...cat, subcategories: cat.subcategories - 1 }
+        //     : cat
+        // ));
       }
       setShowSubcategoryDeleteConfirm(false);
       setSubcategoryToDelete(null);
@@ -261,7 +206,7 @@ export default function CategoriesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredCategories.map((category) => (
+                {filteredCategories?.map((category) => (
                   <>
                     <tr key={category.id} className="hover:bg-gray-50">
                       <td className="py-4 px-4">
@@ -284,21 +229,21 @@ export default function CategoriesPage() {
                       </td> */}
                       <td className="py-4 px-4">
                         <button
-                          onClick={() => toggleCategoryStatus(category.id)}
-                          className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(category.status)}`}
+                          onClick={() => toggleCategoryStatus(category?.id)}
+                          className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(category?.status)}`}
                         >
                           {category?.status==1?'Active':'Inactive'}
                         </button>
                       </td>
-                      <td className="py-4 px-4 text-sm text-gray-700">{category.productsCount}</td>
+                      <td className="py-4 px-4 text-sm text-gray-700">{category?.productsCount}</td>
                       <td className="py-4 px-4">
                         <button
-                          onClick={() => toggleSubcategories(category.id)}
+                          onClick={() => toggleSubcategories(category?.id)}
                           className="flex items-center text-sm text-blue-600 hover:text-blue-700 cursor-pointer"
                         >
-                          {category.subcategories}
+                          {category?.subcategories}
                           <i className={`ri-arrow-down-s-line ml-1 transition-transform ${
-                            expandedRows.includes(category.id) ? 'rotate-180' : ''
+                            expandedRows.includes(category?.id) ? 'rotate-180' : ''
                           }`}></i>
                         </button>
                       </td>
@@ -311,7 +256,7 @@ export default function CategoriesPage() {
                             <i className="ri-edit-line"></i>
                           </button>
                           <button 
-                            onClick={() => handleDelete(category.id)}
+                            onClick={() => handleDelete(category?.id)}
                             className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-red-600 cursor-pointer"
                           >
                             <i className="ri-delete-bin-line"></i>
@@ -321,12 +266,12 @@ export default function CategoriesPage() {
                     </tr>
                     
                     {/* Subcategories Row */}
-                    {expandedRows.includes(category.id) && (
+                    {expandedRows.includes(category?.id) && (
                       <tr>
                         <td colSpan={6} className="py-4 px-4 bg-gray-50">
                           <div className="ml-16">
                             <div className="flex items-center justify-between mb-4">
-                              <h5 className="text-sm font-medium text-gray-700">Subcategories for {category.name}</h5>
+                              <h5 className="text-sm font-medium text-gray-700">Subcategories for {category?.name}</h5>
                               <button
                                 onClick={() => {
                                   setSelectedSubcategory({
@@ -335,8 +280,8 @@ export default function CategoriesPage() {
                                     slug: '',
                                     description: '',
                                     status: 'Active',
-                                    parentCategoryId: category.id,
-                                    parentCategoryName: category.name,
+                                    parentCategoryId: category?.id,
+                                    parentCategoryName: category?.name,
                                     productsCount: 0
                                   });
                                   setShowSubcategoryModal(true);
@@ -381,8 +326,8 @@ export default function CategoriesPage() {
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                  {getSubcategoriesForCategory(category.id).map((subcategory) => (
-                                    <tr key={subcategory.id} className="hover:bg-gray-50">
+                                  {getSubcategoriesForCategory(category?.id)?.map((subcategory) => (
+                                    <tr key={subcategory?.id} className="hover:bg-gray-50">
                                       <td className="py-3 px-3">
                                         <div className="flex items-center">
                                           {subcategory?.image && (
@@ -393,7 +338,7 @@ export default function CategoriesPage() {
                                             />
                                           )}
                                           <div>
-                                            <h6 className="text-sm font-medium text-gray-900">{subcategory.name}</h6>
+                                            <h6 className="text-sm font-medium text-gray-900">{subcategory?.name}</h6>
                                             {/* <p className="text-xs text-gray-500">/{subcategory.slug}</p> */}
                                           </div>
                                         </div>
@@ -403,13 +348,13 @@ export default function CategoriesPage() {
                                       </td> */}
                                       <td className="py-3 px-3">
                                         <button
-                                          onClick={() => toggleSubcategoryStatus(subcategory.id)}
-                                          className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(subcategory.status)}`}
+                                          onClick={() => toggleSubcategoryStatus(subcategory?.id)}
+                                          className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(subcategory?.status)}`}
                                         >
-                                          {subcategory.status==1?'Active':'Inactive'}
+                                          {subcategory?.status==1?'Active':'Inactive'}
                                         </button>
                                       </td>
-                                      <td className="py-3 px-3 text-sm text-gray-700">{subcategory.productsCount}</td>
+                                      <td className="py-3 px-3 text-sm text-gray-700">{subcategory?.productsCount}</td>
                                       <td className="py-3 px-3">
                                         <div className="flex items-center space-x-1">
                                           <button 
@@ -419,7 +364,7 @@ export default function CategoriesPage() {
                                             <i className="ri-edit-line text-sm"></i>
                                           </button>
                                           <button 
-                                            onClick={() => handleDeleteSubcategory(subcategory.id)}
+                                            onClick={() => handleDeleteSubcategory(subcategory?.id)}
                                             className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-red-600 cursor-pointer"
                                           >
                                             <i className="ri-delete-bin-line text-sm"></i>
@@ -431,7 +376,7 @@ export default function CategoriesPage() {
                                 </tbody>
                               </table>
                               
-                              {getSubcategoriesForCategory(category.id).length === 0 && (
+                              {getSubcategoriesForCategory(category?.id)?.length === 0 && (
                                 <div className="p-8 text-center text-gray-500">
                                   <i className="ri-folder-open-line text-3xl mb-2"></i>
                                   <p className="text-sm">No subcategories found</p>
@@ -472,9 +417,9 @@ export default function CategoriesPage() {
           }}
           onSave={(categoryData) => {
             if (showEditModal && selectedCategory) {
-              setCategories(prev => prev.map(cat => 
-                cat.id === selectedCategory.id ? { ...cat, ...categoryData } : cat
-              ));
+              // setCategories(prev => prev.map(cat => 
+              //   cat.id === selectedCategory.id ? { ...cat, ...categoryData } : cat
+              // ));
             } else {
               const newCategory = {
                 id: Date.now(),
@@ -482,7 +427,7 @@ export default function CategoriesPage() {
                 productsCount: 0,
                 ...categoryData
               };
-              setCategories(prev => [...prev, newCategory]);
+              // setCategories(prev => [...prev, newCategory]);
             }
             setShowAddModal(false);
             setShowEditModal(false);
@@ -516,11 +461,11 @@ export default function CategoriesPage() {
               setSubcategories(prev => [...prev, newSubcategory]);
               
               // Update category subcategories count
-              setCategories(prev => prev.map(cat => 
-                cat.id === subcategoryData.parentCategoryId 
-                  ? { ...cat, subcategories: cat.subcategories + 1 }
-                  : cat
-              ));
+              // setCategories(prev => prev.map(cat => 
+              //   cat.id === subcategoryData.parentCategoryId 
+              //     ? { ...cat, subcategories: cat.subcategories + 1 }
+              //     : cat
+              // ));
             }
             setShowSubcategoryModal(false);
             setSelectedSubcategory(null);
@@ -583,86 +528,88 @@ export default function CategoriesPage() {
 
 
 function CategoryModal({ category, onClose, onSave }) {
+   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    name: category?.name || '',
-    slug: category?.slug || '',
-    description: category?.description || '',
-    status: category?.status || 'Active',
-    image: category?.image || ''
+    name: category?.name || "",
+    status: category?.status || "Active",
+    image: null,
   });
 
-  const generateSlug = (name) => {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-  };
-
-  const handleNameChange = (value) => {
-    setFormData(prev => ({
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({
       ...prev,
-      name: value,
-      slug: generateSlug(value)
+      image: e.target.files[0], // Save file object
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("status", formData.status === "Active" ? 1 : 0);
+    if (formData.image) {
+      data.append("image", formData.image);
+    }
+
+    dispatch(createCategory(data)) // call API
+      .unwrap()
+      .then(() => {
+        dispatch(fetchAllCategories());
+        onClose();
+      })
+      .catch((err) => {
+        console.error("Failed to create category:", err);
+      });
   };
+
+const confirmDelete = () => {
+  if (categoryToDelete) {
+    dispatch(deleteCategory(categoryToDelete))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchAllCategories()); // refresh list
+        setShowDeleteConfirm(false);
+        setCategoryToDelete(null);
+      })
+      .catch(err => console.error("Delete failed:", err));
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          {category ? 'Edit Category' : 'Add New Category'}
+          {category ? "Edit Category" : "Add New Category"}
         </h3>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category Name
+            </label>
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="Enter category name"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
-            <input
-              type="text"
-              value={formData.slug}
-              onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              placeholder="category-slug"
-              required
-            />
-            <p className="text-xs text-gray-500 mt-1">Auto-generated from name or enter custom slug</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              rows={3}
-              maxLength={500}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
-              placeholder="Category description..."
-            />
-            <p className="text-xs text-gray-500 mt-1">{formData.description.length}/500 characters</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status
+            </label>
             <select
               value={formData.status}
-              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, status: e.target.value }))
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm"
             >
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
@@ -670,32 +617,30 @@ function CategoryModal({ category, onClose, onSave }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Category Image (Optional)</label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-              <i className="ri-image-add-line text-2xl text-gray-400 mb-2"></i>
-              <p className="text-sm text-gray-500">Upload category image</p>
-              <p className="text-xs text-gray-400">PNG, JPG up to 2MB</p>
-              <input
-                type="file"
-                accept="image/*"
-                className="mt-2 text-sm"
-              />
-            </div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-2 text-sm"
+            />
           </div>
 
           <div className="flex items-center justify-end space-x-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
-              {category ? 'Update' : 'Create'} Category
+              {category ? "Update" : "Create"} Category
             </button>
           </div>
         </form>
@@ -705,146 +650,138 @@ function CategoryModal({ category, onClose, onSave }) {
 }
 
 function SubcategoryModal({ subcategory, categories, onClose, onSave }) {
+   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    name: subcategory?.name || '',
-    slug: subcategory?.slug || '',
-    description: subcategory?.description || '',
-    status: subcategory?.status || 'Active',
-    image: subcategory?.image || '',
-    parentCategoryId: subcategory?.parentCategoryId || (categories.length > 0 ? categories[0].id : 0),
-    parentCategoryName: subcategory?.parentCategoryName || (categories.length > 0 ? categories[0].name : '')
+    name: subcategory?.name || "",
+    status: subcategory?.status === 1 ? "Active" : "Inactive",
+    image: null,
+    parentCategoryId: subcategory?.parentCategoryId || (categories[0]?.id || 0),
   });
 
-  const generateSlug = (name) => {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-  };
-
-  const handleNameChange = (value) => {
-    setFormData(prev => ({
+  // Handle file input
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({
       ...prev,
-      name: value,
-      slug: generateSlug(value)
-    }));
-  };
-
-  const handleParentCategoryChange = (categoryId) => {
-    const category = categories.find(cat => cat.id === categoryId);
-    setFormData(prev => ({
-      ...prev,
-      parentCategoryId: categoryId,
-      parentCategoryName: category?.name || ''
+      image: e.target.files[0], // Save file object
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+
+    const data = new FormData();
+    data.append("categoryId", formData.parentCategoryId);
+    data.append("name", formData.name);
+    data.append("status", formData.status === "Active" ? 1 : 0);
+    if (formData.image) {
+      data.append("image", formData.image);
+    }
+
+    // Dispatch API call
+    dispatch(createSubcategory(data))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchSubcategoryById(formData.parentCategoryId)); // refresh subcategories
+        onClose();
+      })
+      .catch((err) => {
+        console.error("Failed to create subcategory:", err);
+      });
   };
+
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          {subcategory && subcategory.id > 0 ? 'Edit Subcategory' : 'Add New Subcategory'}
+          {subcategory ? "Edit Subcategory" : "Add New Subcategory"}
         </h3>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Parent Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Parent Category</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Parent Category
+            </label>
             <select
               value={formData.parentCategoryId}
-              onChange={(e) => handleParentCategoryChange(Number(e.target.value))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8"
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  parentCategoryId: Number(e.target.value),
+                }))
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm"
               required
             >
-              {categories.map(category => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
+              {categories?.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
                 </option>
               ))}
             </select>
           </div>
 
+          {/* Subcategory Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Subcategory Name
+            </label>
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              placeholder="Enter subcategory name"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm"
               required
             />
           </div>
 
+          {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
-            <input
-              type="text"
-              value={formData.slug}
-              onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              placeholder="subcategory-slug"
-              required
-            />
-            <p className="text-xs text-gray-500 mt-1">Auto-generated from name or enter custom slug</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              rows={3}
-              maxLength={500}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
-              placeholder="Subcategory description..."
-            />
-            <p className="text-xs text-gray-500 mt-1">{formData.description.length}/500 characters</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status
+            </label>
             <select
               value={formData.status}
-              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, status: e.target.value }))
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm"
             >
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
             </select>
           </div>
 
+          {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory Image (Optional)</label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-              <i className="ri-image-add-line text-2xl text-gray-400 mb-2"></i>
-              <p className="text-sm text-gray-500">Upload subcategory image</p>
-              <p className="text-xs text-gray-400">PNG, JPG up to 2MB</p>
-              <input
-                type="file"
-                accept="image/*"
-                className="mt-2 text-sm"
-              />
-            </div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Subcategory Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-2 text-sm"
+            />
           </div>
 
+          {/* Buttons */}
           <div className="flex items-center justify-end space-x-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors whitespace-nowrap cursor-pointer"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
             >
-              {subcategory && subcategory.id > 0 ? 'Update' : 'Create'} Subcategory
+              {subcategory ? "Update" : "Create"} Subcategory
             </button>
           </div>
         </form>
