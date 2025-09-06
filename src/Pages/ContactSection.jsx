@@ -1,4 +1,4 @@
-import React from "react";
+import React , {useState} from "react";
 import { MapPin, Phone, Mail } from "lucide-react";
 import Contact from "../assets/contact.png";
 import women from "../assets/woman-hand.png";
@@ -8,6 +8,9 @@ import smiling_girl from "../assets/smilingwomen.png";
 import map from "../assets/map.png";
 import call from "../assets/call.png";
 import msg from "../assets/msg.png";
+import { useDispatch,useSelector } from "react-redux";
+import { createContact } from "../Redux/slices/contactSlice";
+
 
 const LocationIcon = () => (
   <svg
@@ -116,6 +119,27 @@ const ContactCard = ({ icon, bgImage, content }) => (
 );
 
 const ContactSection = () => {
+  const dispatch = useDispatch();
+  const { loading, successMessage, error } = useSelector((state) => state.contacts);
+
+  // Local form state
+  const [formData, setFormData] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    message: "",
+  });
+  // Handle input change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle form submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createContact(formData));
+    setFormData({ name: "", mobile: "", email: "", message: "" }); // reset form after submit
+  };
   return (
     <section className="w-full bg-white">
       {/* Header Section */}
@@ -186,59 +210,76 @@ const ContactSection = () => {
             Feel free to reach out for any inquiries or support; our team is
             here to help you.
           </p>
+ {/* Form */}
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-sm font-semibold text-[#1a214c] mb-1">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Naveena"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
+            />
+          </div>
 
-          <form className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-[#1a214c] mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                placeholder="Naveena"
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#1a214c] mb-1">
+              Mobile number
+            </label>
+            <input
+              type="text"
+              name="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+              placeholder="6360--------"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-[#1a214c] mb-1">
-                Mobile number
-              </label>
-              <input
-                type="text"
-                placeholder="6360--------"
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#1a214c] mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="naveen@gmail.com"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-[#1a214c] mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                placeholder="naveen@gmail.com"
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#1a214c] mb-1">
+              Message
+            </label>
+            <textarea
+              rows="4"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              placeholder="Type Here..."
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-[#1a214c] mb-1">
-                Message
-              </label>
-              <textarea
-                rows="4"
-                placeholder="Type Here..."
-                className="w-full px-4 py-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="bg-[#1a214c] text-white px-8 py-2 rounded font-semibold hover:bg-[#141936]"
-            >
-              SEND
-            </button>
-          </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-[#1a214c] text-white px-8 py-2 rounded font-semibold hover:bg-[#141936] disabled:opacity-50"
+          >
+            {loading ? "Sending..." : "SEND"}
+          </button>
+        </form>
         </div>
       </section>
     </section>

@@ -297,7 +297,7 @@ export default function UsersPage() {
                 />
               </div>
             </div>
-            <div className="flex gap-4">
+            {/* <div className="flex gap-4">
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
@@ -318,7 +318,7 @@ export default function UsersPage() {
                 <option value="Inactive">Inactive</option>
                 <option value="Suspended">Suspended</option>
               </select>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -361,7 +361,7 @@ export default function UsersPage() {
                         <div>
                           <div className="text-sm font-medium text-gray-900">{user?.name}</div>
                           <div className="text-sm text-gray-500">{user?.email}</div>
-                          <div className="text-xs text-gray-400">{user?.phone}</div>
+                          <div className="text-xs text-gray-400">{user?.mobileNumber}</div>
                         </div>
                       </div>
                     </td>
@@ -406,13 +406,13 @@ export default function UsersPage() {
                         >
                           <i className="ri-edit-line"></i>
                         </button>
-                        <Link
+                        {/* <Link
                           to={`/admin/users/${user?.id}`}
                           className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
                           title="View Details"
                         >
                           <i className="ri-eye-line"></i>
-                        </Link>
+                        </Link> */}
                         <button
                           onClick={() => openDeleteModal(user)}
                           className="w-8 h-8 flex items-center justify-center text-red-600 hover:bg-red-50 rounded-lg transition-colors"
@@ -437,7 +437,7 @@ export default function UsersPage() {
         </div>
 
         {/* Add User Modal */}
-        {showAddModal && (
+        {/* {showAddModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg max-w-md w-full p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New User</h3>
@@ -525,7 +525,7 @@ export default function UsersPage() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Edit User Modal */}
         {showEditModal && selectedUser && (

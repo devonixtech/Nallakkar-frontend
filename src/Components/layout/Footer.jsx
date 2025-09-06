@@ -31,21 +31,26 @@ const Footer = () => {
           </p>
           {/* Social Icons */}
           <div className="flex gap-3 text-lg">
-            <a href="#" aria-label="Facebook" className={hoverClasses}>
+            <a href="https://www.facebook.com/profile.php?id=61580089041886" aria-label="Facebook" className={hoverClasses}>
               <FaFacebookF />
             </a>
-            <a href="#" aria-label="X" className={hoverClasses}>
+            <a href="https://x.com/Nallakkar" aria-label="X" className={hoverClasses}>
               <FaXTwitter />
             </a>
-            <a href="#" aria-label="WhatsApp" className={hoverClasses}>
+            <a href="https://wa.me/message/XAW5HLMIHRG7M1" aria-label="WhatsApp" className={hoverClasses}>
               <FaWhatsapp />
             </a>
-            <a href="#" aria-label="Instagram" className={hoverClasses}>
+            <a href="https://www.instagram.com/nallakkar_official/" aria-label="Instagram" className={hoverClasses}>
               <FaInstagram />
             </a>
-            <a href="#" aria-label="Email" className={hoverClasses}>
-              <FaRegEnvelope />
-            </a>
+             <a 
+  href="mailto:connect@nallakkar.com" 
+  aria-label="Email" 
+  className={hoverClasses}
+>
+  <FaRegEnvelope />
+</a>
+
           </div>
         </div>
 
