@@ -649,46 +649,76 @@ const confirmDelete = () => {
   );
 }
 
-function SubcategoryModal({ subcategory, categories, onClose, onSave }) {
-   const dispatch = useDispatch();
+ function SubcategoryModal({ subcategory, categories, onClose }) {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
+    parentCategoryId: subcategory?.parentCategoryId || (categories?.[0]?.id ?? ""),
     name: subcategory?.name || "",
-    status: subcategory?.status === 1 ? "Active" : "Inactive",
+    status: subcategory?.status || "Active",
     image: null,
-    parentCategoryId: subcategory?.parentCategoryId || (categories[0]?.id || 0),
   });
 
-  // Handle file input
+  const [filters, setFilters] = useState(
+    subcategory?.filters
+      ? Object.entries(subcategory.filters).map(([key, values]) => ({
+          key,
+          values: values.join(", "),
+        }))
+      : []
+  );
+
+  // Add new filter row
+  const addFilter = () => {
+    setFilters([...filters, { key: "", values: "" }]);
+  };
+
+  // Update filter row
+  const updateFilter = (index, field, value) => {
+    const newFilters = [...filters];
+    newFilters[index][field] = value;
+    setFilters(newFilters);
+  };
+
+  // Remove filter row
+  const removeFilter = (index) => {
+    setFilters(filters.filter((_, i) => i !== index));
+  };
+
   const handleFileChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      image: e.target.files[0], // Save file object
-    }));
+    setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Convert filters to { key: [values] }
+    const filtersObject = {};
+    filters.forEach((f) => {
+      if (f.key && f.values) {
+        filtersObject[f.key] = f.values.split(",").map((v) => v.trim());
+      }
+    });
+
     const data = new FormData();
     data.append("categoryId", formData.parentCategoryId);
     data.append("name", formData.name);
     data.append("status", formData.status === "Active" ? 1 : 0);
+    data.append("filters", JSON.stringify(filtersObject));
+
     if (formData.image) {
       data.append("image", formData.image);
     }
 
-    // Dispatch API call
     dispatch(createSubcategory(data))
       .unwrap()
       .then(() => {
-        dispatch(fetchSubcategoryById(formData.parentCategoryId)); // refresh subcategories
+        dispatch(fetchSubcategoryById(formData.parentCategoryId));
         onClose();
       })
       .catch((err) => {
         console.error("Failed to create subcategory:", err);
       });
   };
-
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
@@ -755,7 +785,46 @@ function SubcategoryModal({ subcategory, categories, onClose, onSave }) {
             </select>
           </div>
 
-          {/* Image Upload */}
+          {/* Filters Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Filters
+            </label>
+            {filters.map((filter, index) => (
+              <div key={index} className="flex items-center gap-2 mb-2">
+                <input
+                  type="text"
+                  placeholder="Filter Name (e.g. gender)"
+                  value={filter.key}
+                  onChange={(e) => updateFilter(index, "key", e.target.value)}
+                  className="flex-1 px-3 py-2 border rounded text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="Values (comma separated)"
+                  value={filter.values}
+                  onChange={(e) => updateFilter(index, "values", e.target.value)}
+                  className="flex-1 px-3 py-2 border rounded text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeFilter(index)}
+                  className="text-red-600 hover:text-red-800"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addFilter}
+              className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
+            >
+              + Add Filter
+            </button>
+          </div>
+
+          {/* Image */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Subcategory Image
@@ -768,7 +837,6 @@ function SubcategoryModal({ subcategory, categories, onClose, onSave }) {
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex items-center justify-end space-x-3 pt-4">
             <button
               type="button"
@@ -779,7 +847,7 @@ function SubcategoryModal({ subcategory, categories, onClose, onSave }) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
               {subcategory ? "Update" : "Create"} Subcategory
             </button>
