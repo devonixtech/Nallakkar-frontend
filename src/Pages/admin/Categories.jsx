@@ -2,7 +2,7 @@
 
 import { useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
-import { fetchAllCategories , createCategory, deleteCategory} from '../../Redux/slices/categorySlice';
+import { fetchAllCategories , createCategory, deleteCategory,updateCategory} from '../../Redux/slices/categorySlice';
 import { useSelector , useDispatch } from "react-redux";
 import { fetchSubcategoryById , createSubcategory,deleteSubcategory , updateSubcategory} from '../../Redux/slices/subcategorySlice';
 export default function CategoriesPage() {
@@ -534,8 +534,8 @@ function CategoryModal({ category, onClose, onSave }) {
    const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: category?.name || "",
-    status: category?.status || "Active",
-    image: null,
+    status: category?.status || "0",
+    image: category?.image || null,
   });
 
   const handleFileChange = (e) => {
@@ -546,25 +546,36 @@ function CategoryModal({ category, onClose, onSave }) {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("status", formData.status === "Active" ? 1 : 0);
-    if (formData.image) {
-      data.append("image", formData.image);
-    }
+  const data = new FormData();
+  data.append("name", formData.name);
+  data.append("status", formData.status === "Active" ? 1 : 0);
+  if (formData.image) {
+    data.append("image", formData.image);
+  }
 
-    dispatch(createCategory(data)) // call API
+  if (category?.id) {
+    // ✅ Update existing category
+    dispatch(updateCategory({ id: category.id, data }))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchAllCategories()); // refresh
+        onClose();
+      })
+      .catch((err) => console.error("Failed to update category:", err));
+  } else {
+    // ✅ Create new category
+    dispatch(createCategory(data))
       .unwrap()
       .then(() => {
         dispatch(fetchAllCategories());
         onClose();
       })
-      .catch((err) => {
-        console.error("Failed to create category:", err);
-      });
-  };
+      .catch((err) => console.error("Failed to create category:", err));
+  }
+};
+
 
 const confirmDelete = () => {
   if (categoryToDelete) {
