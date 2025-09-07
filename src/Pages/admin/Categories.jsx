@@ -4,7 +4,7 @@ import { useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { fetchAllCategories , createCategory, deleteCategory} from '../../Redux/slices/categorySlice';
 import { useSelector , useDispatch } from "react-redux";
-import { fetchSubcategoryById , createSubcategory } from '../../Redux/slices/subcategorySlice';
+import { fetchSubcategoryById , createSubcategory,deleteSubcategory , updateSubcategory} from '../../Redux/slices/subcategorySlice';
 export default function CategoriesPage() {
   const dispatch = useDispatch();
    useEffect(()=>{
@@ -16,14 +16,14 @@ export default function CategoriesPage() {
   
 
   const [subcategories, setSubcategories] = useState([
-    { id: 1, name: 'Smartphones', slug: 'smartphones', description: 'Mobile phones and accessories', status: 'Active', parentCategoryId: 1, parentCategoryName: 'Electronics', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=smartphone%20subcategory%20icon%20modern%20mobile%20phone%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub1&orientation=squarish' },
-    { id: 2, name: 'Laptops', slug: 'laptops', description: 'Portable computers and notebooks', status: 'Active', parentCategoryId: 1, parentCategoryName: 'Electronics', productsCount: 8, image: 'https://readdy.ai/api/search-image?query=laptop%20subcategory%20icon%20modern%20notebook%20computer%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub2&orientation=squarish' },
-    { id: 3, name: 'Headphones', slug: 'headphones', description: 'Audio devices and earphones', status: 'Active', parentCategoryId: 1, parentCategoryName: 'Electronics', productsCount: 15, image: 'https://readdy.ai/api/search-image?query=headphones%20subcategory%20icon%20modern%20audio%20device%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub3&orientation=squarish' },
-    { id: 4, name: 'Tablets', slug: 'tablets', description: 'Tablet computers and accessories', status: 'Inactive', parentCategoryId: 1, parentCategoryName: 'Electronics', productsCount: 6, image: 'https://readdy.ai/api/search-image?query=tablet%20subcategory%20icon%20modern%20tablet%20device%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub4&orientation=squarish' },
-    { id: 5, name: 'Smart Watches', slug: 'smart-watches', description: 'Wearable technology devices', status: 'Active', parentCategoryId: 1, parentCategoryName: 'Electronics', productsCount: 9, image: 'https://readdy.ai/api/search-image?query=smartwatch%20subcategory%20icon%20modern%20wearable%20device%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub5&orientation=squarish' },
-    { id: 6, name: 'Phone Cases', slug: 'phone-cases', description: 'Protective cases for smartphones', status: 'Active', parentCategoryId: 2, parentCategoryName: 'Accessories', productsCount: 25, image: 'https://readdy.ai/api/search-image?query=phone%20case%20subcategory%20icon%20protective%20smartphone%20cover%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub6&orientation=squarish' },
-    { id: 7, name: 'Cables', slug: 'cables', description: 'Charging and data cables', status: 'Active', parentCategoryId: 2, parentCategoryName: 'Accessories', productsCount: 18, image: 'https://readdy.ai/api/search-image?query=cable%20subcategory%20icon%20charging%20data%20cord%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub7&orientation=squarish' },
-    { id: 8, name: 'Chargers', slug: 'chargers', description: 'Power adapters and wireless chargers', status: 'Active', parentCategoryId: 2, parentCategoryName: 'Accessories', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=charger%20subcategory%20icon%20power%20adapter%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub8&orientation=squarish' }
+    { id: 1, name: 'Smartphones', slug: 'smartphones', description: 'Mobile phones and accessories', status: 'Active', categoryId: 1, parentCategoryName: 'Electronics', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=smartphone%20subcategory%20icon%20modern%20mobile%20phone%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub1&orientation=squarish' },
+    { id: 2, name: 'Laptops', slug: 'laptops', description: 'Portable computers and notebooks', status: 'Active', categoryId: 1, parentCategoryName: 'Electronics', productsCount: 8, image: 'https://readdy.ai/api/search-image?query=laptop%20subcategory%20icon%20modern%20notebook%20computer%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub2&orientation=squarish' },
+    { id: 3, name: 'Headphones', slug: 'headphones', description: 'Audio devices and earphones', status: 'Active', categoryId: 1, parentCategoryName: 'Electronics', productsCount: 15, image: 'https://readdy.ai/api/search-image?query=headphones%20subcategory%20icon%20modern%20audio%20device%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub3&orientation=squarish' },
+    { id: 4, name: 'Tablets', slug: 'tablets', description: 'Tablet computers and accessories', status: 'Inactive', categoryId: 1, parentCategoryName: 'Electronics', productsCount: 6, image: 'https://readdy.ai/api/search-image?query=tablet%20subcategory%20icon%20modern%20tablet%20device%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub4&orientation=squarish' },
+    { id: 5, name: 'Smart Watches', slug: 'smart-watches', description: 'Wearable technology devices', status: 'Active', categoryId: 1, parentCategoryName: 'Electronics', productsCount: 9, image: 'https://readdy.ai/api/search-image?query=smartwatch%20subcategory%20icon%20modern%20wearable%20device%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub5&orientation=squarish' },
+    { id: 6, name: 'Phone Cases', slug: 'phone-cases', description: 'Protective cases for smartphones', status: 'Active', categoryId: 2, parentCategoryName: 'Accessories', productsCount: 25, image: 'https://readdy.ai/api/search-image?query=phone%20case%20subcategory%20icon%20protective%20smartphone%20cover%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub6&orientation=squarish' },
+    { id: 7, name: 'Cables', slug: 'cables', description: 'Charging and data cables', status: 'Active', categoryId: 2, parentCategoryName: 'Accessories', productsCount: 18, image: 'https://readdy.ai/api/search-image?query=cable%20subcategory%20icon%20charging%20data%20cord%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub7&orientation=squarish' },
+    { id: 8, name: 'Chargers', slug: 'chargers', description: 'Power adapters and wireless chargers', status: 'Active', categoryId: 2, parentCategoryName: 'Accessories', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=charger%20subcategory%20icon%20power%20adapter%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub8&orientation=squarish' }
   ]);
     
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,6 +42,7 @@ export default function CategoriesPage() {
   const [subcategoryToDelete, setSubcategoryToDelete] = useState(null);
   const [subcategorySearchTerm, setSubcategorySearchTerm] = useState('');
   const [subcategoryStatusFilter, setSubcategoryStatusFilter] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
   const filteredCategories = categories?.filter(category => {
     const matchesSearch = category?.name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -89,8 +90,17 @@ export default function CategoriesPage() {
   };
 
   const handleDeleteSubcategory = (id) => {
-    setSubcategoryToDelete(id);
-    setShowSubcategoryDeleteConfirm(true);
+    if (window.confirm("Are you sure you want to delete this subcategory?")) {
+    dispatch(deleteSubcategory(id))
+      .unwrap()
+      .then(() => {
+        // ✅ refresh subcategory list after delete
+        dispatch(fetchSubcategoryById(selectedCategoryId));
+      })
+      .catch((err) => {
+        console.error("Delete failed:", err);
+      });
+  }
   };
 
   const confirmDelete = () => {
@@ -109,7 +119,7 @@ export default function CategoriesPage() {
       const deletedSub = subcategories.find(sub => sub.id === subcategoryToDelete);
       if (deletedSub) {
         // setCategories(prev => prev.map(cat => 
-        //   cat.id === deletedSub.parentCategoryId 
+        //   cat.id === deletedSub.categoryId 
         //     ? { ...cat, subcategories: cat.subcategories - 1 }
         //     : cat
         // ));
@@ -120,6 +130,7 @@ export default function CategoriesPage() {
   };
   
     const toggleSubcategories = (categoryId) => {
+    setSelectedCategoryId(categoryId);
     if (!expandedRows.includes(categoryId)) {
       dispatch(fetchSubcategoryById(categoryId));
     }
@@ -136,6 +147,7 @@ export default function CategoriesPage() {
       ? 'bg-green-100 text-green-800'
       : 'bg-red-100 text-red-800';
   };
+   
   
   return (
     <>
@@ -274,17 +286,8 @@ export default function CategoriesPage() {
                               <h5 className="text-sm font-medium text-gray-700">Subcategories for {category?.name}</h5>
                               <button
                                 onClick={() => {
-                                  setSelectedSubcategory({
-                                    id: 0,
-                                    name: '',
-                                    slug: '',
-                                    description: '',
-                                    status: 'Active',
-                                    parentCategoryId: category?.id,
-                                    parentCategoryName: category?.name,
-                                    productsCount: 0
-                                  });
-                                  setShowSubcategoryModal(true);
+                                    setSelectedSubcategory(null);
+                setShowSubcategoryModal(true);
                                 }}
                                 className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition-colors flex items-center text-sm cursor-pointer"
                               >
@@ -462,7 +465,7 @@ export default function CategoriesPage() {
               
               // Update category subcategories count
               // setCategories(prev => prev.map(cat => 
-              //   cat.id === subcategoryData.parentCategoryId 
+              //   cat.id === subcategoryData.categoryId 
               //     ? { ...cat, subcategories: cat.subcategories + 1 }
               //     : cat
               // ));
@@ -651,10 +654,11 @@ const confirmDelete = () => {
 
  function SubcategoryModal({ subcategory, categories, onClose }) {
   const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
-    parentCategoryId: subcategory?.parentCategoryId || (categories?.[0]?.id ?? ""),
+    categoryId: subcategory?.categoryId || (categories?.[0]?.id ?? ""),
     name: subcategory?.name || "",
-    status: subcategory?.status || "Active",
+    status: subcategory?.status === 1 || subcategory?.status === "Active" ? "Active" : "Inactive",
     image: null,
   });
 
@@ -668,9 +672,7 @@ const confirmDelete = () => {
   );
 
   // Add new filter row
-  const addFilter = () => {
-    setFilters([...filters, { key: "", values: "" }]);
-  };
+  const addFilter = () => setFilters([...filters, { key: "", values: "" }]);
 
   // Update filter row
   const updateFilter = (index, field, value) => {
@@ -691,7 +693,7 @@ const confirmDelete = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Convert filters to { key: [values] }
+    // Convert filters to object { key: [values] }
     const filtersObject = {};
     filters.forEach((f) => {
       if (f.key && f.values) {
@@ -700,7 +702,7 @@ const confirmDelete = () => {
     });
 
     const data = new FormData();
-    data.append("categoryId", formData.parentCategoryId);
+    data.append("categoryId", formData.categoryId);
     data.append("name", formData.name);
     data.append("status", formData.status === "Active" ? 1 : 0);
     data.append("filters", JSON.stringify(filtersObject));
@@ -709,15 +711,25 @@ const confirmDelete = () => {
       data.append("image", formData.image);
     }
 
-    dispatch(createSubcategory(data))
-      .unwrap()
-      .then(() => {
-        dispatch(fetchSubcategoryById(formData.parentCategoryId));
-        onClose();
-      })
-      .catch((err) => {
-        console.error("Failed to create subcategory:", err);
-      });
+    // ✅ If editing, call updateSubcategory, else create
+    if (subcategory) {
+      data.append("id", subcategory.id); // assuming backend expects id
+      dispatch(updateSubcategory({ id: subcategory.id, data }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchSubcategoryById(formData.categoryId));
+          onClose();
+        })
+        .catch((err) => console.error("Failed to update subcategory:", err));
+    } else {
+      dispatch(createSubcategory(data))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchSubcategoryById(formData.categoryId));
+          onClose();
+        })
+        .catch((err) => console.error("Failed to create subcategory:", err));
+    }
   };
 
   return (
@@ -734,11 +746,11 @@ const confirmDelete = () => {
               Parent Category
             </label>
             <select
-              value={formData.parentCategoryId}
+              value={formData.categoryId}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
-                  parentCategoryId: Number(e.target.value),
+                  categoryId: Number(e.target.value),
                 }))
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm"
@@ -837,6 +849,7 @@ const confirmDelete = () => {
             />
           </div>
 
+          {/* Actions */}
           <div className="flex items-center justify-end space-x-3 pt-4">
             <button
               type="button"
@@ -857,3 +870,4 @@ const confirmDelete = () => {
     </div>
   );
 }
+

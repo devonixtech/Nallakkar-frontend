@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/subCategory";
 
 // ✅ Create subcategory
-export const    createSubcategory = createAsyncThunk(
+export const createSubcategory = createAsyncThunk(
   "subcategories/create",
   async (subcategoryData, { rejectWithValue }) => {
     try {
@@ -29,7 +29,7 @@ export const fetchAllSubcategories = createAsyncThunk(
   }
 );
 
-// ✅ Get subcategory by ID
+// ✅ Get subcategory by Category ID
 export const fetchSubcategoryById = createAsyncThunk(
   "subcategories/fetchById",
   async (id, { rejectWithValue }) => {
@@ -37,7 +37,10 @@ export const fetchSubcategoryById = createAsyncThunk(
       const res = await api.get(`${BASE_URL}/getSubCategoryByCategoryId/${id}`);
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
+      return rejectWithValue({
+        status: err.response?.status,
+        message: err.response?.data || err.message,
+      });
     }
   }
 );
@@ -47,7 +50,7 @@ export const updateSubcategory = createAsyncThunk(
   "subcategories/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`${BASE_URL}/${id}`, data);
+      const res = await api.patch(`${BASE_URL}/updateSubCategory/${id}`, data);
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -60,7 +63,7 @@ export const deleteSubcategory = createAsyncThunk(
   "subcategories/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`${BASE_URL}/${id}`);
+      await api.delete(`${BASE_URL}/deleteSubCategory/${id}`);
       return id;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -73,11 +76,15 @@ const subcategorySlice = createSlice({
   name: "subcategories",
   initialState: {
     subcategories: [],
-    subcategoryData: null,
+    subcategoryData: { data: [] }, // ✅ ensure it's always an object with array
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearSubcategories: (state) => {
+      state.subcategoryData = { data: [] };
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Create
@@ -119,7 +126,12 @@ const subcategorySlice = createSlice({
       })
       .addCase(fetchSubcategoryById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        // ✅ if 404 → clear instead of keeping old data
+        if (action.payload?.status === 404) {
+          state.subcategoryData = { data: [] };
+        } else {
+          state.error = action.payload;
+        }
       })
 
       // Update
@@ -148,6 +160,11 @@ const subcategorySlice = createSlice({
         state.subcategories = state.subcategories.filter(
           (s) => s._id !== action.payload
         );
+
+        // ✅ also clear subcategoryData if nothing left
+        if (state.subcategories.length === 0) {
+          state.subcategoryData = { data: [] };
+        }
       })
       .addCase(deleteSubcategory.rejected, (state, action) => {
         state.loading = false;
@@ -156,4 +173,5 @@ const subcategorySlice = createSlice({
   },
 });
 
+export const { clearSubcategories } = subcategorySlice.actions;
 export default subcategorySlice.reducer;
