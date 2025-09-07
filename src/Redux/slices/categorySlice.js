@@ -42,18 +42,23 @@ export const fetchCategoryById = createAsyncThunk(
   }
 );
 
-// ✅ Update category
+ // ✅ Update category
 export const updateCategory = createAsyncThunk(
   "categories/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`${BASE_URL}/${id}`, data);
+      const res = await api.patch(`${BASE_URL}/updateCategory/${id}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
 
 // ✅ Delete category
 export const deleteCategory = createAsyncThunk(
