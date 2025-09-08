@@ -50,6 +50,7 @@ import WriteReview from "../Pages/WriteReview";
 import WomenWrapper from "../Pages/Categories/WomenWrapper";
 import ToyWrapper from "../Pages/Categories/ToyWrapper";
 import HomeDecorWrapper from "../Pages/Categories/HomeDecorWrapper";
+import ContactPage from "../Pages/admin/ContactPage";
 
 export default function AppRoutes() {
   return (
@@ -78,7 +79,7 @@ export default function AppRoutes() {
 
       {/* ✅ Main user routes (with CategoryNavbar) */}
       <Route element={<MainLayout />}>
-        <Route path="/MainHome" element={<MainHome></MainHome>}></Route>
+        <Route path="/MainHome" element={<Home></Home>}></Route>
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/category/kids" element={<KidsWrapper />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
@@ -126,6 +127,7 @@ export default function AppRoutes() {
         <Route path="orders" element={<Orders />} />
         <Route path="users" element={<Users />} />
         <Route path="categories" element={<Categories></Categories>}></Route>
+        <Route path="Inquiries" element={<ContactPage></ContactPage>}></Route>
         <Route
           path="categories/add"
           element={<AddCategory></AddCategory>}

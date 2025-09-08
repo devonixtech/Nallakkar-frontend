@@ -31,6 +31,12 @@ export default function Sidebar({ isOpen, onClose }) {
       icon: LayoutDashboard,
       href: "/admin/dashboard",
     },
+     {
+      id: "Inquiries",
+      label: "Inquiries",
+      icon: LayoutDashboard,
+      href: "/admin/Inquiries",
+    },
     {
       id: "products",
       label: "Products",
