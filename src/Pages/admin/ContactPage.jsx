@@ -129,6 +129,7 @@ const ViewInquiryModal = ({ isOpen, onClose, inquiry }) => {
                 <p className="text-sm text-gray-500">Email</p>
                 <p className="font-semibold text-gray-800">{inquiry?.email}</p>
             </div>
+            <br/>
             <div>
                 <p className="text-sm text-gray-500">Phone</p>
                 <p className="font-semibold text-gray-800">{inquiry?.mobile}</p>
@@ -172,13 +173,14 @@ const DeleteInquiryModal = ({ isOpen, onClose, onConfirm, inquiry }) => {
           </div>
         </div>
         <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-          <button
-            type="button"
-            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
-            onClick={() => onConfirm(inquiry.id)}
-          >
-            Delete Inquiry
-          </button>
+           <button
+  type="button"
+  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
+  onClick={() => onConfirm(inquiry?.id)}
+>
+  Delete Inquiry
+</button>
+
           <button
             type="button"
             className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm"
@@ -279,10 +281,16 @@ const InquiriesPage = () => {
   //   handleCloseModals();
   // };
 
-  const handleDeleteInquiry = (id) => {
-    setInquiries(inquiries.filter(i => i.id !== id));
+   const handleDeleteInquiry = async (id) => {
+  try {
+    await dispatch(deleteContact(id)).unwrap();
+    dispatch(fetchAllContacts());
     handleCloseModals();
-  };
+  } catch (err) {
+    console.error("Failed to delete inquiry:", err);
+  }
+};
+
 
   // --- Render ---
   return (
