@@ -1,11 +1,69 @@
-import React from "react";
+ import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import axios from "axios";
+import { BASE_URL } from "../../config";
+const SignupForm = ({ switchToLogin }) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    mobileNumber: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-const SignupForm = ({ switchToLogin, goToSuccess }) => {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  // ✅ Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setMessage("Passwords do not match ❌");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage("");
+
+      // ✅ Send as FormData
+      const data = new FormData();
+      data.append("email", formData.email);
+      data.append("mobileNumber", formData.mobileNumber);
+      data.append("password", formData.password);
+
+      const res = await axios.post(
+        `${BASE_URL}user/signUp`,
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      setMessage("Signup successful ✅");
+      setFormData({
+        email: "",
+        mobileNumber: "",
+        password: "",
+        confirmPassword: "",
+      });
+
+      // Auto-switch to login after 2s (optional)
+      setTimeout(() => {
+        switchToLogin();
+      }, 2000);
+    } catch (error) {
+      setMessage(
+        error.response?.data?.message || "Something went wrong ❌"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full">
-      {/* Heading */}
       <h2 className="text-[37px] font-semibold text-center text-primary leading-tight">
         Create an account
       </h2>
@@ -14,50 +72,73 @@ const SignupForm = ({ switchToLogin, goToSuccess }) => {
       </p>
 
       {/* Form */}
-      <form className="space-y-2">
+      <form className="space-y-2" onSubmit={handleSubmit}>
         <input
           type="email"
           placeholder="Enter your Email"
-          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2 focus:outline-none placeholder-primary placeholder:opacity-[55%]"
+          value={formData.email}
+          onChange={(e) =>
+            setFormData({ ...formData, email: e.target.value })
+          }
+          required
+          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2"
         />
         <input
           type="text"
           placeholder="Mobile number"
-          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2 focus:outline-none placeholder-primary placeholder:opacity-[55%]"
+          value={formData.mobileNumber}
+          onChange={(e) =>
+            setFormData({ ...formData, mobileNumber: e.target.value })
+          }
+          required
+          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2"
         />
         <input
           type="password"
           placeholder="Create a Password"
-          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2 focus:outline-none placeholder-primary placeholder:opacity-[55%]"
+          value={formData.password}
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
+          required
+          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2"
         />
         <input
           type="password"
           placeholder="Confirm Password"
-          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2 focus:outline-none placeholder-primary placeholder:opacity-[55%]"
+          value={formData.confirmPassword}
+          onChange={(e) =>
+            setFormData({ ...formData, confirmPassword: e.target.value })
+          }
+          required
+          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2"
         />
 
-        {/* Terms */}
         <p className="text-[13px]">
           By continuing you agree to Nallakkar's{" "}
           <span className="text-red-500 cursor-pointer">Terms of Use</span> and{" "}
           <span className="text-red-500 cursor-pointer">Privacy Policy</span>
         </p>
 
-        {/* Submit Button */}
         <button
-          onClick={goToSuccess}
-          className="w-full bg-primary text-[24px] text-white py-2 hover:bg-rose"
+          type="submit"
+          disabled={loading}
+          className="w-full bg-primary text-[24px] text-white py-2 hover:bg-rose disabled:opacity-50"
         >
-          Sign Up
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </form>
 
-      {/* Social Buttons */}
+      {message && (
+        <p className="text-center mt-3 text-sm text-red-500">{message}</p>
+      )}
+
+      {/* Social Login */}
       <div className="flex gap-3 mt-4">
-        <button className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
+        <button className="flex items-center justify-center gap-2 rounded-md border py-2 px-4 flex-1 bg-white shadow-md">
           <FcGoogle size={20} /> Google
         </button>
-        <button className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
+        <button className="flex items-center justify-center gap-2 rounded-md border py-2 px-4 flex-1 bg-white shadow-md">
           <FaFacebook size={20} className="text-[#1877F2]" /> Facebook
         </button>
       </div>
