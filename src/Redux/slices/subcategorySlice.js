@@ -28,9 +28,25 @@ export const fetchAllSubcategories = createAsyncThunk(
     }
   }
 );
+// ✅ Get subcategory by Subcategory ID
+export const fetchSubcategoryById = createAsyncThunk(
+  "subcategories/fetchSingle",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`${BASE_URL}/subcategory/${id}`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue({
+        status: err.response?.status,  
+        message: err.response?.data || err.message,
+      });
+    }
+  }
+);
+
 
 // ✅ Get subcategory by Category ID
-export const fetchSubcategoryById = createAsyncThunk(
+export const fetchSubcategoryBycategoryId = createAsyncThunk(
   "subcategories/fetchById",
   async (id, { rejectWithValue }) => {
     try {
@@ -72,11 +88,12 @@ export const deleteSubcategory = createAsyncThunk(
 );
 
 // 🔽 Slice
+ // 🔽 Slice
 const subcategorySlice = createSlice({
   name: "subcategories",
   initialState: {
     subcategories: [],
-    subcategoryData: { data: [] }, // ✅ ensure it's always an object with array
+    subcategoryData: { data: [] }, // ✅ keep consistent shape
     loading: false,
     error: null,
   },
@@ -115,18 +132,35 @@ const subcategorySlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch by ID
+      // Fetch by Category ID
+      .addCase(fetchSubcategoryBycategoryId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSubcategoryBycategoryId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.subcategoryData = action.payload;
+      })
+      .addCase(fetchSubcategoryBycategoryId.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload?.status === 404) {
+          state.subcategoryData = { data: [] };
+        } else {
+          state.error = action.payload;
+        }
+      })
+
+      // ✅ Fetch single subcategory by ID
       .addCase(fetchSubcategoryById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchSubcategoryById.fulfilled, (state, action) => {
         state.loading = false;
-        state.subcategoryData = action.payload;
+        state.subcategoryData = action.payload; // ✅ overwrite with single subcategory
       })
       .addCase(fetchSubcategoryById.rejected, (state, action) => {
         state.loading = false;
-        // ✅ if 404 → clear instead of keeping old data
         if (action.payload?.status === 404) {
           state.subcategoryData = { data: [] };
         } else {
@@ -161,7 +195,6 @@ const subcategorySlice = createSlice({
           (s) => s._id !== action.payload
         );
 
-        // ✅ also clear subcategoryData if nothing left
         if (state.subcategories.length === 0) {
           state.subcategoryData = { data: [] };
         }
@@ -172,6 +205,7 @@ const subcategorySlice = createSlice({
       });
   },
 });
+
 
 export const { clearSubcategories } = subcategorySlice.actions;
 export default subcategorySlice.reducer;

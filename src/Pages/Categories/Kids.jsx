@@ -14,8 +14,8 @@ import infant from "../../assets/infant.png";
 import toy from "../../assets/access.png";
 import access from "../../assets/toy.png";
 import { Link } from "react-router-dom";
-import { useSelector , useDispatch } from "react-redux";
-import { fetchSubcategoryById } from "../../Redux/slices/subcategorySlice";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSubcategoryBycategoryId, fetchSubcategoryById } from "../../Redux/slices/subcategorySlice";
 const products = [
   {
     title: "Men Regular Fit Self Design Light Shirt",
@@ -105,7 +105,10 @@ const colorsData = [
 const CategoryPill = ({ name, img, isSelected, onClick }) => (
   <div
     className="text-center flex-shrink-0 cursor-pointer"
-    onClick={() => onClick(name)}
+    onClick={() => onClick(name)
+
+
+    }
   >
     <div className="relative w-40 h-24 mx-auto rounded-full overflow-hidden">
       <img src={img} alt={name} className="w-full h-full object-cover" />
@@ -117,9 +120,8 @@ const CategoryPill = ({ name, img, isSelected, onClick }) => (
       )}
     </div>
     <p
-      className={`mt-2 text-sm font-semibold ${
-        isSelected ? "bg-opacity-35" : "text-gray-700"
-      }`}
+      className={`mt-2 text-sm font-semibold ${isSelected ? "bg-opacity-35" : "text-gray-700"
+        }`}
     >
       {name}
     </p>
@@ -213,6 +215,8 @@ export default function ProductListingPage() {
   const [selectedCategory, setSelectedCategory] = useState("Girl");
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(null);
+
 
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
@@ -223,12 +227,23 @@ export default function ProductListingPage() {
   };
   const dispatch = useDispatch();
   const selectedCategoryId = localStorage.getItem("selectedCategoryId");
-  useEffect(()=>{
-    dispatch(fetchSubcategoryById(selectedCategoryId));
-  },[dispatch])
-  const subcategory  =  useSelector((state) => state?.subcategory
-  ?.subcategoryData?.data);
-  console.log("sub",subcategory);
+  useEffect(() => {
+    dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
+  }, [dispatch])
+  useEffect(() => {
+    if (selectedSubcategoryId) {
+      dispatch(fetchSubcategoryById(selectedSubcategoryId));
+    }
+  }, [dispatch, selectedSubcategoryId]);
+
+  const subcategory = useSelector((state) => state?.subcategory
+    ?.subcategoryData?.data);
+  console.log("sub", subcategory);
+    const subcategoryById = useSelector((state) => state.subcategory.subcategoryById);
+  console.log("subcategoryById", subcategoryById);
+  const filters = subcategoryById?.filters || {};
+
+
   return (
     <div className="bg-[#FCFCFC] font-sans">
       <div
@@ -242,12 +257,16 @@ export default function ProductListingPage() {
           <div className="flex gap-8 overflow-x-auto pb-4 -mx-4 px-4 lg:px-[10rem] hide-scrollbar pt-0 lg:pt-0 md:pt-16">
             {subcategory?.map((cat) => (
               <CategoryPill
-                key={cat.name}
-                img = {cat?.image[0]}
+                key={cat?.name}
+                img={cat?.image[0]}
                 {...cat}
-                isSelected={selectedCategory === cat.name}
-                onClick={setSelectedCategory}
+                isSelected={selectedCategory === cat?.name}
+                onClick={() => {
+                  setSelectedCategory(cat?.subCategoryName);
+                  setSelectedSubcategoryId(cat?.id);
+                }}
               />
+
             ))}
           </div>
         </div>
@@ -265,39 +284,17 @@ export default function ProductListingPage() {
                 </button>
               </div>
               <div className="max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar pr-2">
-                <FilterSection title="Gender" defaultOpen>
-                  <Checkbox label="Girl" />
-                </FilterSection>
+                {/* Dynamic Filters */}
+                {Object?.entries(filters)?.map(([filterName, filterValues]) => (
+                  <FilterSection key={filterName} title={filterName} defaultOpen>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                      {filterValues.map((value) => (
+                        <Checkbox key={value} label={value} />
+                      ))}
+                    </div>
+                  </FilterSection>
+                ))}
 
-                <FilterSection title="Categories" defaultOpen>
-                  <Checkbox label="Frocks and gown" />
-                  <Checkbox label="Night suit" />
-                  <Checkbox label="Casual wear" />
-                  <button className="text-sm text-blue-500 hover:underline mt-2">
-                    View More
-                  </button>
-                </FilterSection>
-
-                <FilterSection title="Age" defaultOpen>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                    {[
-                      "0M - 3M",
-                      "6M - 9M",
-                      "9M - 12M",
-                      "12M - 18M",
-                      "18M - 24M",
-                      "2Y - 4Y",
-                      "4Y - 6Y",
-                      "6Y - 8Y",
-                      "8Y - 10Y",
-                      "10Y - 12Y",
-                      "12Y - 14Y+",
-                      "Newborn",
-                    ].map((age) => (
-                      <AgeCheckbox key={age} label={age} />
-                    ))}
-                  </div>
-                </FilterSection>
 
                 <FilterSection title="Pricing">
                   <div className="mt-2">
@@ -358,11 +355,10 @@ export default function ProductListingPage() {
               {products.map((item, index) => (
                 <div
                   key={index}
-                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
-                    activeCard === index
+                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
                       ? "shadow-xl scale-[1.02]"
                       : "hover:shadow-lg hover:-translate-y-1"
-                  }`}
+                    }`}
                   onMouseDown={() => setActiveCard(index)}
                   onMouseUp={() => setActiveCard(null)}
                   onMouseLeave={() => setActiveCard(null)}
@@ -373,11 +369,10 @@ export default function ProductListingPage() {
                       <img
                         src={item.image}
                         alt={item.title}
-                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                          activeCard === index
+                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
                             ? "scale-105"
                             : "group-hover:scale-105"
-                        }`}
+                          }`}
                       />
                     </Link>
 
@@ -419,11 +414,10 @@ export default function ProductListingPage() {
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
                     >
                       <Heart
-                        className={`w-5 h-5 transition-colors ${
-                          wishlist.includes(index)
+                        className={`w-5 h-5 transition-colors ${wishlist.includes(index)
                             ? "fill-rose text-rose"
                             : "text-white"
-                        }`}
+                          }`}
                         strokeWidth={2}
                       />
                     </button>

@@ -4,7 +4,7 @@ import { useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { fetchAllCategories , createCategory, deleteCategory,updateCategory} from '../../Redux/slices/categorySlice';
 import { useSelector , useDispatch } from "react-redux";
-import { fetchSubcategoryById , createSubcategory,deleteSubcategory , updateSubcategory} from '../../Redux/slices/subcategorySlice';
+import { fetchSubcategoryBycategoryId , createSubcategory,deleteSubcategory , updateSubcategory} from '../../Redux/slices/subcategorySlice';
 export default function CategoriesPage() {
   const dispatch = useDispatch();
    useEffect(()=>{
@@ -95,7 +95,7 @@ export default function CategoriesPage() {
       .unwrap()
       .then(() => {
         // ✅ refresh subcategory list after delete
-        dispatch(fetchSubcategoryById(selectedCategoryId));
+        dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
       })
       .catch((err) => {
         console.error("Delete failed:", err);
@@ -132,7 +132,7 @@ export default function CategoriesPage() {
     const toggleSubcategories = (categoryId) => {
     setSelectedCategoryId(categoryId);
     if (!expandedRows.includes(categoryId)) {
-      dispatch(fetchSubcategoryById(categoryId));
+      dispatch(fetchSubcategoryBycategoryId(categoryId));
     }
     setExpandedRows((prev) =>
       prev.includes(categoryId)
@@ -728,7 +728,7 @@ const confirmDelete = () => {
       dispatch(updateSubcategory({ id: subcategory.id, data }))
         .unwrap()
         .then(() => {
-          dispatch(fetchSubcategoryById(formData.categoryId));
+          dispatch(fetchSubcategoryBycategoryId(formData.categoryId));
           onClose();
         })
         .catch((err) => console.error("Failed to update subcategory:", err));
@@ -736,7 +736,7 @@ const confirmDelete = () => {
       dispatch(createSubcategory(data))
         .unwrap()
         .then(() => {
-          dispatch(fetchSubcategoryById(formData.categoryId));
+          dispatch(fetchSubcategoryBycategoryId(formData.categoryId));
           onClose();
         })
         .catch((err) => console.error("Failed to create subcategory:", err));
