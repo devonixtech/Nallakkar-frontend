@@ -15,49 +15,50 @@ import toy from "../../assets/access.png";
 import access from "../../assets/toy.png";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSubcategoryBycategoryId, fetchSubcategoryById } from "../../Redux/slices/subcategorySlice";
-const products = [
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: man,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: shoes,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: jacket,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: women,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: "₹ 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: doll,
-  },
-];
+import { fetchSubcategoryBycategoryId} from "../../Redux/slices/subcategorySlice";
+import { fetchAllProducts } from "../../Redux/slices/productSlice";
+// const products = [
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: "₹ 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: man,
+//   },
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: "₹ 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: shoes,
+//   },
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: "₹ 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: jacket,
+//   },
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: "₹ 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: women,
+//   },
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: "₹ 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: doll,
+//   },
+// ];
 
  
 
@@ -207,15 +208,15 @@ const [selectedFilters, setSelectedFilters] = useState({});
   useEffect(() => {
     dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
   }, [dispatch])
-
+  
   const subcategory = useSelector((state) => state?.subcategory
     ?.subcategoryData?.data);
-  console.log("sub", subcategory);
-    const subcategoryById = useSelector((state) => state.subcategory?.subcategoryData?.data?.filters || []
-);
-  console.log("subcategoryById", subcategoryById);
-  const filters = subcategoryById?.filters || {};
+const products = useSelector((state) => state?.products?.products);
 
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+console.log("products", products);
 
   return (
     <div className="bg-[#FCFCFC] font-sans">
@@ -342,7 +343,7 @@ const [selectedFilters, setSelectedFilters] = useState({});
                     <Link to={`/product/${item.id}`}>
                       {" "}
                       <img
-                        src={item.image}
+                        src={item.image[0]}
                         alt={item.title}
                         className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
                             ? "scale-105"
@@ -379,8 +380,8 @@ const [selectedFilters, setSelectedFilters] = useState({});
                     </Link>
 
                     {/* Rating */}
-                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                      <span>{item.rating}</span> • <span>{item.reviews}</span>
+                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-4">
+                      <span>{item?.rating}</span>  <span>{item?.reviewCount}</span>
                     </div>
 
                     {/* Heart Icon */}
@@ -411,7 +412,7 @@ const [selectedFilters, setSelectedFilters] = useState({});
                       {item.price}
                     </span>
                     <span className="text-gray-500 text-xs">
-                      {item.discount}
+                     (off {item.discount})
                     </span>
                   </div>
                 </div>
