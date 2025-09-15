@@ -1,4 +1,6 @@
 import React from "react";
+import { fetchUserById } from "../../Redux/slices/userSlice";
+import { useDispatch , useSelector} from "react-redux";
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
   const menuItems = [
@@ -8,7 +10,15 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     { name: "Settings" },
     { name: "Logout" },
   ];
-
+const dispatch = useDispatch();
+  const userId = localStorage.getItem("userId");
+   useEffect(() => {
+     if (2) {
+       dispatch(fetchUserById(2));
+     }
+   }, [dispatch]);
+   const userData = useSelector((state) => state?.user?.userData);
+    console.log("userdata",userData)
   return (
     <div className="w-1/4 bg-white p-4">
       <div className="flex flex-col items-center">
@@ -17,7 +27,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
           alt="profile"
           className="w-20 h-20 rounded-full"
         />
-        <h2 className="mt-2 font-semibold text-lg">Ankitha</h2>
+        <h2 className="mt-2 font-semibold text-lg">Ankitha1</h2>
         <span className="text-rose text-sm cursor-pointer">Edit Profile</span>
       </div>
 

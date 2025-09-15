@@ -1,20 +1,55 @@
-import { useState } from "react";
+ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [emailOrMobile, setEmailOrMobile] = useState("");
+  const [detectedType, setDetectedType] = useState(""); // "email" | "mobile"
+  const [loading, setLoading] = useState(false);
 
-  // Simulated login function
-  const handleLogin = (isAdmin) => {
-    // Future: API call here for login
+  // Detect email vs mobile
+  const handleChange = (value) => {
+    setEmailOrMobile(value);
 
-    if (isAdmin) {
-      navigate("/admin/dashboard"); // 🔐 Admin dashboard
+    if (/^\d{10}$/.test(value)) {
+      setDetectedType("mobile");
+    } else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setDetectedType("email");
     } else {
-      navigate("/user/dashboard"); // 👤 User dashboard or home
+      setDetectedType("");
+    }
+  };
+
+  // API call using axios
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+
+      let payload = {};
+      if (detectedType === "mobile") {
+        payload.emailOrMobile = `+91${emailOrMobile}`;
+      } else {
+        payload.emailOrMobile = emailOrMobile;
+      }
+
+      const res = await axios.post(
+        "https://nallkarbackend-production.up.railway.app/api/user/requestOtp",
+        payload
+      );
+
+      setLoading(false);
+
+      if (res.status === 200) {
+        alert("OTP sent successfully!");
+        navigate("/verify-otp", {
+          state: { emailOrMobile: payload.emailOrMobile },
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      alert(error.response?.data?.message || "Login failed");
     }
   };
 
@@ -30,39 +65,34 @@ const Login = () => {
 
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
             <div>
-              <label className="block text-sm font-medium mb-1">Email</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
+              <label className="block text-sm font-medium mb-1">
+                Email or Mobile
+              </label>
+              <div className="flex">
+                {detectedType === "mobile" && (
+                  <span className="px-3 py-2 border rounded-l bg-gray-100">
+                    +91
+                  </span>
+                )}
+                <input
+                  type="text"
+                  placeholder="Enter email or mobile"
+                  value={emailOrMobile}
+                  onChange={(e) => handleChange(e.target.value)}
+                  className={`w-full px-4 py-2 border ${
+                    detectedType === "mobile" ? "rounded-r" : "rounded"
+                  } focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                />
+              </div>
             </div>
 
             <button
-              onClick={() => handleLogin(false)}
-              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+              type="button"
+              onClick={handleLogin}
+              disabled={loading || !detectedType}
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
             >
-              Login as User
-            </button>
-
-            <button
-              onClick={() => handleLogin(true)}
-              className="w-full mt-2 bg-gray-800 text-white py-2 rounded hover:bg-gray-900 transition"
-            >
-              Login as Admin
+              {loading ? "Sending OTP..." : "Continue"}
             </button>
           </form>
         </div>

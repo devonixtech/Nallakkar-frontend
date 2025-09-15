@@ -1,25 +1,87 @@
-import React from "react";
-import { FcGoogle } from "react-icons/fc"; // Google icon (colorful)
+ import React, { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import axios from "axios";
+import { BASE_URL } from "../../config";
 
 const LoginForm = ({ switchToSignup, goToOtp }) => {
+  const [emailOrMobile, setEmailOrMobile] = useState("");
+  const [detectedType, setDetectedType] = useState(""); // "email" | "mobile"
+  const [loading, setLoading] = useState(false);
+
+  // Detect email vs mobile
+  const handleChange = (value) => {
+    setEmailOrMobile(value);
+
+    if (/^\d{10}$/.test(value)) {
+      setDetectedType("mobile");
+    } else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setDetectedType("email");
+    } else {
+      setDetectedType("");
+    }
+  };
+
+  // Request OTP API
+  const handleRequestOtp = async () => {
+    if (!detectedType) {
+      alert("Enter valid email or 10-digit mobile number");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const payload = {
+        emailOrMobile:
+          detectedType === "mobile" ? `+91${emailOrMobile}` : emailOrMobile,
+      };
+        localStorage.setItem("emailOrMobile", payload.emailOrMobile);
+      const res = await axios.post(
+        `${BASE_URL}user/requestOtp`,
+        payload
+      );
+
+      setLoading(false);
+
+      if (res.status === 200) {
+        alert("OTP sent successfully!");
+        goToOtp(payload.emailOrMobile); // Pass email/mobile to OTP screen
+      }
+    } catch (error) {
+      setLoading(false);
+      alert(error.response?.data?.message || "Failed to send OTP");
+    }
+  };
+
   return (
     <div>
       {/* Title */}
       <h2 className="text-[37px] font-bold text-center text-[#1a214c]">
         Welcome Back
       </h2>
-      <p className="text-[16px] mb-5 text-center text-primary">Please enter your details</p>
+      <p className="text-[16px] mb-5 text-center text-primary">
+        Please enter your details
+      </p>
 
       {/* Input */}
-      <input
-        type="text"
-        placeholder="Enter your Email/Mobile number"
-        className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2 focus:outline-none placeholder-primary placeholder:opacity-[55%]"
-      />
+      <div className="flex mb-2">
+        {detectedType === "mobile" && (
+          <span className="px-3 py-2 border rounded-l bg-gray-100">+91</span>
+        )}
+        <input
+          type="text"
+          placeholder="Enter your Email/Mobile number"
+          value={emailOrMobile}
+          onChange={(e) => handleChange(e.target.value)}
+          className={`w-full rounded-md p-2 shadow-md border-l-2 border-r-2 focus:outline-none placeholder-primary placeholder:opacity-[55%] ${
+            detectedType === "mobile" ? "rounded-r" : "rounded"
+          }`}
+        />
+      </div>
 
       {/* Terms */}
-      <p className="text-[13px] mb-4 mt-2">
+      <p className="text-[13px] mb-4">
         By continuing you agree to Nallakkar's{" "}
         <span className="text-red-500 cursor-pointer">Terms of Use</span> and{" "}
         <span className="text-red-500 cursor-pointer">Privacy Policy</span>
@@ -27,10 +89,11 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
 
       {/* Request OTP */}
       <button
-        onClick={goToOtp}
-        className="bg-primary text-white text-[24px] py-2 w-full font-medium hover:opacity-90 transition mb-4 hover:bg-rose"
+        onClick={handleRequestOtp}
+        disabled={loading || !detectedType}
+        className="bg-primary text-white text-[24px] py-2 w-full font-medium hover:opacity-90 transition mb-4 hover:bg-rose disabled:opacity-50"
       >
-        Request OTP
+        {loading ? "Sending OTP..." : "Request OTP"}
       </button>
 
       {/* OR divider */}

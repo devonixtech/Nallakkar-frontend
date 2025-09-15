@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
+import { fetchUserById } from "../Redux/slices/userSlice";
+import { useDispatch , useSelector} from "react-redux";
 
 const Sidebar = ({ activeView, setActiveView }) => {
   const isSettingsActive = ["settings", "languages"].includes(activeView);
-
+const dispatch = useDispatch();
+  const userId = localStorage.getItem("userId");
+   useEffect(() => {
+     if (2) {
+       dispatch(fetchUserById(2));
+     }
+   }, [dispatch]);
+   const userData = useSelector((state) => state?.users?.userData?.data);
+    console.log("userdata",userData)
   return (
     <div className="w-full md:w-1/4 p-6 md:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-gray-200">
       <img
@@ -12,7 +22,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
         className="w-20 h-20 md:w-24 md:h-24 rounded-full mb-2"
       />
       <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-3">
-        Ankitha
+        {userData?.name || "Name not found"}
       </h2>
 
       <div className="w-full space-y-2 md:space-y-3">
@@ -60,38 +70,45 @@ const Sidebar = ({ activeView, setActiveView }) => {
   );
 };
 
-const ProfileView = ({ onEditClick }) => (
-  <div className="flex-1 p-6 md:p-12">
-    <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 md:mb-8">
-      <div>
-        <h1 className="text-2xl font-bold text-primary inline-block">
-          Account
-          <div className="w-20 border-b-2 border-primary mt-1 mx-auto"></div>
-        </h1>
-      </div>
-      <button
-        onClick={onEditClick}
-        className="text-sm font-semibold text-red-500 mt-2 md:mt-0"
-      >
-        Edit Profile
-      </button>
-    </div>
+ const ProfileView = ({ onEditClick }) => {
+  const userData = useSelector((state) => state?.users?.userData?.data);
 
-    <div className="flex items-center">
-      <img
-        src="https://randomuser.me/api/portraits/women/82.jpg"
-        alt="Ankitha"
-        className="w-14 h-14 md:w-16 md:h-16 rounded-full"
-      />
-      <div className="ml-4">
-        <h3 className="text-base md:text-lg font-bold text-gray-800">
-          Ankitha
-        </h3>
-        <p className="text-gray-500 text-sm md:text-base">+91 63********7</p>
+  return (
+    <div className="flex-1 p-6 md:p-12">
+      <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 md:mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-primary inline-block">
+            Account
+            <div className="w-20 border-b-2 border-primary mt-1 mx-auto"></div>
+          </h1>
+        </div>
+        <button
+          onClick={onEditClick}
+          className="text-sm font-semibold text-red-500 mt-2 md:mt-0"
+        >
+          Edit Profile
+        </button>
+      </div>
+
+      <div className="flex items-center">
+        <img
+          src="https://randomuser.me/api/portraits/women/82.jpg"
+          alt={userData?.name || "User"}
+          className="w-14 h-14 md:w-16 md:h-16 rounded-full"
+        />
+        <div className="ml-4">
+          <h3 className="text-base md:text-lg font-bold text-gray-800">
+            {userData?.name || "Name not found"}
+          </h3>
+          <p className="text-gray-500 text-sm md:text-base">
+            {userData?.mobileNumber|| "+91 **********"}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
 
 const EditProfileView = ({ onGoBackClick }) => (
   <div className="flex-1 max-w-xl p-6 md:p-12">

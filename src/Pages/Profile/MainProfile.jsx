@@ -1,6 +1,16 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { fetchUserById } from "../../Redux/slices/userSlice";
+import { useDispatch , useSelector} from "react-redux";
 const MainProfile = ({ setActiveTab }) => {
+  const dispatch = useDispatch();
+  const userId = localStorage.getItem("userId");
+   useEffect(() => {
+     if (2) {
+       dispatch(fetchUserById(2));
+     }
+   }, [dispatch, userId]);
+   const userData = useSelector((state) => state?.user?.userData);
+    console.log(userData)
   return (
     <div className="w-3/4 bg-white p-6">
       <div className="flex justify-between">
@@ -20,7 +30,7 @@ const MainProfile = ({ setActiveTab }) => {
           className="w-14 h-14 rounded-full"
         />
         <div>
-          <h3 className="font-semibold">Ankitha</h3>
+          <h3 className="font-semibold">Ankitha1</h3>
           <p className="text-gray-500">+91 63********7</p>
         </div>
       </div>
