@@ -59,28 +59,7 @@ const products = [
   },
 ];
 
-const categories = [
-  {
-    name: "Girl",
-    img: girls,
-  },
-  {
-    name: "Boy",
-    img: boy,
-  },
-  {
-    name: "Infant",
-    img: infant,
-  },
-  {
-    name: "Toys",
-    img: toy,
-  },
-  {
-    name: "Accessories",
-    img: access,
-  },
-];
+ 
 
 const appliedFiltersData = [
   "Girl",
@@ -157,66 +136,64 @@ const Checkbox = ({ label }) => (
   </div>
 );
 
-const AgeCheckbox = ({ label }) => (
-  <div className="flex items-center">
-    <input
-      type="checkbox"
-      id={label}
-      className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
-    />
-    <label htmlFor={label} className="ml-2 text-sm text-gray-600">
-      {label}
-    </label>
-  </div>
-);
+// const AgeCheckbox = ({ label }) => (
+//   <div className="flex items-center">
+//     <input
+//       type="checkbox"
+//       id={label}
+//       className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+//     />
+//     <label htmlFor={label} className="ml-2 text-sm text-gray-600">
+//       {label}
+//     </label>
+//   </div>
+// );
 
-const ProductCard = ({ product }) => (
-  <div className="group">
-    <div className="relative w-full overflow-hidden">
-      <img
-        src={product.img}
-        alt={product.name}
-        className="w-full h-auto aspect-[3/4] object-cover rounded-md"
-      />
-      <div className="absolute top-2 right-2 p-1.5 bg-white bg-opacity-70 rounded-full cursor-pointer">
-        <FiHeart className="text-gray-600" />
-      </div>
-      {product.rating && (
-        <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm text-xs font-semibold flex items-center gap-1">
-          {product.rating} <span className="text-pink-500">|</span>{" "}
-          {product.reviews}
-        </div>
-      )}
-    </div>
-    <div className="mt-2 text-sm">
-      <p className="font-bold text-gray-800">{product.brand}</p>
-      <p className="text-gray-500 truncate">{product.name}</p>
-      <div className="flex items-center gap-2 mt-1">
-        <p className="font-bold text-gray-800">₹{product.price.toFixed(2)}</p>
-        {product.originalPrice && (
-          <p className="text-gray-400 line-through">
-            ₹{product.originalPrice.toFixed(2)}
-          </p>
-        )}
-        {product.discount && (
-          <p className="text-orange-400 font-semibold">
-            (off {product.discount}%)
-          </p>
-        )}
-      </div>
-    </div>
-  </div>
-);
+// const ProductCard = ({ product }) => (
+//   <div className="group">
+//     <div className="relative w-full overflow-hidden">
+//       <img
+//         src={product.img}
+//         alt={product.name}
+//         className="w-full h-auto aspect-[3/4] object-cover rounded-md"
+//       />
+//       <div className="absolute top-2 right-2 p-1.5 bg-white bg-opacity-70 rounded-full cursor-pointer">
+//         <FiHeart className="text-gray-600" />
+//       </div>
+//       {product.rating && (
+//         <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm text-xs font-semibold flex items-center gap-1">
+//           {product.rating} <span className="text-pink-500">|</span>{" "}
+//           {product.reviews}
+//         </div>
+//       )}
+//     </div>
+//     <div className="mt-2 text-sm">
+//       <p className="font-bold text-gray-800">{product.brand}</p>
+//       <p className="text-gray-500 truncate">{product.name}</p>
+//       <div className="flex items-center gap-2 mt-1">
+//         <p className="font-bold text-gray-800">₹{product.price.toFixed(2)}</p>
+//         {product.originalPrice && (
+//           <p className="text-gray-400 line-through">
+//             ₹{product.originalPrice.toFixed(2)}
+//           </p>
+//         )}
+//         {product.discount && (
+//           <p className="text-orange-400 font-semibold">
+//             (off {product.discount}%)
+//           </p>
+//         )}
+//       </div>
+//     </div>
+//   </div>
+// );
 
 // --- MAIN PAGE COMPONENT ---
 
 export default function ProductListingPage() {
-  // [NEW] State to track the selected category. 'Girl' is selected by default.
   const [selectedCategory, setSelectedCategory] = useState("Girl");
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
-  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(null);
-
+const [selectedFilters, setSelectedFilters] = useState({});
 
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
@@ -230,16 +207,12 @@ export default function ProductListingPage() {
   useEffect(() => {
     dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
   }, [dispatch])
-  useEffect(() => {
-    if (selectedSubcategoryId) {
-      dispatch(fetchSubcategoryById(selectedSubcategoryId));
-    }
-  }, [dispatch, selectedSubcategoryId]);
 
   const subcategory = useSelector((state) => state?.subcategory
     ?.subcategoryData?.data);
   console.log("sub", subcategory);
-    const subcategoryById = useSelector((state) => state.subcategory.subcategoryById);
+    const subcategoryById = useSelector((state) => state.subcategory?.subcategoryData?.data?.filters || []
+);
   console.log("subcategoryById", subcategoryById);
   const filters = subcategoryById?.filters || {};
 
@@ -261,9 +234,9 @@ export default function ProductListingPage() {
                 img={cat?.image[0]}
                 {...cat}
                 isSelected={selectedCategory === cat?.name}
-                onClick={() => {
-                  setSelectedCategory(cat?.subCategoryName);
-                  setSelectedSubcategoryId(cat?.id);
+                  onClick={() => {
+                  setSelectedCategory(cat.name);
+                  setSelectedFilters(cat.filters || {}); // ✅ use filters from clicked subcategory
                 }}
               />
 
@@ -285,15 +258,17 @@ export default function ProductListingPage() {
               </div>
               <div className="max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar pr-2">
                 {/* Dynamic Filters */}
-                {Object?.entries(filters)?.map(([filterName, filterValues]) => (
-                  <FilterSection key={filterName} title={filterName} defaultOpen>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                      {filterValues.map((value) => (
-                        <Checkbox key={value} label={value} />
-                      ))}
-                    </div>
-                  </FilterSection>
-                ))}
+                 {Object.entries(selectedFilters).map(
+                  ([filterName, filterValues]) => (
+                    <FilterSection key={filterName} title={filterName} defaultOpen={false}>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        {filterValues.map((value) => (
+                          <Checkbox key={value} label={value} />
+                        ))}
+                      </div>
+                    </FilterSection>
+                  )
+                )}
 
 
                 <FilterSection title="Pricing">

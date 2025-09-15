@@ -79,7 +79,7 @@ export default function AppRoutes() {
 
       {/* ✅ Main user routes (with CategoryNavbar) */}
       <Route element={<MainLayout />}>
-        <Route path="/MainHome" element={<Home></Home>}></Route>
+        <Route path="/MainHome" element={<MainHome/>}></Route>
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/category/kids" element={<KidsWrapper />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
