@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { FiHeart, FiShare2, FiStar, FiChevronLeft } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import img1 from "../../assets/details1.png";
@@ -12,10 +12,12 @@ import women from "../../assets/dancing-team-studio.png";
 import doll from "../../assets/3d-children.png";
 import { Heart } from "lucide-react";
 import discountIcon from "../../assets/Layer_2.png"; // replace with your icon
-import packageIcon from "../../assets/box.png"; // replace with your icon
-import daysIcon from "../../assets/time.png"; // replace with your icon
+import packageIcon from "../../assets/box.png"; 
+import daysIcon from "../../assets/time.png";  
 import arrivalIcon from "../../assets/delivery-truck.png";
 import { Link } from "react-router-dom";
+import { useDispatch,useSelector } from "react-redux";
+  import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
 
 const productData = {
   id: 1,
@@ -156,7 +158,12 @@ export default function ProductDetailsPage() {
   const [selectedSize, setSelectedSize] = useState("M");
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
-
+const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchReviewsByProduct(2));
+  }, [dispatch]);
+  const reviews = useSelector((state) => state)?.reviews?.productReviews;
+  console.log("reviews",reviews)
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
       prev.includes(index)
@@ -164,6 +171,45 @@ export default function ProductDetailsPage() {
         : [...prev, index]
     );
   };
+  const stats = reviews?.stats || {};
+const getRatingBreakdown = (stats) => {
+  const total = Number(stats?.totalReviews) || 1;
+
+  return [
+    { stars: 5, count: Number(stats?.fiveStar) },
+    { stars: 4, count: Number(stats?.fourStar) },
+    { stars: 3, count: Number(stats.threeStar) },
+    { stars: 2, count: Number(stats.twoStar) },
+    { stars: 1, count: Number(stats.oneStar) },
+  ].map((item) => ({
+    ...item,
+    percent: (item.count / total) * 100,
+  }));
+};
+const RatingBreakdown = ({ stats }) => {
+  const ratingBreakdown = getRatingBreakdown(stats);
+
+  return (
+    <div className="mt-4 space-y-1">
+      {ratingBreakdown.map((item) => (
+        <div
+          key={item.stars}
+          className="flex items-center gap-2 text-sm text-gray-600"
+        >
+          <span>{item.stars}</span>
+          <FaStar className="text-yellow-400" />
+          <div className="w-full bg-gray-200 rounded-full h-1.5">
+            <div
+              className="bg-yellow-400 h-1.5 rounded-full"
+              style={{ width: `${item.percent}%` }}
+            ></div>
+          </div>
+          <span className="ml-2 text-xs">{item.count}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
   return (
     <div className="bg-white font-sans">
@@ -221,14 +267,14 @@ export default function ProductDetailsPage() {
                     Product Ratings & Reviews
                   </h2>
                   <div className="flex items-center gap-4">
-                    <p className="text-5xl font-bold">{productData.rating}/5</p>
+                    <p className="text-5xl font-bold">{reviews?.stats?.avgRating}/5</p>
                     <div>
                       <p className="text-gray-600">
-                        {productData.reviewsCount} New Reviews
+                        {reviews?.stats?.totalReviews} New Reviews
                       </p>
                     </div>
                   </div>
-                  <div className="mt-4 space-y-1">
+                  {/* <div className="mt-4 space-y-1">
                     {productData.ratingBreakdown.map((percent, index) => (
                       <div
                         key={index}
@@ -244,13 +290,14 @@ export default function ProductDetailsPage() {
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </div> */}
+                  <RatingBreakdown stats={reviews?.stats} />
                 </div>
 
                 <div className="mt-8 pt-6 border-t">
                   <div className="max-h-72 overflow-y-auto custom-scrollbar pr-4 space-y-8">
-                    {reviewsData.map((review) => (
-                      <div key={review.id}>
+                    {reviews?.reviews?.map((review) => (
+                      <div key={review?.id}>
                         <div className="flex items-center gap-3">
                           <img
                             src="https://i.pravatar.cc/50"
@@ -258,23 +305,23 @@ export default function ProductDetailsPage() {
                             className="w-12 h-12 rounded-full"
                           />
                           <div>
-                            <p className="font-bold">{review.author}</p>
+                            <p className="font-bold">{review?.userName}</p>
                             <div className="flex text-yellow-400">
-                              {[...Array(review.rating)].map((_, i) => (
+                              {[...Array(review?.rating)]?.map((_, i) => (
                                 <FaStar key={i} />
                               ))}
-                              {[...Array(5 - review.rating)].map((_, i) => (
+                              {[...Array(5 - review?.rating)]?.map((_, i) => (
                                 <FiStar key={i} className="text-gray-300" />
                               ))}
                             </div>
                           </div>
                         </div>
                         <p className="text-gray-600 mt-4 text-sm italic">
-                          {review.comment}
+                          {review?.review}
                         </p>
-                        {review.images.length > 0 && (
+                        {review?.images?.length > 0 && (
                           <div className="flex gap-3 mt-4">
-                            {review.images.map((img, i) => (
+                            {review?.images?.map((img, i) => (
                               <img
                                 key={i}
                                 src={img}
@@ -488,35 +535,21 @@ export default function ProductDetailsPage() {
                   Product Ratings & Reviews
                 </h2>
                 <div className="flex items-center gap-4">
-                  <p className="text-5xl font-bold">{productData.rating}/5</p>
+                  <p className="text-5xl font-bold"> {reviews?.stats?.avgRating}/5</p>
                   <div>
                     <p className="text-gray-600">
-                      {productData.reviewsCount} New Reviews
+                       {reviews?.stats?.totalReviews} New Reviews
                     </p>
                   </div>
                 </div>
                 <div className="mt-4 space-y-1">
-                  {productData.ratingBreakdown.map((percent, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 text-sm text-gray-600"
-                    >
-                      <span>{5 - index}</span>{" "}
-                      <FaStar className="text-yellow-400" />
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className="bg-yellow-400 h-1.5 rounded-full"
-                          style={{ width: `${percent}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
+                  <RatingBreakdown stats={reviews?.stats} />
                 </div>
               </div>
 
               <div className="mt-8 pt-6 border-t">
                 <div className="max-h-72 overflow-y-auto custom-scrollbar pr-4 space-y-8">
-                  {reviewsData.map((review) => (
+                  {reviews?.reviews?.map((review) => (
                     <div key={review.id}>
                       <div className="flex items-center gap-3">
                         <img
@@ -525,12 +558,12 @@ export default function ProductDetailsPage() {
                           className="w-12 h-12 rounded-full"
                         />
                         <div>
-                          <p className="font-bold">{review.author}</p>
+                          <p className="font-bold">{review?.userName}</p>
                           <div className="flex text-yellow-400">
-                            {[...Array(review.rating)].map((_, i) => (
+                            {[...Array(review?.rating)]?.map((_, i) => (
                               <FaStar key={i} />
                             ))}
-                            {[...Array(5 - review.rating)].map((_, i) => (
+                            {[...Array(5 - review.rating)]?.map((_, i) => (
                               <FiStar key={i} className="text-gray-300" />
                             ))}
                           </div>
@@ -539,9 +572,9 @@ export default function ProductDetailsPage() {
                       <p className="text-gray-600 mt-4 text-sm italic">
                         {review.comment}
                       </p>
-                      {review.images.length > 0 && (
+                      {review?.images?.length > 0 && (
                         <div className="flex gap-3 mt-4">
-                          {review.images.map((img, i) => (
+                          {review?.images?.map((img, i) => (
                             <img
                               key={i}
                               src={img}
@@ -554,7 +587,11 @@ export default function ProductDetailsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div> 
+               
+
+
+
             </div>
           </section>
         </main>

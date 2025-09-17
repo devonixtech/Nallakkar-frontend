@@ -104,7 +104,6 @@ export default function UsersPage() {
     dispatch(fetchAllUsers());
   },[dispatch])
   const users = useSelector((state) => state?.users?.users);
-  console.log(users)
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
