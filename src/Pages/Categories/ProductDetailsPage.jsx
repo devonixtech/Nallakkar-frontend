@@ -178,9 +178,9 @@ const getRatingBreakdown = (stats) => {
   return [
     { stars: 5, count: Number(stats?.fiveStar) },
     { stars: 4, count: Number(stats?.fourStar) },
-    { stars: 3, count: Number(stats.threeStar) },
-    { stars: 2, count: Number(stats.twoStar) },
-    { stars: 1, count: Number(stats.oneStar) },
+    { stars: 3, count: Number(stats?.threeStar) },
+    { stars: 2, count: Number(stats?.twoStar) },
+    { stars: 1, count: Number(stats?.oneStar) },
   ].map((item) => ({
     ...item,
     percent: (item.count / total) * 100,
@@ -193,18 +193,18 @@ const RatingBreakdown = ({ stats }) => {
     <div className="mt-4 space-y-1">
       {ratingBreakdown.map((item) => (
         <div
-          key={item.stars}
+          key={item?.stars}
           className="flex items-center gap-2 text-sm text-gray-600"
         >
-          <span>{item.stars}</span>
+          <span>{item?.stars}</span>
           <FaStar className="text-yellow-400" />
           <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div
               className="bg-yellow-400 h-1.5 rounded-full"
-              style={{ width: `${item.percent}%` }}
+              style={{ width: `${item?.percent}%` }}
             ></div>
           </div>
-          <span className="ml-2 text-xs">{item.count}</span>
+          <span className="ml-2 text-xs">{item?.count}</span>
         </div>
       ))}
     </div>
