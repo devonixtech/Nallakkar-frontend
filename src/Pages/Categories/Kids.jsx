@@ -3,16 +3,16 @@ import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { Heart } from "lucide-react";
 import ShoppingBag from "../../assets/shopping-bags.png";
-import man from "../../assets/man.png";
-import shoes from "../../assets/mens.png";
-import jacket from "../../assets/women-white.png";
-import women from "../../assets/dancing-team-studio.png";
-import doll from "../../assets/3d-children.png";
-import girls from "../../assets/girls.png";
-import boy from "../../assets/boys.png";
-import infant from "../../assets/infant.png";
-import toy from "../../assets/access.png";
-import access from "../../assets/toy.png";
+// import man from "../../assets/man.png";
+// import shoes from "../../assets/mens.png";
+// import jacket from "../../assets/women-white.png";
+// import women from "../../assets/dancing-team-studio.png";
+// import doll from "../../assets/3d-children.png";
+// import girls from "../../assets/girls.png";
+// import boy from "../../assets/boys.png";
+// import infant from "../../assets/infant.png";
+// import toy from "../../assets/access.png";
+// import access from "../../assets/toy.png";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSubcategoryBycategoryId} from "../../Redux/slices/subcategorySlice";
@@ -137,18 +137,7 @@ const Checkbox = ({ label }) => (
   </div>
 );
 
-// const AgeCheckbox = ({ label }) => (
-//   <div className="flex items-center">
-//     <input
-//       type="checkbox"
-//       id={label}
-//       className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
-//     />
-//     <label htmlFor={label} className="ml-2 text-sm text-gray-600">
-//       {label}
-//     </label>
-//   </div>
-// );
+ 
 
 // const ProductCard = ({ product }) => (
 //   <div className="group">
@@ -192,9 +181,13 @@ const Checkbox = ({ label }) => (
 
 export default function ProductListingPage() {
   const [selectedCategory, setSelectedCategory] = useState("Girl");
+   const [selectedCategoryId, setSelectedCategoryId] = useState(
+    localStorage.getItem("selectedCategoryId")
+  );
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
 const [selectedFilters, setSelectedFilters] = useState({});
+
 
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
@@ -204,10 +197,24 @@ const [selectedFilters, setSelectedFilters] = useState({});
     );
   };
   const dispatch = useDispatch();
-  const selectedCategoryId = localStorage.getItem("selectedCategoryId");
+  // const selectedCategoryId = localStorage.getItem("selectedCategoryId");
+  // useEffect(() => {
+  //   dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
+  // }, [dispatch])
   useEffect(() => {
-    dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
-  }, [dispatch])
+    const handleStorageChange = () => {
+      setSelectedCategoryId(localStorage.getItem("selectedCategoryId"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+    useEffect(() => {
+    if (selectedCategoryId) {
+      dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
+      dispatch(fetchAllProducts({ categoryId: selectedCategoryId }));
+    }
+  }, [dispatch, selectedCategoryId]);
+
   
   const subcategory = useSelector((state) => state?.subcategory
     ?.subcategoryData?.data);
@@ -216,7 +223,7 @@ const products = useSelector((state) => state?.products?.products);
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
-console.log("products", products);
+// console.log("products", products);
 
   return (
     <div className="bg-[#FCFCFC] font-sans">

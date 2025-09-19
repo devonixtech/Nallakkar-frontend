@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { Heart } from "lucide-react";
@@ -14,6 +14,9 @@ import infant from "../../assets/infant.png";
 import toy from "../../assets/access.png";
 import access from "../../assets/toy.png";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSubcategoryBycategoryId} from "../../Redux/slices/subcategorySlice";
+import { fetchAllProducts } from "../../Redux/slices/productSlice";
 
 const products = [
   {
@@ -57,7 +60,7 @@ const products = [
     image: doll,
   },
 ];
-
+ 
 const categories = [
   {
     name: "Girl",
@@ -152,6 +155,21 @@ const ProductListing = () => {
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
 
+   const dispatch = useDispatch();
+  const selectedCategoryId = localStorage.getItem("selectedCategoryId");
+  useEffect(() => {
+    dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
+  }, [dispatch])
+  
+  const subcategory = useSelector((state) => state?.subcategory
+    ?.subcategoryData?.data);
+const products1 = useSelector((state) => state?.products?.products);
+
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+console.log("products", products1);
+
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
       prev.includes(index)
@@ -223,7 +241,7 @@ const ProductListing = () => {
         </aside>
 
         <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 sm:overflow-visible overflow-x-auto flex sm:flex-none flex-nowrap gap-4 pb-20">
-          {products.map((item, index) => (
+          {products1?.map((item, index) => (
             <div
               key={index}
               className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
@@ -236,11 +254,11 @@ const ProductListing = () => {
               onMouseLeave={() => setActiveCard(null)}
             >
               <div className="relative overflow-hidden rounded-t-lg">
-                <Link to={`/product/${item.id}`}>
+                <Link to={`/product/${item?.id}`}>
                   {" "}
                   <img
-                    src={item.image}
-                    alt={item.title}
+                    src={item?.image[0]}
+                    alt={item?.name}
                     className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
                       activeCard === index
                         ? "scale-105"
@@ -250,7 +268,7 @@ const ProductListing = () => {
                 </Link>
 
                 {/* Hover Add to Cart Button with Icon */}
-                <Link to={`/product/${item.id}`}>
+                <Link to={`/product/${item?.id}`}>
                   {" "}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <Link
@@ -278,7 +296,7 @@ const ProductListing = () => {
 
                 {/* Rating */}
                 <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                  <span>{item.rating}</span> • <span>{item.reviews}</span>
+                  <span>{item?.rating}</span> • <span>{item?.reviewCount}</span>
                 </div>
 
                 {/* Heart Icon */}
@@ -288,7 +306,7 @@ const ProductListing = () => {
                 >
                   <Heart
                     className={`w-5 h-5 transition-colors ${
-                      wishlist.includes(index)
+                      wishlist?.includes(index)
                         ? "fill-rose text-rose"
                         : "text-white"
                     }`}
@@ -302,14 +320,14 @@ const ProductListing = () => {
               </p>
 
               <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                {item.title}
+                {item?.name}
               </p>
 
               <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                 <span className="text-darkpink font-semibold text-sm">
-                  {item.price}
+                  {item?.price}
                 </span>
-                <span className="text-gray-500 text-xs">{item.discount}</span>
+                <span className="text-gray-500 text-xs">{item?.discount}%</span>
               </div>
             </div>
           ))}

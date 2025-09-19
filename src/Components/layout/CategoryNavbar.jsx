@@ -1,16 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUser, FaHeart, FaShoppingCart, FaSearch } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import logo from "../../assets/logo.png"; // Replace with your N logo image
 import { Link, useLocation } from "react-router-dom";
-
+import { useSelector , useDispatch} from "react-redux";
+import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 export default function CategoryNavbar() {
   const [category, setCategory] = useState("All Categories");
+  const [selectedCategory, setSelectedCategory] = useState(
+    localStorage.getItem("selectedCategoryId") || null
+  );
   const location = useLocation();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
+    const categories  = useSelector((state) => state?.ctegory?.categories);
+ // ✅ Keep selectedCategory in sync with localStorage changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setSelectedCategory(localStorage.getItem("selectedCategoryId"));
+    };
+    window.addEventListener("storage", handleStorageChange);
 
-  const linkClass = (path) =>
-    `${location.pathname === path ? "text-darkpink font-bold" : ""}`;
+    // ✅ Also check on mount in case it was updated in same tab
+    setSelectedCategory(localStorage.getItem("selectedCategoryId"));
 
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  console.log("abc",categories);
+  // const linkClass = (path) =>
+  //   `${location.pathname === path ? "text-darkpink font-bold" : ""}`;
+   
+ const handleCategoryClick = (id) => {
+    localStorage.setItem("selectedCategoryId", id);
+    setSelectedCategory(id); // ✅ immediately update state
+    window.dispatchEvent(new Event("storage")); // ✅ notify same tab
+  };
+  const linkClass = (id) =>
+    `${selectedCategory == id ? "text-darkpink font-bold" : ""}`;
   return (
     <nav className="fixed z-40 font-[Montserrat] bg-white w-full h-[80px] flex items-center justify-between px-4 md:px-[5rem] border-b-2 shadow-md">
       {/* Left Section */}
@@ -25,10 +54,20 @@ export default function CategoryNavbar() {
 
         {/* Menu Links */}
         <div className="flex space-x-6 text-sm font-semibold text-gray-800">
-          <Link to="/category/kids" className={linkClass("/category/kids")}>
+          {/* <Link to="/category/kids" className={linkClass("/category/kids")}>
             Kids
-          </Link>
-          <Link to="/category/women" className={linkClass("/category/women")}>
+          </Link> */}
+            {categories?.map((cat) => (
+            <Link
+              to="/category/kids"
+              key={cat.id}
+              className={linkClass(cat.id)}
+              onClick={() => handleCategoryClick(cat.id)}
+            >
+              {cat.name}
+            </Link>
+          ))}
+          {/* <Link to="/category/women" className={linkClass("/category/women")}>
             Women
           </Link>
           <Link to="/category/toys" className={linkClass("/category/toys")}>
@@ -36,7 +75,7 @@ export default function CategoryNavbar() {
           </Link>
           <Link to="/category/home-decors" className={linkClass("/category/home-decors")}>
             Home Decors
-          </Link>
+          </Link> */}
         </div>
       </div>
 
