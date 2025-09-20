@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../Redux/slices/productSlice"; // make sure this thunk exists
-
+import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 export default function AddProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,11 +26,20 @@ export default function AddProduct() {
   const [customVariants, setCustomVariants] = useState([{ type: "", value: "" }]);
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState({ show: false, type: "success", message: "" });
-
-  const categories = [
-    { id: 1, name: "Clothing", subcategories: ["T-Shirts", "Shirts", "Pants"] },
-    { id: 2, name: "Electronics", subcategories: ["Phones", "Laptops"] },
-  ];
+   
+  // Fetch categories and subcategories on mount
+  useState(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
+ const categories = useSelector((state) => state?.ctegory?.categories);
+  console.log("categories",categories);
+  // ---------- dummy data ----------
+  // Replace with actual categories from Redux store
+  // and fetch subcategories based on selected category
+  // const categories = [
+  //   { id: 1, name: "Clothing", subcategories: ["T-Shirts", "Shirts", "Pants"] },
+  //   { id: 2, name: "Electronics", subcategories: ["Phones", "Laptops"] },
+  // ];
 
   // ---------- helpers ----------
   const showToast = (message, type = "success") => {
@@ -125,36 +134,41 @@ export default function AddProduct() {
         />
         {errors.title && <p className="text-red-500">{errors.title}</p>}
 
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          className="w-full border p-2"
-        >
-          <option value="">Select Category</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-        {errors.category && <p className="text-red-500">{errors.category}</p>}
+      <select
+  name="category"
+  value={formData.category}
+  onChange={(e) => {
+    handleChange(e);
+    setFormData((prev) => ({ ...prev, subcategory: "" }));  
+  }}
+  className="w-full border p-2"
+>
+  <option value="">Select Category</option>
+  {categories?.map((c) => (
+    <option key={c.id} value={c.id}>
+      {c.name}
+    </option>
+  ))}
+</select>
+{errors.category && <p className="text-red-500">{errors.category}</p>}
 
-        <select
-          name="subcategory"
-          value={formData.subcategory}
-          onChange={handleChange}
-          className="w-full border p-2"
-        >
-          <option value="">Select Subcategory</option>
-          {categories
-            .find((c) => c.id === Number(formData.category))
-            ?.subcategories.map((sub, i) => (
-              <option key={i} value={i + 1}>
-                {sub}
-              </option>
-            ))}
-        </select>
+<select
+  name="subcategory"
+  value={formData.subcategory}
+  onChange={handleChange}
+  className="w-full border p-2"
+  disabled={!formData.category} // disable until category is chosen
+>
+  <option value="">Select Subcategory</option>
+  {categories
+    ?.find((c) => c.id === Number(formData.category))
+    ?.subcategories?.map((sub) => (
+      <option key={sub.id} value={sub.id}>
+        {sub.name}
+      </option>
+    ))}
+</select>
+
 
         <input
           type="number"
