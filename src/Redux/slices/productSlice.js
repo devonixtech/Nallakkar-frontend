@@ -8,7 +8,7 @@ export const createProduct = createAsyncThunk(
   "products/create",
   async (productData, { rejectWithValue }) => {
     try {
-      const res = await api.post(BASE_URL, productData);
+      const res = await api.post(`${BASE_URL}/createProduct`, productData);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
