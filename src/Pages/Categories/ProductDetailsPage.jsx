@@ -18,6 +18,8 @@ import arrivalIcon from "../../assets/delivery-truck.png";
 import { Link } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
   import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
+  import { useParams } from "react-router-dom";
+  import { fetchProductById } from "../../Redux/slices/productSlice";
 
 const productData = {
   id: 1,
@@ -44,32 +46,32 @@ const productData = {
   ratingBreakdown: [52, 28, 10, 5, 5], // Percentages for 5, 4, 3, 2, 1 stars
 };
 
-const reviewsData = [
-  {
-    id: 1,
-    author: "Naveena Reddy",
-    rating: 5,
-    comment:
-      "\"NallaKar dedication to sustainable and ethical practices resonates strongly with me. As a consumer, it's reassuring to know that I'm supporting a brand that values the planet.\"",
-    images: [img1, img2, img3],
-  },
-  {
-    id: 3,
-    author: "Priya Patel",
-    rating: 5,
-    comment:
-      '"Absolutely beautiful product. Looks even better in person than in the pictures. Highly recommend!"',
-    images: [img4],
-  },
-  {
-    id: 2,
-    author: "Rohan Sharma",
-    rating: 4,
-    comment:
-      '"Great quality jacket, my daughter loves it. The fit is perfect. The delivery was also very fast."',
-    images: [],
-  },
-];
+// const reviewsData = [
+//   {
+//     id: 1,
+//     author: "Naveena Reddy",
+//     rating: 5,
+//     comment:
+//       "\"NallaKar dedication to sustainable and ethical practices resonates strongly with me. As a consumer, it's reassuring to know that I'm supporting a brand that values the planet.\"",
+//     images: [img1, img2, img3],
+//   },
+//   {
+//     id: 3,
+//     author: "Priya Patel",
+//     rating: 5,
+//     comment:
+//       '"Absolutely beautiful product. Looks even better in person than in the pictures. Highly recommend!"',
+//     images: [img4],
+//   },
+//   {
+//     id: 2,
+//     author: "Rohan Sharma",
+//     rating: 4,
+//     comment:
+//       '"Great quality jacket, my daughter loves it. The fit is perfect. The delivery was also very fast."',
+//     images: [],
+//   },
+// ];
 
 const similarProducts = [
   {
@@ -118,25 +120,25 @@ const ProductCard = ({ product }) => (
   <div className="group flex-shrink-0 w-48 md:w-56">
     <div className="relative w-full overflow-hidden">
       <img
-        src={product.image}
-        alt={product.title}
+        src={product?.image}
+        alt={product?.title}
         className="w-full h-auto aspect-[3/4] object-cover rounded-md"
       />
       <div className="absolute top-2 right-2 p-1.5 bg-white bg-opacity-70 rounded-full cursor-pointer">
         <FiHeart className="text-gray-600" />
       </div>
-      {product.rating && (
+      {product?.rating && (
         <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm text-xs font-semibold flex items-center gap-1">
-          {product.rating} <span className="text-pink-500">|</span>{" "}
-          {product.reviews}
+          {product?.rating} <span className="text-pink-500">|</span>{" "}
+          {product?.reviews}
         </div>
       )}
     </div>
     <div className="mt-2 text-sm">
       <p className="font-bold text-gray-800"> Nallakkar</p>
-      <p className="text-gray-500 truncate">{product.title}</p>
+      <p className="text-gray-500 truncate">{product?.title}</p>
       <div className="flex items-center gap-2 mt-1">
-        <p className="text-darkpink font-semibold text-sm">₹{product.price}</p>
+        <p className="text-darkpink font-semibold text-sm">₹{product?.price}</p>
       </div>
     </div>
   </div>
@@ -159,11 +161,13 @@ export default function ProductDetailsPage() {
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
 const dispatch = useDispatch();
+const productId = useParams();
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
+    dispatch(fetchProductById(productId?.id));
   }, [dispatch]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
-  console.log("reviews",reviews)
+  // console.log("reviews",reviews)
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
       prev.includes(index)
@@ -171,7 +175,16 @@ const dispatch = useDispatch();
         : [...prev, index]
     );
   };
-  const stats = reviews?.stats || {};
+  
+  const product = useSelector((state) => state)?.products?.productData?.data;
+  console.log("product",product)
+  // setSelectedImage(product?.image[0] || "");
+  // const stats = reviews?.stats || {};
+  useEffect(() => {
+  if (product?.image?.length > 0) {
+    setSelectedImage(product.image[0]);
+  }
+}, [product]);
 const getRatingBreakdown = (stats) => {
   const total = Number(stats?.totalReviews) || 1;
 
@@ -231,7 +244,7 @@ const RatingBreakdown = ({ stats }) => {
           <div>
             <div className="flex gap-4">
               <div className="flex flex-col gap-4">
-                {productData.images.map((img, index) => (
+                {product?.image?.map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(img)}
@@ -343,16 +356,16 @@ const RatingBreakdown = ({ stats }) => {
           <div className="flex flex-col gap-y-6 lg:mt-0 pl-[2rem] border-l-2">
             <div>
               <button className="text-xs mb-4 uppercase font-bold border py-1 px-2 rounded-sm text-gray-400 tracking-wider">
-                {productData.category}
+                {productData?.category}
               </button>
               <h1 className="text-3xl -mb-2 font-extrabold text-gray-900">
-                {productData.name}
+                {product?.name}
               </h1>
             </div>
 
             <div>
               <p className="text-3xl font-bold text-gray-900">
-                ₹{productData.price.toFixed(2)}
+                ₹{product?.price}
               </p>
               <p className="text-sm font-medium mt-4">
                 Order in 12h 30m to get next day delivery
@@ -362,7 +375,7 @@ const RatingBreakdown = ({ stats }) => {
             <div>
               <p className="text-sm font-bold mb-3">Select Size</p>
               <div className="flex flex-wrap gap-3">
-                {productData.sizes.map((size) => (
+                {productData?.sizes.map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
@@ -416,11 +429,12 @@ const RatingBreakdown = ({ stats }) => {
             </div>
 
             <div className="-mt-3 font-medium space-y-1">
-              <p>
-                <span>100% Original Products</span>
+              <p>{product?.description}</p>
+             {/* <p>
+                 <span>100% Original Products</span>
               </p>
               <p>Pay on delivery might be available</p>
-              <p>Easy 7 days returns and exchanges</p>
+              <p>Easy 7 days returns and exchanges</p> */}
             </div>
 
             <div>
@@ -492,6 +506,9 @@ const RatingBreakdown = ({ stats }) => {
               </div>
               <div className="mt-4 pt-4 text-[15px] font-bold text-gray-600 space-y-2">
                 <p>
+                  {product?.description2}
+                </p>
+                {/* <p>
                   <span>Name:</span> {productData.details.name}
                 </p>
                 <p>
@@ -522,8 +539,8 @@ const RatingBreakdown = ({ stats }) => {
                 </p>
                 <button className=" underline font-bold mt-2">
                   More Information
-                </button>
-              </div>
+                </button>*/}
+              </div> 
             </div>
           </div>
 

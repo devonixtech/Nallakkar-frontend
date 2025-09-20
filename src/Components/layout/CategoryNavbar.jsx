@@ -103,15 +103,26 @@ export default function CategoryNavbar() {
             role="menu"
           >
             <ul className="py-2 text-sm text-primary">
-              <li>
+               {categories?.map((cat) => (
+                <li>
+            <Link
+              to="/category/kids"
+              key={cat.id}
+                className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
+              onClick={() => handleCategoryClick(cat.id)}
+            >
+              {cat.name}
+            </Link> </li>
+          ))}
+              {/* <li>
                 <Link
                   to="/category/kids"
-                  className="flex items-center justify-between px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
+                  className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
                 >
                   Kids <span className="text-[10px] text-rose-400">NEW</span>
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link
                   to="/category/women"
                   className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
@@ -142,7 +153,7 @@ export default function CategoryNavbar() {
                 >
                   Home Decor
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 

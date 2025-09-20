@@ -146,7 +146,7 @@ export default function TopSellingProducts() {
 
               {/* Rating */}
               <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                <span>{item.rating}</span>  <span>{item.reviews}</span>
+                <span>{item?.rating}</span> . <span>{item?.reviewCount}</span>
               </div>
 
               {/* Heart Icon */}
@@ -170,7 +170,7 @@ export default function TopSellingProducts() {
             </p>
 
             <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-              {item.title}
+              {item?.name}
             </p>
 
             <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
