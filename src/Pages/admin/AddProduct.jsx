@@ -104,7 +104,7 @@ export default function AddProduct() {
 
       await dispatch(createProduct(form)).unwrap();
       showToast("Product created successfully");
-      // navigate("/products");
+      navigate("/admin/products");
     } catch (err) {
       console.error("Error creating product:", err);
       showToast("Failed to create product", "error");
@@ -226,14 +226,29 @@ export default function AddProduct() {
         </div>
 
         {/* Image Upload */}
-        <div>
-          <input type="file" multiple onChange={handleImageUpload} />
-          <div className="flex gap-2 mt-2 flex-wrap">
-            {images.map((img, i) => (
-              <img key={i} src={img.url} alt="preview" className="w-20 h-20 object-cover" />
-            ))}
-          </div>
-        </div>
+       {/* Image Upload */}
+<div>
+  <input type="file" multiple onChange={handleImageUpload} />
+  <div className="flex gap-2 mt-2 flex-wrap">
+    {images.map((img, i) => (
+      <div key={i} className="relative">
+        <img
+          src={img.url}
+          alt="preview"
+          className="w-20 h-20 object-cover rounded"
+        />
+        <button
+          type="button"
+          onClick={() => setImages(images.filter((_, index) => index !== i))}
+          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+        >
+          ✕
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
+
 
         <button
           type="submit"
