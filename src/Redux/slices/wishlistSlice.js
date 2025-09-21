@@ -8,7 +8,7 @@ export const addToWishlist = createAsyncThunk(
   "wishlist/add",
   async (wishlistData, { rejectWithValue }) => {
     try {
-      const res = await api.post(BASE_URL, wishlistData);
+      const res = await api.post(`${BASE_URL}/updateFavourite`, wishlistData);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

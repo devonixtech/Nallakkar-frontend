@@ -1,6 +1,5 @@
-'use client';
 
-import { useState , useEffect} from 'react';
+import  React ,{ useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { fetchAllCategories , createCategory, deleteCategory,updateCategory} from '../../Redux/slices/categorySlice';
 import { useSelector , useDispatch } from "react-redux";
@@ -13,7 +12,7 @@ export default function CategoriesPage() {
     const categories  = useSelector((state) => state?.ctegory?.categories);
     const subcategoryById  = useSelector((state) => state?.subcategory?.subcategoryData?.data);
     
-  
+      console.log("cat",categories)
 
   const [subcategories, setSubcategories] = useState([
     { id: 1, name: 'Smartphones', slug: 'smartphones', description: 'Mobile phones and accessories', status: 'Active', categoryId: 1, parentCategoryName: 'Electronics', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=smartphone%20subcategory%20icon%20modern%20mobile%20phone%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub1&orientation=squarish' },
@@ -47,7 +46,7 @@ export default function CategoriesPage() {
   const filteredCategories = categories?.filter(category => {
     const matchesSearch = category?.name?.toLowerCase().includes(searchTerm.toLowerCase())
                           
-    const matchesStatus = statusFilter === '' || category?.status === statusFilter;
+    const matchesStatus = statusFilter === '' || category?.status == statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -219,8 +218,8 @@ export default function CategoriesPage() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {filteredCategories?.map((category) => (
-                  <>
-                    <tr key={category.id} className="hover:bg-gray-50">
+                  < React.Fragment key={category.id}>
+                    <tr  className="hover:bg-gray-50">
                       <td className="py-4 px-4">
                         <div className="flex items-center">
                           {category?.image && (
@@ -232,13 +231,10 @@ export default function CategoriesPage() {
                           )}
                           <div>
                             <h4 className="text-sm font-medium text-gray-900">{category?.name}</h4>
-                            {/* <p className="text-sm text-gray-500">/{category.slug}</p> */}
                           </div>
                         </div>
                       </td>
-                      {/* <td className="py-4 px-4 text-sm text-gray-700 max-w-xs">
-                        <div className="truncate">{category.description}</div>
-                      </td> */}
+                      
                       <td className="py-4 px-4">
                         <button
                           onClick={() => toggleCategoryStatus(category?.id)}
@@ -249,16 +245,19 @@ export default function CategoriesPage() {
                       </td>
                       <td className="py-4 px-4 text-sm text-gray-700">{category?.productsCount}</td>
                       <td className="py-4 px-4">
-                        <button
-                          onClick={() => toggleSubcategories(category?.id)}
-                          className="flex items-center text-sm text-blue-600 hover:text-blue-700 cursor-pointer"
-                        >
-                          {category?.subcategories}
-                          <i className={`ri-arrow-down-s-line ml-1 transition-transform ${
-                            expandedRows.includes(category?.id) ? 'rotate-180' : ''
-                          }`}></i>
-                        </button>
-                      </td>
+  <button
+    onClick={() => toggleSubcategories(category?.id)}
+    className="flex items-center text-sm text-blue-600 hover:text-blue-700 cursor-pointer"
+  >
+    {category?.subcategories?.length || 0}
+    <i
+      className={`ri-arrow-down-s-line ml-1 transition-transform ${
+        expandedRows.includes(category?.id) ? "rotate-180" : ""
+      }`}
+    ></i>
+  </button>
+</td>
+
                       <td className="py-4 px-4">
                         <div className="flex items-center space-x-2">
                           <button 
@@ -277,8 +276,7 @@ export default function CategoriesPage() {
                       </td>
                     </tr>
                     
-                    {/* Subcategories Row */}
-                    {expandedRows.includes(category?.id) && (
+                    {expandedRows?.includes(category?.id) && (
                       <tr>
                         <td colSpan={6} className="py-4 px-4 bg-gray-50">
                           <div className="ml-16">
@@ -296,7 +294,6 @@ export default function CategoriesPage() {
                               </button>
                             </div>
 
-                            {/* Subcategory Filters */}
                             <div className="flex flex-col sm:flex-row gap-3 mb-4">
                               <input
                                 type="text"
@@ -316,13 +313,11 @@ export default function CategoriesPage() {
                               </select>
                             </div>
 
-                            {/* Subcategories Table */}
                             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                               <table className="w-full text-sm">
                                 <thead className="bg-gray-100">
                                   <tr>
                                     <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Subcategory</th>
-                                    {/* <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Description</th> */}
                                     <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Status</th>
                                     <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Products</th>
                                     <th className="text-left py-2 px-3 text-xs font-medium text-gray-600">Actions</th>
@@ -342,13 +337,10 @@ export default function CategoriesPage() {
                                           )}
                                           <div>
                                             <h6 className="text-sm font-medium text-gray-900">{subcategory?.name}</h6>
-                                            {/* <p className="text-xs text-gray-500">/{subcategory.slug}</p> */}
                                           </div>
                                         </div>
                                       </td>
-                                      {/* <td className="py-3 px-3 text-sm text-gray-700 max-w-xs">
-                                        <div className="truncate">{subcategory.description}</div>
-                                      </td> */}
+                                      
                                       <td className="py-3 px-3">
                                         <button
                                           onClick={() => toggleSubcategoryStatus(subcategory?.id)}
@@ -390,7 +382,7 @@ export default function CategoriesPage() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
