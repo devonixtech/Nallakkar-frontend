@@ -180,7 +180,7 @@ const Checkbox = ({ label }) => (
 // --- MAIN PAGE COMPONENT ---
 
 export default function ProductListingPage() {
-  const [selectedCategory, setSelectedCategory] = useState("Girl");
+  const [selectedCategory, setSelectedCategory] = useState(null);
    const [selectedCategoryId, setSelectedCategoryId] = useState(
     localStorage.getItem("selectedCategoryId")
   );
@@ -203,16 +203,21 @@ const [selectedFilters, setSelectedFilters] = useState({});
   // }, [dispatch])
   useEffect(() => {
     const handleStorageChange = () => {
+        
       setSelectedCategoryId(localStorage.getItem("selectedCategoryId"));
     };
+    
     window.addEventListener("storage", handleStorageChange);
+    
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
     useEffect(() => {
-    if (selectedCategoryId) {
+       // Reset selected subcategory when category changes
+        // Clear filters when category changes
+      
       dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
       dispatch(fetchAllProducts({ categoryId: selectedCategoryId }));
-    }
+   
   }, [dispatch, selectedCategoryId]);
 
   
@@ -224,6 +229,19 @@ const products = useSelector((state) => state?.products?.products);
     dispatch(fetchAllProducts());
   }, [dispatch]);
 // console.log("products", products);
+  // Reset selected subcategory when category changes
+useEffect(() => {
+  if (subcategory?.length > 0) {
+    // Always reset to first subcategory of this category when category changes
+    const first = subcategory[0];
+    setSelectedCategory(first.name);
+    setSelectedFilters(first.filters || {});
+
+    if (first.id) {
+      dispatch(fetchAllProducts({ subCategoryId: first.id }));
+    }
+  }
+}, [subcategory, selectedCategoryId]);
 
   return (
     <div className="bg-[#FCFCFC] font-sans">
@@ -238,15 +256,19 @@ const products = useSelector((state) => state?.products?.products);
           <div className="flex gap-8 overflow-x-auto pb-4 -mx-4 px-4 lg:px-[10rem] hide-scrollbar pt-0 lg:pt-0 md:pt-16">
             {subcategory?.map((cat) => (
               <CategoryPill
-                key={cat?.name}
-                img={cat?.image[0]}
-                {...cat}
-                isSelected={selectedCategory === cat?.name}
-                  onClick={() => {
-                  setSelectedCategory(cat.name);
-                  setSelectedFilters(cat.filters || {}); // ✅ use filters from clicked subcategory
-                }}
-              />
+  key={cat?.id}
+  img={cat?.image[0]}
+  name={cat?.name}
+  isSelected={selectedCategory === cat?.name}
+  onClick={() => {
+    setSelectedCategory(cat.name);
+    setSelectedFilters(cat.filters || {});
+    if (cat.id) {
+      dispatch(fetchAllProducts({ subCategoryId: cat.id }));
+    }
+  }}
+/>
+
 
             ))}
           </div>
