@@ -63,7 +63,7 @@ const Login = () => {
         <div className="w-full max-w-md bg-white p-8 rounded shadow-md">
           <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          {/* <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
             <div>
               <label className="block text-sm font-medium mb-1">
                 Email or Mobile
@@ -89,12 +89,24 @@ const Login = () => {
             <button
               type="button"
               onClick={handleLogin}
+
               disabled={loading || !detectedType}
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
             >
               {loading ? "Sending OTP..." : "Continue"}
             </button>
-          </form>
+          </form> */}
+           <button
+              type="button"
+              // onClick={handleLogin}
+              onClick={()=>navigate("/admin/dashboard")}
+
+              // disabled={loading || !detectedType}
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+            >
+              {/* {loading ? "Sending OTP..." : "Continue"} */}
+              Admin
+            </button>
         </div>
       </div>
     </>
