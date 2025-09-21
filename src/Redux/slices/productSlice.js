@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/product";
@@ -47,7 +47,9 @@ export const fetchProductsBySubcategory = createAsyncThunk(
   "products/fetchBySubcategory",
   async (subcategoryId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`product/getProductsBySubCategory/${subcategoryId}`);
+      const res = await api.get(
+        `product/getProductsBySubCategory/${subcategoryId}`
+      );
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -55,6 +57,29 @@ export const fetchProductsBySubcategory = createAsyncThunk(
   }
 );
 
+// ✅ Get similar products
+// export const fetchSimilarProducts = createAsyncThunk(
+//   "products/fetchSimilar",
+//   async (id, { rejectWithValue }) => {
+//     try {
+//       const res = await api.get(`${BASE_URL}/getSimilar/${id}`);
+//       return res.data.data;
+//     } catch (err) {
+//       return rejectWithValue(err.response?.data || err.message);
+//     }
+//   }
+// );
+export const fetchSimilarProducts = createAsyncThunk(
+  "products/fetchSimilar",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`product/getAllProducts`);
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
 // ✅ Update product
 export const updateProduct = createAsyncThunk(
   "products/update",
@@ -87,10 +112,35 @@ const productSlice = createSlice({
   initialState: {
     products: [],
     productData: null,
+    similarProducts: [],
+    recentlyViewed:
+      JSON.parse(localStorage.getItem("recentlyViewed")) || [],
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    // ✅ Add Recently Viewed
+    addRecentlyViewed: (state, action) => {
+      const product = action.payload;
+
+      // avoid duplicates
+      const exists = state.recentlyViewed.find((p) => p._id === product._id);
+      if (!exists) {
+        state.recentlyViewed = [
+          product,
+          ...state.recentlyViewed,
+        ].slice(0, 10); // keep only 10
+        localStorage.setItem(
+          "recentlyViewed",
+          JSON.stringify(state.recentlyViewed)
+        );
+      }
+    },
+    clearRecentlyViewed: (state) => {
+      state.recentlyViewed = [];
+      localStorage.removeItem("recentlyViewed");
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Create
@@ -149,6 +199,20 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Fetch Similar
+      .addCase(fetchSimilarProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.similarProducts = action.payload;
+      })
+      .addCase(fetchSimilarProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       // Update
       .addCase(updateProduct.pending, (state) => {
         state.loading = true;
@@ -182,5 +246,8 @@ const productSlice = createSlice({
       });
   },
 });
+
+export const { addRecentlyViewed, clearRecentlyViewed } =
+  productSlice.actions;
 
 export default productSlice.reducer;

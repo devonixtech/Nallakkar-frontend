@@ -19,8 +19,9 @@ import { Link } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
   import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
   import { useParams } from "react-router-dom";
-  import { fetchProductById } from "../../Redux/slices/productSlice";
+  import { fetchProductById ,fetchAllProducts, fetchSimilarProducts} from "../../Redux/slices/productSlice";
 
+  
 const productData = {
   id: 1,
   category: "Girl Fashion",
@@ -73,48 +74,48 @@ const productData = {
 //   },
 // ];
 
-const similarProducts = [
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: " 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: man,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: " 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: shoes,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: " 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: jacket,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: " 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: women,
-  },
-  {
-    title: "Men Regular Fit Self Design Light Shirt",
-    price: " 529.00",
-    discount: "(off 35%)",
-    rating: "4.2",
-    reviews: "1.2K",
-    image: doll,
-  },
-];
+// const similarProducts = [
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: " 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: man,
+//   },
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: " 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: shoes,
+//   },
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: " 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: jacket,
+//   },
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: " 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: women,
+//   },
+//   {
+//     title: "Men Regular Fit Self Design Light Shirt",
+//     price: " 529.00",
+//     discount: "(off 35%)",
+//     rating: "4.2",
+//     reviews: "1.2K",
+//     image: doll,
+//   },
+// ];
 
 const ProductCard = ({ product }) => (
   <div className="group flex-shrink-0 w-48 md:w-56">
@@ -165,6 +166,7 @@ const productId = useParams();
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
     dispatch(fetchProductById(productId?.id));
+    dispatch(fetchSimilarProducts())
   }, [dispatch]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
   // console.log("reviews",reviews)
@@ -177,6 +179,8 @@ const productId = useParams();
   };
   
   const product = useSelector((state) => state)?.products?.productData?.data;
+  const  similarProducts = useSelector((state)=>state?.products?.similarProducts)
+  console.log("similarProducts1",similarProducts)
   console.log("product",product)
   // setSelectedImage(product?.image[0] || "");
   // const stats = reviews?.stats || {};
@@ -587,7 +591,7 @@ const RatingBreakdown = ({ stats }) => {
                         </div>
                       </div>
                       <p className="text-gray-600 mt-4 text-sm italic">
-                        {review.comment}
+                        {review?.comment}
                       </p>
                       {review?.images?.length > 0 && (
                         <div className="flex gap-3 mt-4">
@@ -618,7 +622,7 @@ const RatingBreakdown = ({ stats }) => {
             Similar Products
           </h2>
           <div className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 hide-scrollbar">
-            {similarProducts.map((item, index) => (
+            {similarProducts?.map((item, index) => (
               <div
                 key={index}
                 className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
@@ -634,8 +638,8 @@ const RatingBreakdown = ({ stats }) => {
                   <Link to={`/product/${item.id}`}>
                     {" "}
                     <img
-                      src={item.image}
-                      alt={item.title}
+                      src={item?.image[0]}
+                      alt={item?.title}
                       className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
                         activeCard === index
                           ? "scale-105"
@@ -645,7 +649,7 @@ const RatingBreakdown = ({ stats }) => {
                   </Link>
 
                   {/* Hover Add to Cart Button with Icon */}
-                  <Link to={`/product/${item.id}`}>
+                  <Link to={`/product/${item?.id}`}>
                     {" "}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <Link
@@ -673,7 +677,7 @@ const RatingBreakdown = ({ stats }) => {
 
                   {/* Rating */}
                   <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                    <span>{item.rating}</span> • <span>{item.reviews}</span>
+                    <span>{item?.rating}</span> • <span>{item?.reviewCount}</span>
                   </div>
 
                   {/* Heart Icon */}
@@ -697,14 +701,14 @@ const RatingBreakdown = ({ stats }) => {
                 </p>
 
                 <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                  {item.title}
+                  {item?.name}
                 </p>
 
                 <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                   <span className="text-darkpink font-semibold text-sm">
-                    {item.price}
+                    {item?.price}
                   </span>
-                  <span className="text-gray-500 text-xs">{item.discount}</span>
+                  <span className="text-gray-500 text-xs">( {item?.discount}% )</span>
                 </div>
               </div>
             ))}
@@ -716,7 +720,7 @@ const RatingBreakdown = ({ stats }) => {
             Recently Viewed
           </h2>
           <div className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 hide-scrollbar">
-            {similarProducts.map((item, index) => (
+            {similarProducts?.map((item, index) => (
               <div
                 key={index}
                 className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
@@ -732,7 +736,7 @@ const RatingBreakdown = ({ stats }) => {
                   <Link to={`/product/${item.id}`}>
                     {" "}
                     <img
-                      src={item.image}
+                      src={item.image[0]}
                       alt={item.title}
                       className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
                         activeCard === index
@@ -771,7 +775,7 @@ const RatingBreakdown = ({ stats }) => {
 
                   {/* Rating */}
                   <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                    <span>{item.rating}</span> • <span>{item.reviews}</span>
+                    <span>{item.rating}</span> • <span>{item?.reviewCount}</span>
                   </div>
 
                   {/* Heart Icon */}
@@ -795,14 +799,14 @@ const RatingBreakdown = ({ stats }) => {
                 </p>
 
                 <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                  {item.title}
+                  {item?.name}
                 </p>
 
                 <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                   <span className="text-darkpink font-semibold text-sm">
                     {item.price}
                   </span>
-                  <span className="text-gray-500 text-xs">{item.discount}</span>
+                  <span className="text-gray-500 text-xs">( {item.discount}% )</span>
                 </div>
               </div>
             ))}
