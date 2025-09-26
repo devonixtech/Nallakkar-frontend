@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import banner from "../assets/wishlist.png";
 import wishlist1 from "../assets/whishlist1.png";
 import wishlist2 from "../assets/whishlist2.png";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWishlistByUserId, removeFromWishlist } from "../Redux/slices/wishlistSlice";
 
 const wishlistItems = [
   {
@@ -113,6 +114,16 @@ const wishlistItems = [
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
+  const dispatch = useDispatch();
+  // const userId = localStorage.getItem("userId");
+  const userId =  7; // temp userId
+
+  console.log("userId", userId);
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchWishlistByUserId(userId));
+    }
+  }, [dispatch, userId]);
 
   const toggleWishlist = (index) => {
     setWishlist((prev) =>

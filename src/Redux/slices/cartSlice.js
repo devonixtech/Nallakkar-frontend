@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/cart";
@@ -16,13 +16,26 @@ export const addToCart = createAsyncThunk(
   }
 );
 
-// ✅ Get user cart
+// ✅ Get all user cart
 export const fetchCart = createAsyncThunk(
   "cart/fetch",
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get(`${BASE_URL}/getUserCart`);
       return res.data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// ✅ Get cart by userId
+export const fetchCartByUserId = createAsyncThunk(
+  "cart/fetchByUserId",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`${BASE_URL}/getUserCart/${userId}`);
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -93,7 +106,7 @@ const cartSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch
+      // Fetch all
       .addCase(fetchCart.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -103,6 +116,20 @@ const cartSlice = createSlice({
         state.items = action.payload;
       })
       .addCase(fetchCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Fetch by userId
+      .addCase(fetchCartByUserId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCartByUserId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchCartByUserId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

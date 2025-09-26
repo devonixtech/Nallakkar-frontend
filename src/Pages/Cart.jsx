@@ -2,8 +2,22 @@ import { FaMinus, FaPlus, FaTimes } from "react-icons/fa";
 import shoppingcart from "../assets/ShoppingCart.png";
 import details from "../assets/details2.png";
 import { Link } from "react-router-dom";
-
+import { useEffect } from "react";
+import { fetchCartByUserId } from "../Redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 const ShoppingCart = () => {
+  // const userId = localStorage.getItem("userId");
+  const userId = 2; // temp userId
+  const dispatch = useDispatch();
+  const { items, loading, error } = useSelector((state) => state.cart);
+  
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchCartByUserId(userId));
+    }
+  }, [dispatch, userId]);
+
+  console.log("Cart Items:", items);
   return (
     <div className="w-full min-h-screen bg-white">
       {/* Header with background image */}
@@ -36,22 +50,22 @@ const ShoppingCart = () => {
           </div>
 
           {/* Product Item */}
-          {[1, 2].map((item, index) => (
+          {items?.items?.map((item, index) => (
             <div
-              key={index}
+              key={item?.id}
               className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
             >
               {/* Product Info */}
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <img
-                  src={details}
+                  src={item?.productImage[0]}
                   alt="product"
                   className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded"
                 />
                 <div>
                   <p className="text-sm text-gray-400">Nallakkar</p>
                   <p className="text-xs sm:text-sm font-semibold">
-                    Boy Regular Fit Self Design Light T Shirt ( S )
+                     {item?.productName} ( {item?.size} )
                   </p>
                   <div className="w-5 h-5 rounded-full bg-yellow-700 border mt-2"></div>
                 </div>
@@ -59,7 +73,7 @@ const ShoppingCart = () => {
 
               {/* Unit Price */}
               <p className="text-gray-700 sm:text-center text-sm sm:text-base">
-                1500.00
+                {item?.productPrice}
               </p>
 
               {/* Quantity */}
@@ -67,7 +81,7 @@ const ShoppingCart = () => {
                 <button className="px-2 py-1 border rounded">
                   <FaMinus size={12} />
                 </button>
-                <span className="text-sm sm:text-base">2</span>
+                <span className="text-sm sm:text-base">{item?.quantity}</span>
                 <button className="px-2 py-1 border rounded">
                   <FaPlus size={12} />
                 </button>

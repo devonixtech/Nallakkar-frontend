@@ -524,6 +524,7 @@ export default function CategoriesPage() {
 
 function CategoryModal({ category, onClose, onSave }) {
    const dispatch = useDispatch();
+   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: category?.name || "",
     status: category?.status || "0",
@@ -546,7 +547,7 @@ function CategoryModal({ category, onClose, onSave }) {
   if (formData.image) {
     data.append("image", formData.image);
   }
-
+setLoading(true)
   if (category?.id) {
     // ✅ Update existing category
     dispatch(updateCategory({ id: category.id, data }))
@@ -556,6 +557,7 @@ function CategoryModal({ category, onClose, onSave }) {
         onClose();
       })
       .catch((err) => console.error("Failed to update category:", err));
+      
   } else {
     // ✅ Create new category
     dispatch(createCategory(data))
@@ -566,6 +568,7 @@ function CategoryModal({ category, onClose, onSave }) {
       })
       .catch((err) => console.error("Failed to create category:", err));
   }
+  setLoading(false);
 };
 
 
@@ -642,12 +645,21 @@ const confirmDelete = () => {
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              {category ? "Update" : "Create"} Category
-            </button>
+             <button
+      type="submit"
+      disabled={loading}  
+      className={`px-4 py-2 text-white rounded-lg ${
+        loading
+          ? "bg-blue-400 cursor-not-allowed"
+          : "bg-blue-600 hover:bg-blue-700"
+      }`}
+    >
+      {loading
+        ? "Saving..."
+        : category
+        ? "Update Category"
+        : "Create Category"}
+    </button>
           </div>
         </form>
       </div>
