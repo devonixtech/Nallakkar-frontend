@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
   import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
   import { useParams } from "react-router-dom";
-  import { fetchProductById ,fetchAllProducts, fetchSimilarProducts} from "../../Redux/slices/productSlice";
+  import { fetchProductById , fetchSimilarProducts} from "../../Redux/slices/productSlice";
 
   
 const productData = {
@@ -158,9 +158,11 @@ const ProductCarousel = ({ title, products }) => (
 
 export default function ProductDetailsPage() {
   const [selectedImage, setSelectedImage] = useState(productData.images[0]);
-  const [selectedSize, setSelectedSize] = useState("M");
+  // const [selectedSize, setSelectedSize] = useState("M");
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState({});
+
 const dispatch = useDispatch();
 const productId = useParams();
   useEffect(() => {
@@ -375,8 +377,32 @@ const RatingBreakdown = ({ stats }) => {
                 Order in 12h 30m to get next day delivery
               </p>
             </div>
+             <div>
+  {product?.variants && Object.keys(product.variants[0]).map((key) => (
+    <div key={key} className="mb-4">
+      <p className="text-sm font-bold mb-3">{`Select ${key}`}</p>
+      <div className="flex flex-wrap gap-3">
+        {Array.from(new Set(product.variants.map(v => v[key]))).map(option => (
+          <button
+            key={option}
+            onClick={() =>
+              setSelectedVariant(prev => ({ ...prev, [key]: option }))
+            }
+            className={`w-20 h-12 flex items-center justify-center rounded-[3px] font-bold text-lg transition-colors
+              ${selectedVariant[key] === option
+                ? "bg-primary text-white"
+                : "bg-gray-100 text-primary border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
 
-            <div>
+            {/* <div>
               <p className="text-sm font-bold mb-3">Select Size</p>
               <div className="flex flex-wrap gap-3">
                 {productData?.sizes.map((size) => (
@@ -394,7 +420,7 @@ const RatingBreakdown = ({ stats }) => {
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             <div className="flex gap-4 items-center">
               <Link
