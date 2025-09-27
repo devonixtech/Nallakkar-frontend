@@ -168,7 +168,7 @@ const productId = useParams();
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
     dispatch(fetchProductById(productId?.id));
-    dispatch(fetchSimilarProducts())
+    dispatch(fetchSimilarProducts(productId?.id))
   }, [dispatch]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
   // console.log("reviews",reviews)
