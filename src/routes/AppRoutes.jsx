@@ -51,6 +51,10 @@ import WomenWrapper from "../Pages/Categories/WomenWrapper";
 import ToyWrapper from "../Pages/Categories/ToyWrapper";
 import HomeDecorWrapper from "../Pages/Categories/HomeDecorWrapper";
 import ContactPage from "../Pages/admin/ContactPage";
+import InvestorDashboard from "../Pages/Investor/InvestorDashboard"
+import InvestorOrder from "../Pages/Investor/InvestorOrder";
+import InvestorProduct from "../Pages/Investor/InvestorProduct";
+import Addinvestor from "../Pages/admin/Addinvestor";
 
 export default function AppRoutes() {
   return (
@@ -126,6 +130,7 @@ export default function AppRoutes() {
         <Route path="products/add" element={<AddProduct />} />
         <Route path="orders" element={<Orders />} />
         <Route path="users" element={<Users />} />
+        <Route path="addinvestor" element={<Addinvestor />} />
         <Route path="categories" element={<Categories></Categories>}></Route>
         <Route path="Inquiries" element={<ContactPage></ContactPage>}></Route>
         <Route
@@ -136,6 +141,16 @@ export default function AppRoutes() {
           path="productsDetails"
           element={<ProductDetails></ProductDetails>}
         ></Route>
+      </Route>
+
+      
+      {/* investor Panel routes */}
+      <Route path="/investor" element={<ProtectedRoute />}>
+        <Route path="/investor/investorDashboard" element={<InvestorDashboard />} />
+       
+        <Route path="investorProduct" element={<InvestorProduct />} />
+        <Route path="investorOrder" element={<InvestorOrder />} />
+       
       </Route>
     </Routes>
   );

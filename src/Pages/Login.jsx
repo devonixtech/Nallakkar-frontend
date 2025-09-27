@@ -99,13 +99,28 @@ const Login = () => {
            <button
               type="button"
               // onClick={handleLogin}
-              onClick={()=>navigate("/admin/dashboard")}
+              onClick={()=>{
+                 localStorage.setItem("role", "admin");
+                navigate("/admin/dashboard")}}
 
               // disabled={loading || !detectedType}
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
             >
               {/* {loading ? "Sending OTP..." : "Continue"} */}
               Admin
+            </button>
+            <button
+              type="button"
+              // onClick={handleLogin}
+              onClick={()=>{
+                  localStorage.setItem("role", "investor");
+                navigate("/investor/investorDashboard")}}
+
+              // disabled={loading || !detectedType}
+              className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+            >
+              {/* {loading ? "Sending OTP..." : "Continue"} */}
+              Investor
             </button>
         </div>
       </div>
