@@ -124,7 +124,8 @@ const Wishlist = () => {
       dispatch(fetchWishlistByUserId(userId));
     }
   }, [dispatch, userId]);
-
+ const { items , loading, error } = useSelector((state) => state.wishlist);
+  console.log("wishlistItemsFromStore",  items);
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
       prev.includes(index)
@@ -145,7 +146,7 @@ const Wishlist = () => {
         {/* Banner Section */}
         <div
           className="relative bg-cover bg-center h-80"
-          style={{ backgroundImage: `url(${banner})` }} // <-- REPLACE WITH YOUR BANNER IMAGE
+          style={{ backgroundImage: `url(${banner})` }}  
         >
           <div className="absolute inset-0 bg-opacity-90"></div>
           <div className="relative h-full flex flex-col justify-center items-start text-white p-8 sm:p-12 lg:p-24">
@@ -158,7 +159,7 @@ const Wishlist = () => {
 
         {/* Products */}
         <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-16 mt-6 px-2 md:px-12 scrollbar-hide">
-          {wishlistItems.map((item, index) => (
+          {items?.map((item, index) => (
             <div
               key={index}
               className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
@@ -171,11 +172,11 @@ const Wishlist = () => {
               onMouseLeave={() => setActiveCard(null)}
             >
               <div className="relative overflow-hidden rounded-t-lg">
-                <Link to={`/product/${item.id}`}>
+                <Link to={`/product/${item?.id}`}>
                   {" "}
                   <img
-                    src={item.imageUrl}
-                    alt={item.title}
+                    src={item?.image[0]}
+                    alt={item?.name}
                     className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
                       activeCard === index
                         ? "scale-105"
@@ -185,7 +186,7 @@ const Wishlist = () => {
                 </Link>
 
                 {/* Hover Add to Cart Button with Icon */}
-                <Link to={`/product/${item.id}`}>
+                <Link to={`/product/${item?.productId}`}>
                   {" "}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <Link
@@ -213,7 +214,7 @@ const Wishlist = () => {
 
                 {/* Rating */}
                 <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                  <span>{item.rating}</span> • <span>{item.reviews}</span>
+                  <span>{item?.rating}</span> • <span>{item?.reviews}</span>
                 </div>
 
                 {/* Heart Icon */}
@@ -237,12 +238,12 @@ const Wishlist = () => {
               </p>
 
               <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                {item.title}
+                {item?.name}
               </p>
 
               <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                 <span className="text-darkpink font-semibold text-sm">
-                  {item.price}
+                  {item?.price}
                 </span>
                 <span className="text-gray-500 text-xs">{item.discount}</span>
               </div>
