@@ -104,7 +104,7 @@ const productId = useParams();
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
     dispatch(fetchProductById(productId?.id));
-    dispatch(fetchSimilarProducts())
+    dispatch(fetchSimilarProducts(productId?.id))
   }, [dispatch]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
   // console.log("reviews",reviews)
@@ -180,7 +180,7 @@ const sliderSettings = {
   // const stats = reviews?.stats || {};
   useEffect(() => {
   if (product?.image?.length > 0) {
-    setSelectedImage(product.image[0]);
+    setSelectedImage(product?.image[0]);
   }
 }, [product]);
 const getRatingBreakdown = (stats) => {
@@ -202,7 +202,7 @@ const RatingBreakdown = ({ stats }) => {
 
   return (
     <div className="mt-4 space-y-1">
-      {ratingBreakdown.map((item) => (
+      {ratingBreakdown?.map((item) => (
         <div
           key={item?.stars}
           className="flex items-center gap-2 text-sm text-gray-600"
@@ -240,35 +240,36 @@ const RatingBreakdown = ({ stats }) => {
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-x-[2rem] mt-8">
           <div>
-            <div className="flex gap-4">
-              <div className="flex flex-col gap-4">
-                {product?.image?.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(img)}
-                    className={`w-28 h-40 rounded-lg overflow-hidden border-2 ${
-                      selectedImage === img
-                        ? "border-gray-800"
-                        : "border-transparent"
-                    }`}
-                  >
-                    <img
-                      src={img}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
+           <div className="flex flex-col md:flex-row gap-4">
+  {/* Thumbnail Section */}
+  <div className="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-visible">
+    {product?.image?.map((img, index) => (
+      <button
+        key={index}
+        onClick={() => setSelectedImage(img)}
+        className={`w-20 h-28 md:w-28 md:h-40 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
+          selectedImage === img ? "border-gray-800" : "border-transparent"
+        }`}
+      >
+        <img
+          src={img}
+          alt={`Thumbnail ${index + 1}`}
+          className="w-full h-full object-cover"
+        />
+      </button>
+    ))}
+  </div>
 
-              <div className="flex-1">
-                <img
-                  src={selectedImage}
-                  alt="Selected Product"
-                  className="w-full h-[680px] object-cover rounded-lg aspect-[4/5]"
-                />
-              </div>
-            </div>
+  {/* Main Image Section */}
+  <div className="order-1 md:order-2 flex-1">
+    <img
+      src={selectedImage}
+      alt="Selected Product"
+      className="w-full h-[400px] md:h-[680px] object-cover rounded-lg aspect-[4/5]"
+    />
+  </div>
+</div>
+
 
             {/* Ratings & Reviews (image ke neeche) */}
             <section className="my-16 hidden lg:block">
@@ -351,7 +352,8 @@ const RatingBreakdown = ({ stats }) => {
           </div>
 
           {/* Product Information */}
-          <div className="flex flex-col gap-y-6 lg:mt-0 pl-[2rem] border-l-2">
+        <div className="flex flex-col gap-y-6 lg:mt-0 lg:pl-[2rem] lg:border-l-2">
+
             <div>
               <button className="text-xs mb-4 uppercase font-bold border py-1 px-2 rounded-sm text-gray-400 tracking-wider">
                 {productData?.category}
@@ -370,11 +372,12 @@ const RatingBreakdown = ({ stats }) => {
               </p>
             </div>
              <div>
-  {product?.variants && Object.keys(product.variants[0]).map((key) => (
+  { Array.isArray(product?.variants) && product.variants.length > 0 &&
+  Object.keys(product.variants[0]).map((key) => (
     <div key={key} className="mb-4">
       <p className="text-sm font-bold mb-3">{`Select ${key}`}</p>
       <div className="flex flex-wrap gap-3">
-        {Array.from(new Set(product.variants.map(v => v[key]))).map(option => (
+        {Array?.from(new Set(product?.variants?.map(v => v[key]))).map(option => (
           <button
             key={option}
             onClick={() =>

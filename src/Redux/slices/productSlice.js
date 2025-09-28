@@ -73,7 +73,7 @@ export const fetchSimilarProducts = createAsyncThunk(
   "products/fetchSimilar",
   async (id, { rejectWithValue }) => {
     try {
-      const res = await api.get(`product/getAllProducts`);
+      const res = await api.get(`filteredProduct/getSimilarProducts/${id}`);
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

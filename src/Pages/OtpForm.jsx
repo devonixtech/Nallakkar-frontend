@@ -27,6 +27,9 @@ const OtpForm = ({ changeNumber }) => {
       alert("OTP Verified Successfully!");
       // Example: save token or user data in localStorage
       localStorage.setItem("authToken", response.data.token);
+      localStorage.setItem("userId", response.data.userId);
+      console.log("userId", response.data);
+      localStorage.setItem("isLoggedIn", "true");
       // navigate user to dashboard if needed
     } catch (error) {
       console.error("❌ OTP Verification Failed:", error.response?.data || error.message);
