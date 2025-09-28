@@ -383,7 +383,7 @@ const RatingBreakdown = ({ stats }) => {
            {/* Variants Section */}
 <div>
   {product?.variants &&
-    Object.keys(product.variants).map((variantKey) => (
+    Object?.keys(product?.variants)?.map((variantKey) => (
       <div key={variantKey} className="mb-4">
         <p className="text-sm font-bold mb-3">{`Select ${variantKey}`}</p>
         <div className="flex flex-wrap gap-3">
