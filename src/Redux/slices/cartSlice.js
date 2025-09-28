@@ -30,11 +30,11 @@ export const fetchCartByUserId = createAsyncThunk(
 );
 
 // ✅ Update cart item quantity
-export const updateCartItem = createAsyncThunk(
+ export const updateCartItem = createAsyncThunk(
   "cart/update",
-  async ({ userId, productId, variant, action }, { rejectWithValue }) => {
+  async ({ cartId, action }, { rejectWithValue }) => {
     try {
-      const res = await api.patch(`${BASE_URL}/updateCart`, { userId, productId, variant, action });
+      const res = await api.patch(`${BASE_URL}/updateCart`, { cartId, action });
       return {
         cartId: res.data.cartId,
         newQuantity: res.data.newQuantity,
@@ -44,6 +44,7 @@ export const updateCartItem = createAsyncThunk(
     }
   }
 );
+
 
 // ✅ Remove from cart
 export const removeFromCart = createAsyncThunk(

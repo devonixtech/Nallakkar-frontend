@@ -23,28 +23,23 @@ const ShoppingCart = () => {
        dispatch(fetchCartByUserId(userId));
     }
   };
-    // Increment
-const handleIncrement = (item) => {
+  
+ const handleIncrement = (item) => {
   dispatch(updateCartItem({
-    userId,
-    productId: item.productId,
-    variant: item.variant,
+    cartId: item.cartId,
     action: 1
   }));
 };
 
-// Decrement
 const handleDecrement = (item) => {
   if (item.quantity > 1) {
     dispatch(updateCartItem({
-      userId,
-      productId: item.productId,
-      variant: item.variant,
+      cartId: item.cartId,
       action: -1
     }));
   }
 };
- console.log("cart items", items);
+
 
   return (
     <div className="w-full min-h-screen bg-white">
