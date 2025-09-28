@@ -72,11 +72,13 @@ const FilterSection = ({ title, children, defaultOpen = false }) => {
   );
 };
 
-const Checkbox = ({ label }) => (
+ const Checkbox = ({ label, checked, onChange }) => (
   <div className="flex items-center mb-2">
     <input
       type="checkbox"
       id={label}
+      checked={checked}
+      onChange={onChange}
       className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
     />
     <label htmlFor={label} className="ml-3 text-sm text-gray-600">
@@ -84,6 +86,7 @@ const Checkbox = ({ label }) => (
     </label>
   </div>
 );
+
 
  
 
@@ -135,6 +138,7 @@ export default function ProductListingPage() {
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
 const [selectedFilters, setSelectedFilters] = useState({});
+const [appliedFilters, setAppliedFilters] = useState({});
 
 
   const toggleWishlist = (index) => {
@@ -187,6 +191,24 @@ useEffect(() => {
     }
   }
 }, [subcategory, selectedCategoryId]);
+const handleFilterChange = (filterName, value) => {
+  setAppliedFilters((prev) => {
+    const currentValues = prev[filterName] || [];
+    if (currentValues.includes(value)) {
+      // remove value
+      return {
+        ...prev,
+        [filterName]: currentValues.filter((v) => v !== value),
+      };
+    } else {
+      // add value
+      return {
+        ...prev,
+        [filterName]: [...currentValues, value],
+      };
+    }
+  });
+};
 
   return (
     <div className="bg-[#FCFCFC] font-sans">
@@ -227,23 +249,28 @@ useEffect(() => {
             <div className="sticky top-8">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-gray-800">FILTERS</h2>
-                <button className="text-sm text-pink-500 hover:underline">
+                <button className="text-sm text-pink-500 hover:underline"
+                onClick={() => setAppliedFilters({})}
+                >
                   Clear all
                 </button>
               </div>
               <div className="max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar pr-2">
                 {/* Dynamic Filters */}
-                 {Object.entries(selectedFilters).map(
-                  ([filterName, filterValues]) => (
-                    <FilterSection key={filterName} title={filterName} defaultOpen={false}>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                        {filterValues.map((value) => (
-                          <Checkbox key={value} label={value} />
-                        ))}
-                      </div>
-                    </FilterSection>
-                  )
-                )}
+                 {Object.entries(selectedFilters).map(([filterName, filterValues]) => (
+  <FilterSection key={filterName} title={filterName} defaultOpen={false}>
+    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+      {filterValues.map((value) => (
+        <Checkbox
+          key={value}
+          label={value}
+          checked={appliedFilters[filterName]?.includes(value) || false}
+          onChange={() => handleFilterChange(filterName, value)}
+        />
+      ))}
+    </div>
+  </FilterSection>
+))}
 
 
                 {/* <FilterSection title="Pricing">
@@ -280,25 +307,25 @@ useEffect(() => {
           {/* Products Section (No changes here) */}
           {/* Products Section */}
           <section className="w-full lg:w-3/4">
-            <div className="flex flex-wrap items-center gap-2 mb-6">
-              {appliedFiltersData.map((filter) => (
-                <span
-                  key={filter}
-                  className="flex items-center bg-white border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700"
-                >
-                  {filter}
-                  <button className="ml-2 text-gray-500 hover:text-gray-800">
-                    <IoClose size={16} />
-                  </button>
-                </span>
-              ))}
-              <span className="flex items-center bg-white border border-gray-300 rounded-full p-1 text-sm text-gray-700">
-                <div className="w-5 h-5 bg-gray-800 rounded-full"></div>
-                <button className="mx-2 text-gray-500 hover:text-gray-800">
-                  <IoClose size={16} />
-                </button>
-              </span>
-            </div>
+             <div className="flex flex-wrap items-center gap-2 mb-6">
+  {Object.entries(appliedFilters).map(([filterName, values]) =>
+    values.map((val) => (
+      <span
+        key={`${filterName}-${val}`}
+        className="flex items-center bg-white border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700"
+      >
+        {val}
+        <button
+          onClick={() => handleFilterChange(filterName, val)}
+          className="ml-2 text-gray-500 hover:text-gray-800"
+        >
+          <IoClose size={16} />
+        </button>
+      </span>
+    ))
+  )}
+</div>
+
 
             {/* Mobile → Horizontal scroll | Desktop → Grid */}
             <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 sm:overflow-visible overflow-x-auto flex sm:flex-none flex-nowrap gap-4 pb-9">

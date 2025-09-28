@@ -661,9 +661,9 @@ const RatingBreakdown = ({ stats }) => {
     Similar Products
   </h2>
   <div className="slider-container">
-    {similarProducts && similarProducts.length > 0 ? (
+    {similarProducts && similarProducts?.length > 0 ? (
       <Slider {...sliderSettings}>
-        {similarProducts.map((item, index) => (
+        {similarProducts?.map((item, index) => (
           <div
             key={index}
             className={`group text-center bg-white p-2 transition-all duration-300 transform ${
