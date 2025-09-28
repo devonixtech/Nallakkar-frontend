@@ -19,6 +19,7 @@ import { useDispatch,useSelector } from "react-redux";
   import { useParams } from "react-router-dom";
   import { fetchProductById } from "../../Redux/slices/productSlice";
   import {fetchSimilarProducts , addRecentlyViewed , fetchRecentlyViewed} from "../../Redux/slices/filteredProductSlice"
+  import { addToCart } from "../../Redux/slices/cartSlice";
 import Slider from "react-slick";  
   import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
@@ -120,10 +121,41 @@ const userId =  "7";
   
   const product = useSelector((state) => state)?.products?.productData?.data;
   const  similarProducts = useSelector((state)=>state?.filteredProducts?.similarProducts)
-  console.log("similarProducts",similarProducts)
   const recentlyViewed = useSelector((state)=>state?.filteredProducts?.recentlyViewed)
-  console.log("recentlyViewed",recentlyViewed)
- 
+ const handleAddToCart = () => {
+  if (!userId) {
+    alert("Please login to add items to cart");
+    return;
+  }
+
+  // Ensure all variant selections are made
+  const requiredVariants = product?.variants ? Object.keys(product.variants) : [];
+  const missingVariants = requiredVariants.filter(
+    (v) => !selectedVariant[v]
+  );
+  if (missingVariants.length > 0) {
+    alert(`Please select: ${missingVariants.join(", ")}`);
+    return;
+  }
+
+  const payload = {
+    userId, 
+    productId: product?.id,
+    variant: selectedVariant,
+    quantity: 1, // You can later add quantity selector
+  };
+
+  dispatch(addToCart(payload))
+    .unwrap()
+    .then((res) => {
+      alert("Product added to cart!");
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Failed to add to cart");
+    });
+};
+
 
 // Custom Arrows
 const NextArrow = ({ onClick }) => (
@@ -398,12 +430,18 @@ const RatingBreakdown = ({ stats }) => {
 </div>
 
             <div className="flex gap-4 items-center">
-              <Link
+              {/* <Link
                 to={"/cart"}
                 className="py-3 px-6 bg-primary text-white font-bold transition-colors"
               >
-                Add to Cart
-              </Link>
+                Add to Carts
+              </Link> */}
+              <button
+  onClick={handleAddToCart}
+  className="py-3 px-6 bg-primary text-white font-bold transition-colors"
+>
+  Add to Cart
+</button>
               <Link
                 to={"/buyNow"}
                 className="py-3 px-8 bg-rose text-white font-bold transition-colors"

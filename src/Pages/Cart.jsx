@@ -3,11 +3,11 @@ import shoppingcart from "../assets/ShoppingCart.png";
 import details from "../assets/details2.png";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import { fetchCartByUserId } from "../Redux/slices/cartSlice";
+import { fetchCartByUserId , removeFromCart , updateCartItem } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 const ShoppingCart = () => {
   // const userId = localStorage.getItem("userId");
-  const userId = 2; // temp userId
+  const userId = 7; // temp userId
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector((state) => state.cart);
   
@@ -17,7 +17,35 @@ const ShoppingCart = () => {
     }
   }, [dispatch, userId]);
 
-  console.log("Cart Items:", items);
+    const handleRemove = (cartItemId) => {
+    if (window.confirm("Are you sure you want to remove this item?")) {
+      dispatch(removeFromCart(cartItemId));
+       dispatch(fetchCartByUserId(userId));
+    }
+  };
+    // Increment
+const handleIncrement = (item) => {
+  dispatch(updateCartItem({
+    userId,
+    productId: item.productId,
+    variant: item.variant,
+    action: 1
+  }));
+};
+
+// Decrement
+const handleDecrement = (item) => {
+  if (item.quantity > 1) {
+    dispatch(updateCartItem({
+      userId,
+      productId: item.productId,
+      variant: item.variant,
+      action: -1
+    }));
+  }
+};
+ console.log("cart items", items);
+
   return (
     <div className="w-full min-h-screen bg-white">
       {/* Header with background image */}
@@ -50,7 +78,7 @@ const ShoppingCart = () => {
           </div>
 
           {/* Product Item */}
-          {items?.items?.map((item, index) => (
+          {items?.map((item, index) => (
             <div
               key={item?.id}
               className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
@@ -65,9 +93,17 @@ const ShoppingCart = () => {
                 <div>
                   <p className="text-sm text-gray-400">Nallakkar</p>
                   <p className="text-xs sm:text-sm font-semibold">
-                     {item?.productName} ( {item?.size} )
+                     {item?.productName}  ({" "}
+  {item?.variant &&
+    Object?.entries(item?.variant)?.map(([key, value], index) => (
+      <span key={key}>
+        {key}: {value}
+        {index < Object?.entries(item.variant).length - 1 ? ", " : ""}
+      </span>
+    ))}{" "}
+  )
                   </p>
-                  <div className="w-5 h-5 rounded-full bg-yellow-700 border mt-2"></div>
+                  {/* <div className="w-5 h-5 rounded-full bg-yellow-700 border mt-2"></div> */}
                 </div>
               </div>
 
@@ -78,11 +114,15 @@ const ShoppingCart = () => {
 
               {/* Quantity */}
               <div className="flex items-center gap-2 sm:justify-center">
-                <button className="px-2 py-1 border rounded">
+                <button className="px-2 py-1 border rounded"
+                onClick={() => handleDecrement(item)}
+                >
                   <FaMinus size={12} />
                 </button>
                 <span className="text-sm sm:text-base">{item?.quantity}</span>
-                <button className="px-2 py-1 border rounded">
+                <button className="px-2 py-1 border rounded"
+                 onClick={() => handleIncrement(item)}
+                 >
                   <FaPlus size={12} />
                 </button>
               </div>
@@ -90,7 +130,8 @@ const ShoppingCart = () => {
               {/* Total */}
               <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
                 <p className="text-gray-700 text-sm sm:text-base">3000.00</p>
-                <button className="text-gray-500 hover:text-red-500">
+                <button className="text-gray-500 hover:text-red-500"
+                 onClick={() => handleRemove(item?.cartId)}>
                   <FaTimes />
                 </button>
               </div>
