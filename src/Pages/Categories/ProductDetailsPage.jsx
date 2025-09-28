@@ -1,3 +1,5 @@
+
+
 import React, { useState,useEffect } from "react";
 import { FiHeart, FiShare2, FiStar, FiChevronLeft } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
@@ -19,9 +21,11 @@ import { Link } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
   import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
   import { useParams } from "react-router-dom";
-  import { fetchProductById ,fetchAllProducts, fetchSimilarProducts} from "../../Redux/slices/productSlice";
+  import { fetchProductById , fetchSimilarProducts} from "../../Redux/slices/productSlice";
+import Slider from "react-slick"; // Assuming react-slick
+  import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 
-  
 const productData = {
   id: 1,
   category: "Girl Fashion",
@@ -46,76 +50,6 @@ const productData = {
   reviewsCount: 50,
   ratingBreakdown: [52, 28, 10, 5, 5], // Percentages for 5, 4, 3, 2, 1 stars
 };
-
-// const reviewsData = [
-//   {
-//     id: 1,
-//     author: "Naveena Reddy",
-//     rating: 5,
-//     comment:
-//       "\"NallaKar dedication to sustainable and ethical practices resonates strongly with me. As a consumer, it's reassuring to know that I'm supporting a brand that values the planet.\"",
-//     images: [img1, img2, img3],
-//   },
-//   {
-//     id: 3,
-//     author: "Priya Patel",
-//     rating: 5,
-//     comment:
-//       '"Absolutely beautiful product. Looks even better in person than in the pictures. Highly recommend!"',
-//     images: [img4],
-//   },
-//   {
-//     id: 2,
-//     author: "Rohan Sharma",
-//     rating: 4,
-//     comment:
-//       '"Great quality jacket, my daughter loves it. The fit is perfect. The delivery was also very fast."',
-//     images: [],
-//   },
-// ];
-
-// const similarProducts = [
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: " 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: man,
-//   },
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: " 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: shoes,
-//   },
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: " 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: jacket,
-//   },
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: " 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: women,
-//   },
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: " 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: doll,
-//   },
-// ];
 
 const ProductCard = ({ product }) => (
   <div className="group flex-shrink-0 w-48 md:w-56">
@@ -156,11 +90,15 @@ const ProductCarousel = ({ title, products }) => (
   </div>
 );
 
+
+
 export default function ProductDetailsPage() {
   const [selectedImage, setSelectedImage] = useState(productData.images[0]);
-  const [selectedSize, setSelectedSize] = useState("M");
+  // const [selectedSize, setSelectedSize] = useState("M");
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState({});
+
 const dispatch = useDispatch();
 const productId = useParams();
   useEffect(() => {
@@ -180,8 +118,64 @@ const productId = useParams();
   
   const product = useSelector((state) => state)?.products?.productData?.data;
   const  similarProducts = useSelector((state)=>state?.products?.similarProducts)
+
+
+// Custom Arrows
+const NextArrow = ({ onClick }) => (
+  <button
+    className="w-10 h-10 flex items-center justify-center rounded-full  text-black absolute -bottom-14 right-[45%] z-10 shadow-md" style={{backgroundColor: "#1a214c", color: "white"}}
+    onClick={onClick}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+);
+
+const PrevArrow = ({ onClick }) => (
+  <button
+    className="w-10  h-10 flex items-center justify-center rounded-full  text-black absolute -bottom-14 left-[48%] z-10 shadow-md"
+    onClick={onClick}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+);
+
+// Slider Settings
+const sliderSettings = {
+  dots: false,   // dots hata diye
+  infinite: true,
+  speed: 500,
+  slidesToShow: 5,
+  slidesToScroll: 5,
+  nextArrow: <NextArrow />,
+  prevArrow: <PrevArrow />,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+      },
+    },
+    {
+      breakpoint: 640,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2,
+      },
+    },
+  ],
+};
+
   console.log("similarProducts1",similarProducts)
   console.log("product",product)
+
+
+
+  
   // setSelectedImage(product?.image[0] || "");
   // const stats = reviews?.stats || {};
   useEffect(() => {
@@ -229,7 +223,7 @@ const RatingBreakdown = ({ stats }) => {
 };
 
   return (
-    <div className="bg-white font-sans">
+    <div className="bg-white font-sans mb-14">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <header className="pt-8 flex justify-between items-center">
           <button className="flex items-center gap-2">
@@ -375,8 +369,32 @@ const RatingBreakdown = ({ stats }) => {
                 Order in 12h 30m to get next day delivery
               </p>
             </div>
+             <div>
+  {product?.variants && Object.keys(product.variants[0]).map((key) => (
+    <div key={key} className="mb-4">
+      <p className="text-sm font-bold mb-3">{`Select ${key}`}</p>
+      <div className="flex flex-wrap gap-3">
+        {Array.from(new Set(product.variants.map(v => v[key]))).map(option => (
+          <button
+            key={option}
+            onClick={() =>
+              setSelectedVariant(prev => ({ ...prev, [key]: option }))
+            }
+            className={`w-20 h-12 flex items-center justify-center rounded-[3px] font-bold text-lg transition-colors
+              ${selectedVariant[key] === option
+                ? "bg-primary text-white"
+                : "bg-gray-100 text-primary border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
 
-            <div>
+            {/* <div>
               <p className="text-sm font-bold mb-3">Select Size</p>
               <div className="flex flex-wrap gap-3">
                 {productData?.sizes.map((size) => (
@@ -394,7 +412,7 @@ const RatingBreakdown = ({ stats }) => {
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             <div className="flex gap-4 items-center">
               <Link
@@ -458,7 +476,7 @@ const RatingBreakdown = ({ stats }) => {
             </div>
 
             {/* Product Details - Updated Structure */}
-            <div className="bg-gray-50 text-sm">
+            <div className=" text-sm">
               <div className="max-w-md bg-white rounded-xl shadow p-4 border">
                 <h2 className="text-lg font-bold mb-3">Shipping</h2>
 
@@ -617,199 +635,214 @@ const RatingBreakdown = ({ stats }) => {
           </section>
         </main>
 
+        {/* --- SIMILAR PRODUCTS SLIDER CHANGE --- */}
         <div className="py-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Similar Products
           </h2>
-          <div className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 hide-scrollbar">
-            {similarProducts?.map((item, index) => (
-              <div
-                key={index}
-                className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
-                  activeCard === index
-                    ? "shadow-xl scale-[1.02]"
-                    : "hover:shadow-lg hover:-translate-y-1"
-                }`}
-                onMouseDown={() => setActiveCard(index)}
-                onMouseUp={() => setActiveCard(null)}
-                onMouseLeave={() => setActiveCard(null)}
-              >
-                <div className="relative overflow-hidden rounded-t-lg">
-                  <Link to={`/product/${item.id}`}>
-                    {" "}
-                    <img
-                      src={item?.image[0]}
-                      alt={item?.title}
-                      className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                        activeCard === index
-                          ? "scale-105"
-                          : "group-hover:scale-105"
-                      }`}
-                    />
-                  </Link>
+          {/* Change 1: Replace the old flex container with Slider component */}
+          <div className="slider-container">
+            {/* Pass the settings to the Slider component */}
+            <Slider {...sliderSettings}>
+              {similarProducts?.map((item, index) => (
+                // Important: The Slider requires direct children, so remove flex-shrink-0 or min-w/w classes on the wrapper inside the map if they conflict with the library's styling. The library will handle the layout.
+                <div
+                  key={index}
+                  className={`group text-center bg-white p-2 transition-all duration-300 transform ${
+                    activeCard === index
+                      ? "shadow-xl scale-[1.02]"
+                      : "hover:shadow-lg hover:-translate-y-1"
+                  }`}
+                  onMouseDown={() => setActiveCard(index)}
+                  onMouseUp={() => setActiveCard(null)}
+                  onMouseLeave={() => setActiveCard(null)}
+                >
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <Link to={`/product/${item.id}`}>
+                      <img
+                        src={item?.image[0]}
+                        alt={item?.title}
+                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
+                          activeCard === index
+                            ? "scale-105"
+                            : "group-hover:scale-105"
+                        }`}
+                      />
+                    </Link>
 
-                  {/* Hover Add to Cart Button with Icon */}
-                  <Link to={`/product/${item?.id}`}>
-                    {" "}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <Link
-                        to={"/cart"}
-                        className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                    {/* Hover Add to Cart Button with Icon */}
+                    <Link to={`/product/${item?.id}`}>
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <Link
+                          to={"/cart"}
+                          className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
-                          />
-                        </svg>
-                        ADD TO CART
-                      </Link>
-                    </div>
-                  </Link>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
+                            />
+                          </svg>
+                          ADD TO CART
+                        </Link>
+                      </div>
+                    </Link>
 
-                  {/* Rating */}
-                  <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                    <span>{item?.rating}</span> • <span>{item?.reviewCount}</span>
+                    {/* Rating */}
+                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
+                      <span>{item?.rating}</span> •{" "}
+                      <span>{item?.reviewCount}</span>
+                    </div>
+
+                    {/* Heart Icon */}
+                    <button
+                      onClick={() => toggleWishlist(index)}
+                      className="absolute top-2 right-2 p-1 transition hover:scale-110"
+                    >
+                      <Heart
+                        className={`w-5 h-5 transition-colors ${
+                          wishlist.includes(index)
+                            ? "fill-rose text-rose"
+                            : "text-white"
+                        }`}
+                        strokeWidth={2}
+                      />
+                    </button>
                   </div>
 
-                  {/* Heart Icon */}
-                  <button
-                    onClick={() => toggleWishlist(index)}
-                    className="absolute top-2 right-2 p-1 transition hover:scale-110"
-                  >
-                    <Heart
-                      className={`w-5 h-5 transition-colors ${
-                        wishlist.includes(index)
-                          ? "fill-rose text-rose"
-                          : "text-white"
-                      }`}
-                      strokeWidth={2}
-                    />
-                  </button>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
+                    Nallakkar
+                  </p>
+
+                  <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
+                    {item?.name}
+                  </p>
+
+                  <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
+                    <span className="text-darkpink font-semibold text-sm">
+                      {item?.price}
+                    </span>
+                    <span className="text-gray-500 text-xs">
+                      ( {item?.discount}% )
+                    </span>
+                  </div>
                 </div>
-
-                <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
-                  Nallakkar
-                </p>
-
-                <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                  {item?.name}
-                </p>
-
-                <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
-                  <span className="text-darkpink font-semibold text-sm">
-                    {item?.price}
-                  </span>
-                  <span className="text-gray-500 text-xs">( {item?.discount}% )</span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </Slider>
           </div>
         </div>
+        {/* --- SIMILAR PRODUCTS SLIDER CHANGE END --- */}
 
-        <div className="pb-14">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+
+        {/* --- RECENTLY VIEWED SLIDER CHANGE --- */}
+        <div className="pb-14 pt-14">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-5">
             Recently Viewed
           </h2>
-          <div className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 hide-scrollbar">
-            {similarProducts?.map((item, index) => (
-              <div
-                key={index}
-                className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
-                  activeCard === index
-                    ? "shadow-xl scale-[1.02]"
-                    : "hover:shadow-lg hover:-translate-y-1"
-                }`}
-                onMouseDown={() => setActiveCard(index)}
-                onMouseUp={() => setActiveCard(null)}
-                onMouseLeave={() => setActiveCard(null)}
-              >
-                <div className="relative overflow-hidden rounded-t-lg">
-                  <Link to={`/product/${item.id}`}>
-                    {" "}
-                    <img
-                      src={item.image[0]}
-                      alt={item.title}
-                      className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                        activeCard === index
-                          ? "scale-105"
-                          : "group-hover:scale-105"
-                      }`}
-                    />
-                  </Link>
+          {/* Change 2: Replace the old flex container with Slider component */}
+          <div className="slider-container">
+            <Slider {...sliderSettings}>
+              {/* Using similarProducts as a placeholder for recently viewed data */}
+              {similarProducts?.map((item, index) => (
+                <div
+                  key={index}
+                  className={`group text-center bg-white p-2 transition-all duration-300 transform ${
+                    activeCard === index
+                      ? "shadow-xl scale-[1.02]"
+                      : "hover:shadow-lg hover:-translate-y-1"
+                  }`}
+                  onMouseDown={() => setActiveCard(index)}
+                  onMouseUp={() => setActiveCard(null)}
+                  onMouseLeave={() => setActiveCard(null)}
+                >
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <Link to={`/product/${item.id}`}>
+                      <img
+                        src={item.image[0]}
+                        alt={item.title}
+                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
+                          activeCard === index
+                            ? "scale-105"
+                            : "group-hover:scale-105"
+                        }`}
+                      />
+                    </Link>
 
-                  {/* Hover Add to Cart Button with Icon */}
-                  <Link to={`/product/${item.id}`}>
-                    {" "}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <Link
-                        to={"/cart"}
-                        className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                    {/* Hover Add to Cart Button with Icon */}
+                    <Link to={`/product/${item.id}`}>
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <Link
+                          to={"/cart"}
+                          className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
-                          />
-                        </svg>
-                        ADD TO CART
-                      </Link>
-                    </div>
-                  </Link>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
+                            />
+                          </svg>
+                          ADD TO CART
+                        </Link>
+                      </div>
+                    </Link>
 
-                  {/* Rating */}
-                  <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                    <span>{item.rating}</span> • <span>{item?.reviewCount}</span>
+                    {/* Rating */}
+                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
+                      <span>{item.rating}</span> •{" "}
+                      <span>{item?.reviewCount}</span>
+                    </div>
+
+                    {/* Heart Icon */}
+                    <button
+                      onClick={() => toggleWishlist(index)}
+                      className="absolute top-2 right-2 p-1 transition hover:scale-110"
+                    >
+                      <Heart
+                        className={`w-5 h-5 transition-colors ${
+                          wishlist.includes(index)
+                            ? "fill-rose text-rose"
+                            : "text-white"
+                        }`}
+                        strokeWidth={2}
+                      />
+                    </button>
                   </div>
 
-                  {/* Heart Icon */}
-                  <button
-                    onClick={() => toggleWishlist(index)}
-                    className="absolute top-2 right-2 p-1 transition hover:scale-110"
-                  >
-                    <Heart
-                      className={`w-5 h-5 transition-colors ${
-                        wishlist.includes(index)
-                          ? "fill-rose text-rose"
-                          : "text-white"
-                      }`}
-                      strokeWidth={2}
-                    />
-                  </button>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
+                    Nallakkar
+                  </p>
+
+                  <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
+                    {item?.name}
+                  </p>
+
+                  <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
+                    <span className="text-darkpink font-semibold text-sm">
+                      {item.price}
+                    </span>
+                    <span className="text-gray-500 text-xs">
+                      ( {item.discount}% )
+                    </span>
+                  </div>
                 </div>
-
-                <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
-                  Nallakkar
-                </p>
-
-                <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                  {item?.name}
-                </p>
-
-                <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
-                  <span className="text-darkpink font-semibold text-sm">
-                    {item.price}
-                  </span>
-                  <span className="text-gray-500 text-xs">( {item.discount}% )</span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </Slider>
           </div>
         </div>
       </div>
