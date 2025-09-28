@@ -188,7 +188,7 @@ const productId = useParams();
   // const stats = reviews?.stats || {};
   useEffect(() => {
   if (product?.image?.length > 0) {
-    setSelectedImage(product.image[0]);
+    setSelectedImage(product?.image[0]);
   }
 }, [product]);
 const getRatingBreakdown = (stats) => {
@@ -210,7 +210,7 @@ const RatingBreakdown = ({ stats }) => {
 
   return (
     <div className="mt-4 space-y-1">
-      {ratingBreakdown.map((item) => (
+      {ratingBreakdown?.map((item) => (
         <div
           key={item?.stars}
           className="flex items-center gap-2 text-sm text-gray-600"
@@ -378,11 +378,12 @@ const RatingBreakdown = ({ stats }) => {
               </p>
             </div>
              <div>
-  {product?.variants && Object.keys(product.variants[0]).map((key) => (
+  { Array.isArray(product?.variants) && product.variants.length > 0 &&
+  Object.keys(product.variants[0]).map((key) => (
     <div key={key} className="mb-4">
       <p className="text-sm font-bold mb-3">{`Select ${key}`}</p>
       <div className="flex flex-wrap gap-3">
-        {Array.from(new Set(product.variants.map(v => v[key]))).map(option => (
+        {Array?.from(new Set(product?.variants?.map(v => v[key]))).map(option => (
           <button
             key={option}
             onClick={() =>
