@@ -1,28 +1,18 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/favourite";
 
-// ✅ Add to wishlist
-export const addToWishlist = createAsyncThunk(
-  "wishlist/add",
-  async (wishlistData, { rejectWithValue }) => {
+// ✅ Add / Update wishlist
+export const toggleWishlist = createAsyncThunk(
+  "wishlist/toggle",
+  async ({ productId, userId, isFavourite }, { rejectWithValue }) => {
     try {
-      const res = await api.post(`${BASE_URL}/updateFavourite`, wishlistData);
-      return res.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
-
-// ✅ Get all user wishlist
-export const fetchWishlist = createAsyncThunk(
-  "wishlist/fetch",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await api.get(`${BASE_URL}/getUserWishlist`);
-      return res.data.data;
+      const res = await api.patch(`${BASE_URL}/updateFavourite/${productId}`, {
+        userId,
+        isFavourite,
+      });
+      return res.data; // returns { success, message, productId, userId, favourite }
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -35,7 +25,22 @@ export const fetchWishlistByUserId = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.get(`${BASE_URL}/getFavouiteByUserId/${userId}`);
-      return res.data.data;
+      return res.data.data; // array of favourites with product details
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// ✅ Get single favourite (user + product)
+export const fetchWishlistByUserAndProduct = createAsyncThunk(
+  "wishlist/fetchByUserAndProduct",
+  async ({ userId, productId }, { rejectWithValue }) => {
+    try {
+      const res = await api.get(
+        `${BASE_URL}/getFavouiteByUserIdPrductId/${userId}/${productId}`
+      );
+      return res.data.data; // single favourite object
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -45,23 +50,23 @@ export const fetchWishlistByUserId = createAsyncThunk(
 // ✅ Remove from wishlist
 export const removeFromWishlist = createAsyncThunk(
   "wishlist/remove",
-  async (id, { rejectWithValue }) => {
+  async ({ userId, productId }, { rejectWithValue }) => {
     try {
-      await api.delete(`${BASE_URL}/${id}`);
-      return id;
+      await api.delete(`${BASE_URL}/remove/${userId}/${productId}`);
+      return productId;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
 
-// ✅ Clear wishlist
+// ✅ Clear all wishlist (per user)
 export const clearWishlist = createAsyncThunk(
   "wishlist/clear",
-  async (_, { rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
     try {
-      await api.delete(`${BASE_URL}/clear`);
-      return true;
+      await api.delete(`${BASE_URL}/clear/${userId}`);
+      return userId;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -72,37 +77,35 @@ export const clearWishlist = createAsyncThunk(
 const wishlistSlice = createSlice({
   name: "wishlist",
   initialState: {
-    items: [],
+    items: [], // products in wishlist
+    singleFavourite: null, // result of fetchWishlistByUserAndProduct
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Add
-      .addCase(addToWishlist.pending, (state) => {
+      // Toggle add/remove
+      .addCase(toggleWishlist.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addToWishlist.fulfilled, (state, action) => {
+      .addCase(toggleWishlist.fulfilled, (state, action) => {
         state.loading = false;
-        state.items.push(action.payload);
+        const { productId, favourite } = action.payload;
+        if (favourite) {
+          // ✅ Add if favourite is true
+          if (!state.items.find((item) => item.productId === productId)) {
+            state.items.push(action.payload);
+          }
+        } else {
+          // ✅ Remove if favourite is false
+          state.items = state.items.filter(
+            (item) => item.productId !== productId
+          );
+        }
       })
-      .addCase(addToWishlist.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // Fetch all
-      .addCase(fetchWishlist.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchWishlist.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload;
-      })
-      .addCase(fetchWishlist.rejected, (state, action) => {
+      .addCase(toggleWishlist.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -121,32 +124,21 @@ const wishlistSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Fetch by user + product
+      .addCase(fetchWishlistByUserAndProduct.fulfilled, (state, action) => {
+        state.singleFavourite = action.payload;
+      })
+
       // Remove
-      .addCase(removeFromWishlist.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(removeFromWishlist.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = state.items.filter((item) => item._id !== action.payload);
-      })
-      .addCase(removeFromWishlist.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.items = state.items.filter(
+          (item) => item.productId !== action.payload
+        );
       })
 
       // Clear
-      .addCase(clearWishlist.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(clearWishlist.fulfilled, (state) => {
-        state.loading = false;
         state.items = [];
-      })
-      .addCase(clearWishlist.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
   },
 });
