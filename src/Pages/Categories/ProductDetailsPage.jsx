@@ -7,13 +7,9 @@ import img1 from "../../assets/details1.png";
 import img2 from "../../assets/details2.png";
 import img3 from "../../assets/details3.png";
 import img4 from "../../assets/details4.png";
-import man from "../../assets/man.png";
-import shoes from "../../assets/mens.png";
-import jacket from "../../assets/women-white.png";
-import women from "../../assets/dancing-team-studio.png";
-import doll from "../../assets/3d-children.png";
+ 
 import { Heart } from "lucide-react";
-import discountIcon from "../../assets/Layer_2.png"; // replace with your icon
+import discountIcon from "../../assets/Layer_2.png";  
 import packageIcon from "../../assets/box.png"; 
 import daysIcon from "../../assets/time.png";  
 import arrivalIcon from "../../assets/delivery-truck.png";
@@ -23,7 +19,7 @@ import { useDispatch,useSelector } from "react-redux";
   import { useParams } from "react-router-dom";
   import { fetchProductById } from "../../Redux/slices/productSlice";
   import {fetchSimilarProducts , addRecentlyViewed , fetchRecentlyViewed} from "../../Redux/slices/filteredProductSlice"
-import Slider from "react-slick"; // Assuming react-slick
+import Slider from "react-slick";  
   import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 
@@ -111,7 +107,7 @@ const userId =  "7";
     dispatch(addRecentlyViewed({ userId, productId: productId?.id }));
     dispatch(fetchRecentlyViewed(userId));
 
-  }, [dispatch]);
+  }, [dispatch,productId?.id]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
   // console.log("reviews",reviews)
   const toggleWishlist = (index) => {
@@ -179,14 +175,7 @@ const sliderSettings = {
   ],
 };
 
-  // console.log("similarProducts1",similarProducts)
-  // console.log("product",product)
-
-
-
-  
-  // setSelectedImage(product?.image[0] || "");
-  // const stats = reviews?.stats || {};
+   
   useEffect(() => {
   if (product?.image?.length > 0) {
     setSelectedImage(product?.image[0]);
@@ -407,27 +396,6 @@ const RatingBreakdown = ({ stats }) => {
       </div>
     ))}
 </div>
-
-
-            {/* <div>
-              <p className="text-sm font-bold mb-3">Select Size</p>
-              <div className="flex flex-wrap gap-3">
-                {productData?.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-16 h-12 flex items-center justify-center rounded-[3px] font-bold text-lg transition-colors
-                                            ${
-                                              selectedSize === size
-                                                ? "bg-primary text-white"
-                                                : "bg-gray-100 text-primary border-gray-300 hover:bg-gray-100"
-                                            }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div> */}
 
             <div className="flex gap-4 items-center">
               <Link
@@ -650,14 +618,11 @@ const RatingBreakdown = ({ stats }) => {
           </section>
         </main>
 
-        {/* --- SIMILAR PRODUCTS SLIDER CHANGE --- */}
         <div className="py-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Similar Products
           </h2>
-          {/* Change 1: Replace the old flex container with Slider component */}
           <div className="slider-container">
-            {/* Pass the settings to the Slider component */}
              <Slider {...sliderSettings}>
               {similarProducts?.map((item, index) => (
                 <div
