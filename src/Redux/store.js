@@ -7,6 +7,8 @@ import wishlistReducer from "./slices/wishlistSlice";
 import cartReducer from "./slices/cartSlice"; 
 import contactReducer from "./slices/contactSlice";
 import reviewReducer from "./slices/reviewSlice";
+import authReducer from "./slices/authSlice";
+import filteredProductReducer from "./slices/filteredProductSlice";
 export const store = configureStore({
   reducer: {
     ctegory : categoryreducer,
@@ -16,7 +18,9 @@ export const store = configureStore({
     wishlist : wishlistReducer,
     cart : cartReducer,
     contacts : contactReducer,
-    reviews : reviewReducer
+    reviews : reviewReducer,
+    auth: authReducer,
+    filteredProducts: filteredProductReducer,
   },
 });
 
