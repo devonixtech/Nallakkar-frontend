@@ -657,102 +657,109 @@ const RatingBreakdown = ({ stats }) => {
         </main>
 
         <div className="py-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Similar Products
-          </h2>
-          <div className="slider-container">
-             <Slider {...sliderSettings}>
-              {similarProducts?.map((item, index) => (
-                <div
-                  key={index}
-                  className={`group text-center bg-white p-2 transition-all duration-300 transform ${
+  <h2 className="text-2xl font-bold text-gray-800 mb-6">
+    Similar Products
+  </h2>
+  <div className="slider-container">
+    {similarProducts && similarProducts.length > 0 ? (
+      <Slider {...sliderSettings}>
+        {similarProducts.map((item, index) => (
+          <div
+            key={index}
+            className={`group text-center bg-white p-2 transition-all duration-300 transform ${
+              activeCard === index
+                ? "shadow-xl scale-[1.02]"
+                : "hover:shadow-lg hover:-translate-y-1"
+            }`}
+            onMouseDown={() => setActiveCard(index)}
+            onMouseUp={() => setActiveCard(null)}
+            onMouseLeave={() => setActiveCard(null)}
+          >
+            <div className="relative overflow-hidden rounded-t-lg">
+              <Link to={`/product/${item.id}`}>
+                <img
+                  src={item?.image[0]}
+                  alt={item?.title}
+                  className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
                     activeCard === index
-                      ? "shadow-xl scale-[1.02]"
-                      : "hover:shadow-lg hover:-translate-y-1"
+                      ? "scale-105"
+                      : "group-hover:scale-105"
                   }`}
-                  onMouseDown={() => setActiveCard(index)}
-                  onMouseUp={() => setActiveCard(null)}
-                  onMouseLeave={() => setActiveCard(null)}
-                >
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <Link to={`/product/${item.id}`}>
-                      <img
-                        src={item?.image[0]}
-                        alt={item?.title}
-                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                          activeCard === index
-                            ? "scale-105"
-                            : "group-hover:scale-105"
-                        }`}
-                      />
-                    </Link>
+                />
+              </Link>
 
-                    <Link to={`/product/${item?.id}`}>
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <Link
-                          to={"/cart"}
-                          className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
-                            />
-                          </svg>
-                          ADD TO CART
-                        </Link>
-                      </div>
-                    </Link>
-
-                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                      <span>{item?.rating}</span> •{" "}
-                      <span>{item?.reviewCount}</span>
-                    </div>
-
-                    <button
-                      onClick={() => toggleWishlist(index)}
-                      className="absolute top-2 right-2 p-1 transition hover:scale-110"
+              <Link to={`/product/${item?.id}`}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <Link
+                    to={"/cart"}
+                    className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
                     >
-                      <Heart
-                        className={`w-5 h-5 transition-colors ${
-                          wishlist.includes(index)
-                            ? "fill-rose text-rose"
-                            : "text-white"
-                        }`}
-                        strokeWidth={2}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
                       />
-                    </button>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
-                    Nallakkar
-                  </p>
-
-                  <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                    {item?.name}
-                  </p>
-
-                  <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
-                    <span className="text-darkpink font-semibold text-sm">
-                      {item?.price}
-                    </span>
-                    <span className="text-gray-500 text-xs">
-                      ( {item?.discount}% )
-                    </span>
-                  </div>
+                    </svg>
+                    ADD TO CART
+                  </Link>
                 </div>
-              ))}
-            </Slider> 
+              </Link>
+
+              <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
+                <span>{item?.rating}</span> •{" "}
+                <span>{item?.reviewCount}</span>
+              </div>
+
+              <button
+                onClick={() => toggleWishlist(index)}
+                className="absolute top-2 right-2 p-1 transition hover:scale-110"
+              >
+                <Heart
+                  className={`w-5 h-5 transition-colors ${
+                    wishlist.includes(index)
+                      ? "fill-rose text-rose"
+                      : "text-white"
+                  }`}
+                  strokeWidth={2}
+                />
+              </button>
+            </div>
+
+            <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
+              Nallakkar
+            </p>
+
+            <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
+              {item?.name}
+            </p>
+
+            <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
+              <span className="text-darkpink font-semibold text-sm">
+                {item?.price}
+              </span>
+              <span className="text-gray-500 text-xs">
+                ( {item?.discount}% )
+              </span>
+            </div>
           </div>
-        </div>
+        ))}
+      </Slider>
+    ) : (
+      <p className="text-center text-gray-500 w-full py-16">
+        No similar products found
+      </p>
+    )}
+  </div>
+</div>
+
 
 
         <div className="pb-14 pt-14">

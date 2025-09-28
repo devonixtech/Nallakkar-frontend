@@ -3,63 +3,11 @@ import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { Heart } from "lucide-react";
 import ShoppingBag from "../../assets/shopping-bags.png";
-// import man from "../../assets/man.png";
-// import shoes from "../../assets/mens.png";
-// import jacket from "../../assets/women-white.png";
-// import women from "../../assets/dancing-team-studio.png";
-// import doll from "../../assets/3d-children.png";
-// import girls from "../../assets/girls.png";
-// import boy from "../../assets/boys.png";
-// import infant from "../../assets/infant.png";
-// import toy from "../../assets/access.png";
-// import access from "../../assets/toy.png";
+ 
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSubcategoryBycategoryId} from "../../Redux/slices/subcategorySlice";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
-// const products = [
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: "₹ 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: man,
-//   },
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: "₹ 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: shoes,
-//   },
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: "₹ 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: jacket,
-//   },
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: "₹ 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: women,
-//   },
-//   {
-//     title: "Men Regular Fit Self Design Light Shirt",
-//     price: "₹ 529.00",
-//     discount: "(off 35%)",
-//     rating: "4.2",
-//     reviews: "1.2K",
-//     image: doll,
-//   },
-// ];
-
  
 
 const appliedFiltersData = [
@@ -197,10 +145,7 @@ const [selectedFilters, setSelectedFilters] = useState({});
     );
   };
   const dispatch = useDispatch();
-  // const selectedCategoryId = localStorage.getItem("selectedCategoryId");
-  // useEffect(() => {
-  //   dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
-  // }, [dispatch])
+   
   useEffect(() => {
     const handleStorageChange = () => {
         
@@ -212,8 +157,7 @@ const [selectedFilters, setSelectedFilters] = useState({});
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
     useEffect(() => {
-       // Reset selected subcategory when category changes
-        // Clear filters when category changes
+      
       
       dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
       dispatch(fetchAllProducts({ categoryId: selectedCategoryId }));
@@ -224,12 +168,13 @@ const [selectedFilters, setSelectedFilters] = useState({});
   const subcategory = useSelector((state) => state?.subcategory
     ?.subcategoryData?.data);
 const products = useSelector((state) => state?.products?.products);
+const filteredProducts = products?.filter(
+  (product) => product.subCategoryName === selectedCategory
+);
 
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
-// console.log("products", products);
-  // Reset selected subcategory when category changes
 useEffect(() => {
   if (subcategory?.length > 0) {
     // Always reset to first subcategory of this category when category changes
@@ -301,7 +246,7 @@ useEffect(() => {
                 )}
 
 
-                <FilterSection title="Pricing">
+                {/* <FilterSection title="Pricing">
                   <div className="mt-2">
                     <input
                       type="range"
@@ -315,9 +260,9 @@ useEffect(() => {
                       <span>₹5,000+</span>
                     </div>
                   </div>
-                </FilterSection>
+                </FilterSection> */}
 
-                <FilterSection title="Color">
+                {/* <FilterSection title="Color">
                   <div className="flex flex-wrap gap-3 mt-2">
                     {colorsData.map((color) => (
                       <button
@@ -327,7 +272,7 @@ useEffect(() => {
                       ></button>
                     ))}
                   </div>
-                </FilterSection>
+                </FilterSection> */}
               </div>
             </div>
           </aside>
@@ -357,7 +302,7 @@ useEffect(() => {
 
             {/* Mobile → Horizontal scroll | Desktop → Grid */}
             <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 sm:overflow-visible overflow-x-auto flex sm:flex-none flex-nowrap gap-4 pb-9">
-              {products.map((item, index) => (
+              {filteredProducts?.map((item, index) => (
                 <div
                   key={index}
                   className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
