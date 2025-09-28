@@ -380,31 +380,34 @@ const RatingBreakdown = ({ stats }) => {
                 Order in 12h 30m to get next day delivery
               </p>
             </div>
-             <div>
-  { Array.isArray(product?.variants) && product.variants.length > 0 &&
-  Object.keys(product.variants[0]).map((key) => (
-    <div key={key} className="mb-4">
-      <p className="text-sm font-bold mb-3">{`Select ${key}`}</p>
-      <div className="flex flex-wrap gap-3">
-        {Array?.from(new Set(product?.variants?.map(v => v[key]))).map(option => (
-          <button
-            key={option}
-            onClick={() =>
-              setSelectedVariant(prev => ({ ...prev, [key]: option }))
-            }
-            className={`w-20 h-12 flex items-center justify-center rounded-[3px] font-bold text-lg transition-colors
-              ${selectedVariant[key] === option
-                ? "bg-primary text-white"
-                : "bg-gray-100 text-primary border-gray-300 hover:bg-gray-100"
-              }`}
-          >
-            {option}
-          </button>
-        ))}
+           {/* Variants Section */}
+<div>
+  {product?.variants &&
+    Object.keys(product.variants).map((variantKey) => (
+      <div key={variantKey} className="mb-4">
+        <p className="text-sm font-bold mb-3">{`Select ${variantKey}`}</p>
+        <div className="flex flex-wrap gap-3">
+          {product.variants[variantKey].map((option) => (
+            <button
+              key={option}
+              onClick={() =>
+                setSelectedVariant((prev) => ({ ...prev, [variantKey]: option }))
+              }
+              className={`px-4 py-2 rounded-[3px] font-bold text-sm transition-colors
+                ${
+                  selectedVariant[variantKey] === option
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-primary border border-gray-300 hover:bg-gray-200"
+                }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
-  ))}
+    ))}
 </div>
+
 
             {/* <div>
               <p className="text-sm font-bold mb-3">Select Size</p>
