@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
-const BASE_URL = "/product";
+const BASE_URL = "/filteredProduct";
 
 // ✅ Get similar products
 export const fetchSimilarProducts = createAsyncThunk(
@@ -16,12 +16,15 @@ export const fetchSimilarProducts = createAsyncThunk(
   }
 );
 
-// ✅ Add recently viewed product
+// ✅ Add recently viewed product (needs userId + productId)
 export const addRecentlyViewed = createAsyncThunk(
   "products/addRecentlyViewed",
-  async (productId, { rejectWithValue }) => {
+  async ({ userId, productId }, { rejectWithValue }) => {
     try {
-      const res = await api.post(`${BASE_URL}/addRecentlyViewed`, { productId });
+      const res = await api.post(`${BASE_URL}/addRecentlyViewed`, {
+        userId,
+        productId,
+      });
       return res.data.data; // assuming it returns updated "recentlyViewed" list
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -29,12 +32,12 @@ export const addRecentlyViewed = createAsyncThunk(
   }
 );
 
-// ✅ Get recently viewed products
+// ✅ Get recently viewed products (by userId)
 export const fetchRecentlyViewed = createAsyncThunk(
   "products/fetchRecentlyViewed",
-  async (_, { rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`${BASE_URL}/getRecentlyViewed`);
+      const res = await api.get(`${BASE_URL}/getRecentlyViewed/${userId}`);
       return res.data.data; // returns recently viewed products
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -44,7 +47,7 @@ export const fetchRecentlyViewed = createAsyncThunk(
 
 // 🔽 Slice
 const filteredProductSlice = createSlice({
-  name: "similarProducts",
+  name: "filteredProducts",
   initialState: {
     similarProducts: [],
     recentlyViewed: [],

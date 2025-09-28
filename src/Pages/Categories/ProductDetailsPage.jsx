@@ -21,7 +21,8 @@ import { Link } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
   import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
   import { useParams } from "react-router-dom";
-  import { fetchProductById , fetchSimilarProducts} from "../../Redux/slices/productSlice";
+  import { fetchProductById } from "../../Redux/slices/productSlice";
+  import {fetchSimilarProducts , addRecentlyViewed , fetchRecentlyViewed} from "../../Redux/slices/filteredProductSlice"
 import Slider from "react-slick"; // Assuming react-slick
   import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
@@ -101,10 +102,15 @@ export default function ProductDetailsPage() {
 
 const dispatch = useDispatch();
 const productId = useParams();
+// const userId = localStorage.getItem("userId");
+const userId =  "7";
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
     dispatch(fetchProductById(productId?.id));
     dispatch(fetchSimilarProducts(productId?.id))
+    dispatch(addRecentlyViewed({ userId, productId: productId?.id }));
+    dispatch(fetchRecentlyViewed(userId));
+
   }, [dispatch]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
   // console.log("reviews",reviews)
@@ -117,8 +123,11 @@ const productId = useParams();
   };
   
   const product = useSelector((state) => state)?.products?.productData?.data;
-  const  similarProducts = useSelector((state)=>state?.products?.similarProducts)
-
+  const  similarProducts = useSelector((state)=>state?.filteredProducts?.similarProducts)
+  console.log("similarProducts",similarProducts)
+  const recentlyViewed = useSelector((state)=>state?.filteredProducts?.recentlyViewed)
+  console.log("recentlyViewed",recentlyViewed)
+ 
 
 // Custom Arrows
 const NextArrow = ({ onClick }) => (
@@ -170,8 +179,8 @@ const sliderSettings = {
   ],
 };
 
-  console.log("similarProducts1",similarProducts)
-  console.log("product",product)
+  // console.log("similarProducts1",similarProducts)
+  // console.log("product",product)
 
 
 
@@ -646,9 +655,8 @@ const RatingBreakdown = ({ stats }) => {
           {/* Change 1: Replace the old flex container with Slider component */}
           <div className="slider-container">
             {/* Pass the settings to the Slider component */}
-            <Slider {...sliderSettings}>
+             <Slider {...sliderSettings}>
               {similarProducts?.map((item, index) => (
-                // Important: The Slider requires direct children, so remove flex-shrink-0 or min-w/w classes on the wrapper inside the map if they conflict with the library's styling. The library will handle the layout.
                 <div
                   key={index}
                   className={`group text-center bg-white p-2 transition-all duration-300 transform ${
@@ -673,7 +681,6 @@ const RatingBreakdown = ({ stats }) => {
                       />
                     </Link>
 
-                    {/* Hover Add to Cart Button with Icon */}
                     <Link to={`/product/${item?.id}`}>
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <Link
@@ -699,13 +706,11 @@ const RatingBreakdown = ({ stats }) => {
                       </div>
                     </Link>
 
-                    {/* Rating */}
                     <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                       <span>{item?.rating}</span> •{" "}
                       <span>{item?.reviewCount}</span>
                     </div>
 
-                    {/* Heart Icon */}
                     <button
                       onClick={() => toggleWishlist(index)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
@@ -739,22 +744,18 @@ const RatingBreakdown = ({ stats }) => {
                   </div>
                 </div>
               ))}
-            </Slider>
+            </Slider> 
           </div>
         </div>
-        {/* --- SIMILAR PRODUCTS SLIDER CHANGE END --- */}
 
 
-        {/* --- RECENTLY VIEWED SLIDER CHANGE --- */}
         <div className="pb-14 pt-14">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-5">
             Recently Viewed
           </h2>
-          {/* Change 2: Replace the old flex container with Slider component */}
           <div className="slider-container">
-            <Slider {...sliderSettings}>
-              {/* Using similarProducts as a placeholder for recently viewed data */}
-              {similarProducts?.map((item, index) => (
+             <Slider {...sliderSettings}>
+              {recentlyViewed?.map((item, index) => (
                 <div
                   key={index}
                   className={`group text-center bg-white p-2 transition-all duration-300 transform ${
@@ -779,7 +780,6 @@ const RatingBreakdown = ({ stats }) => {
                       />
                     </Link>
 
-                    {/* Hover Add to Cart Button with Icon */}
                     <Link to={`/product/${item.id}`}>
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <Link
@@ -805,13 +805,11 @@ const RatingBreakdown = ({ stats }) => {
                       </div>
                     </Link>
 
-                    {/* Rating */}
                     <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                       <span>{item.rating}</span> •{" "}
                       <span>{item?.reviewCount}</span>
                     </div>
 
-                    {/* Heart Icon */}
                     <button
                       onClick={() => toggleWishlist(index)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
@@ -845,7 +843,7 @@ const RatingBreakdown = ({ stats }) => {
                   </div>
                 </div>
               ))}
-            </Slider>
+            </Slider> 
           </div>
         </div>
       </div>
