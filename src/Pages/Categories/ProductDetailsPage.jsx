@@ -79,16 +79,7 @@ const ProductCard = ({ product }) => (
   </div>
 );
 
-const ProductCarousel = ({ title, products }) => (
-  <div className="py-8">
-    <h2 className="text-2xl font-bold text-gray-800 mb-6">{title}</h2>
-    <div className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4">
-      {products.map((p) => (
-        <ProductCard key={p.id} product={p} />
-      ))}
-    </div>
-  </div>
-);
+
 
 
 
@@ -123,7 +114,7 @@ const productId = useParams();
 // Custom Arrows
 const NextArrow = ({ onClick }) => (
   <button
-    className="w-10 h-10 flex items-center justify-center rounded-full  text-black absolute -bottom-14 right-[45%] z-10 shadow-md" style={{backgroundColor: "#1a214c", color: "white"}}
+    className="w-10  h-10 flex items-center justify-center rounded-full  text-black absolute -bottom-14 right-[45%] z-10 shadow-md" style={{backgroundColor: "#1a214c", color: "white"}}
     onClick={onClick}
   >
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,23 +136,23 @@ const PrevArrow = ({ onClick }) => (
 
 // Slider Settings
 const sliderSettings = {
-  dots: false,   // dots hata diye
+  dots: false,
   infinite: true,
   speed: 500,
-  slidesToShow: 5,
+  slidesToShow: 5, // Desktop default (applied above 1024px)
   slidesToScroll: 5,
   nextArrow: <NextArrow />,
   prevArrow: <PrevArrow />,
   responsive: [
     {
-      breakpoint: 1024,
+      breakpoint: 1024, // Tablet (max-width: 1024px)
       settings: {
         slidesToShow: 3,
         slidesToScroll: 3,
       },
     },
     {
-      breakpoint: 640,
+      breakpoint: 640, // Mobile (max-width: 640px)
       settings: {
         slidesToShow: 2,
         slidesToScroll: 2,
@@ -169,6 +160,7 @@ const sliderSettings = {
     },
   ],
 };
+
 
   console.log("similarProducts1",similarProducts)
   console.log("product",product)
@@ -660,7 +652,7 @@ const RatingBreakdown = ({ stats }) => {
                   onMouseUp={() => setActiveCard(null)}
                   onMouseLeave={() => setActiveCard(null)}
                 >
-                  <div className="relative overflow-hidden rounded-t-lg">
+                  <div className="relative overflow-hidden rounded-t-lg mycard1">
                     <Link to={`/product/${item.id}`}>
                       <img
                         src={item?.image[0]}
