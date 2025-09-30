@@ -8,6 +8,8 @@ import doll from "../../assets/3d-children.png";
 import { Link } from "react-router-dom";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
 import { useSelector , useDispatch } from "react-redux";
+import { fetchWishlistByUserId , toggleWishlist } from "../../Redux/slices/wishlistSlice";
+
 const products = [
   {
     title: "Men Regular Fit Self Design Light Shirt",
@@ -54,29 +56,46 @@ const products = [
 const tabs = ["Featured", "Latest", "Best Sellers"];
 
 export default function TopSellingProducts() {
-  const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
-   const [currentPage, setCurrentPage] = useState(1); // ✅ page state
-  const productsPerPage = 10; // ✅ har page me 10 products
+   const [currentPage, setCurrentPage] = useState(1);  
+  const productsPerPage = 10;  
   const dispatch = useDispatch();
+  // const userId = localStorage.getItem("userId");
+  const userId =  "7";
+  
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
+   useEffect(() => {
+    if (userId) {
+      dispatch(fetchWishlistByUserId(userId));
+    }
+  }, [dispatch, userId]);
   const products = useSelector((state) => state?.products?.products);
-  const toggleWishlist = (index) => {
-    setWishlist((prev) =>
-      prev.includes(index)
-        ? prev.filter((id) => id !== index)
-        : [...prev, index]
-    );
-  };
+
+ useEffect(() => {
+  if (userId) {
+    dispatch(fetchWishlistByUserId(userId));
+  }
+}, [dispatch, userId]);
+ const handleWishlist = async (productId) => {
+  const isFavourite = !wishlist?.some((w) => w.productId === productId);
+  await dispatch(toggleWishlist({ productId, userId, isFavourite })).unwrap();
+  dispatch(fetchWishlistByUserId(userId));
+};
+
+
+
   // ✅ Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products?.slice(indexOfFirstProduct, indexOfLastProduct);
 
   const totalPages = Math.ceil(products?.length / productsPerPage);
+  const wishlist = useSelector((state) => state.wishlist.items || []);
 
+  console.log("wishlistItems", wishlist);
+   
   return (
     <section className="px-4 md:px-6 py-11 font-montserrat">
       <h2 className="text-center text-[22px] md:text-[30px] font-semibold mb-6">
@@ -158,19 +177,22 @@ export default function TopSellingProducts() {
               </div>
 
               {/* Heart Icon */}
-              <button
-                onClick={() => toggleWishlist(index)}
-                className="absolute top-2 right-2 p-1 transition hover:scale-110"
-              >
-                <Heart
-                  className={`w-5 h-5 transition-colors ${
-                    wishlist.includes(index)
-                      ? "fill-rose text-rose"
-                      : "text-white"
-                  }`}
-                  strokeWidth={2}
-                />
-              </button>
+              
+         <button
+  onClick={() => handleWishlist(item.id)}
+  className="absolute top-2 right-2 p-1 transition hover:scale-110"
+>
+  <Heart
+    className={`w-5 h-5 transition-colors ${
+       wishlist.some((w) => w.productId == (item.id || item.productId))
+        ? "fill-rose text-rose"
+        : "text-white"
+    }`}
+    strokeWidth={2}
+  />
+</button>
+
+
             </div>
 
             <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">

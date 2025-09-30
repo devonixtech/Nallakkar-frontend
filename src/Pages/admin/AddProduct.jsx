@@ -1,4 +1,4 @@
- import { useState } from "react";
+ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../Redux/slices/productSlice"; // make sure this thunk exists
@@ -28,11 +28,10 @@ export default function AddProduct() {
   const [toast, setToast] = useState({ show: false, type: "success", message: "" });
    
   // Fetch categories and subcategories on mount
-  useState(() => {
+  useEffect(() => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
  const categories = useSelector((state) => state?.ctegory?.categories);
-  console.log("categories",categories);
   // ---------- dummy data ----------
   // Replace with actual categories from Redux store
   // and fetch subcategories based on selected category
@@ -69,7 +68,13 @@ export default function AddProduct() {
       prev.map((v, i) => (i === index ? { ...v, [field]: value } : v))
     );
   };
-
+const groupedVariants = customVariants.reduce((acc, v) => {
+  if (v.type && v.value) {
+    if (!acc[v.type]) acc[v.type] = [];
+    acc[v.type].push(v.value);
+  }
+  return acc;
+}, {});
   const validate = () => {
     const errs = {};
     if (!formData.title.trim()) errs.title = "Product name is required";
@@ -82,43 +87,47 @@ export default function AddProduct() {
   };
 
   // ---------- submit ----------
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+   const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
 
-    try {
-      const form = new FormData();
-      form.append("name", formData.title);
-      form.append("price", formData.price);
-      form.append("discount", formData.discountPrice || 0);
-      form.append("description", formData.description);
-      form.append("description2", formData.shortDescription || "");
-      form.append("categoryId", formData.category);
-      form.append("subCategoryId", formData.subcategory || "");
-      form.append("stock", formData.stock || 0);
-      form.append("status", formData.status || "active");
-      form.append("reviewCount", formData.reviewCount || "");
-      form.append("rating", formData.rating || "");
+  try {
+    const form = new FormData();
+    form.append("name", formData.title);
+    form.append("price", formData.price);
+    form.append("discount", formData.discountPrice || 0);
+    form.append("description", formData.description);
+    form.append("description2", formData.shortDescription || "");
+    form.append("categoryId", formData.category);
+    form.append("subCategoryId", formData.subcategory || "");
+    form.append("stock", formData.stock || 0);
+    form.append("status", formData.status || "active");
+    form.append("reviewCount", formData.reviewCount || "");
+    form.append("rating", formData.rating || "");
 
-      // Variants
-      const variantsToSend = customVariants
-        .filter((v) => v.type || v.value)
-        .map((v) => ({ ...v }));
-      form.append("variants", JSON.stringify(variantsToSend));
+    // ✅ Correct variants format
+    const variantsToSend = customVariants.reduce((acc, v) => {
+      if (v.type && v.value) {
+        acc[v.type] = v.value.split(",").map((val) => val.trim());
+      }
+      return acc;
+    }, {});
+    form.append("variants", JSON.stringify(variantsToSend));
 
-      // Images
-      images.forEach((img) => {
-        form.append("image", img.file);
-      });
+    // Images
+    images.forEach((img) => {
+      form.append("image", img.file);
+    });
 
-      await dispatch(createProduct(form)).unwrap();
-      showToast("Product created successfully");
-      // navigate("/admin/products");
-    } catch (err) {
-      console.error("Error creating product:", err);
-      showToast("Failed to create product", "error");
-    }
-  };
+    await dispatch(createProduct(form)).unwrap();
+    showToast("Product created successfully");
+    // navigate("/admin/products");
+  } catch (err) {
+    console.error("Error creating product:", err);
+    showToast("Failed to create product", "error");
+  }
+};
+
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
@@ -212,24 +221,33 @@ export default function AddProduct() {
         {/* Variants */}
         <div>
           <h3 className="font-semibold mb-2">Variants</h3>
-          {customVariants.map((variant, index) => (
-            <div key={index} className="flex gap-2 mb-2">
-              <input
-                type="text"
-                placeholder="Type (e.g. Color)"
-                value={variant.type}
-                onChange={(e) => updateVariant(index, "type", e.target.value)}
-                className="border p-2 flex-1"
-              />
-              <input
-                type="text"
-                placeholder="Value (e.g. Black)"
-                value={variant.value}
-                onChange={(e) => updateVariant(index, "value", e.target.value)}
-                className="border p-2 flex-1"
-              />
-            </div>
-          ))}
+           {customVariants.map((variant, index) => (
+  <div key={index} className="mb-4">
+    <input
+      type="text"
+      placeholder="Type (e.g. Color)"
+      value={variant.type}
+      onChange={(e) => {
+        const updated = [...customVariants];
+        updated[index].type = e.target.value;
+        setCustomVariants(updated);
+      }}
+      className="border p-2 w-full mb-2"
+    />
+    <input
+      type="text"
+      placeholder="Values (comma separated e.g. L, XL, 2XL)"
+      value={variant.value}
+      onChange={(e) => {
+        const updated = [...customVariants];
+        updated[index].value = e.target.value;
+        setCustomVariants(updated);
+      }}
+      className="border p-2 w-full"
+    />
+  </div>
+))}
+
           <button
             type="button"
             onClick={() => setCustomVariants([...customVariants, { type: "", value: "" }])}

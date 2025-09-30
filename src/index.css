@@ -65,4 +65,14 @@
 }
 
 
-
+@media (max-width: 767px) {
+  .slick-slide{
+    width: 50% !important;
+  
+  }
+ 
+  .slick-track{
+    display: flex !important;
+    overflow: scroll !important;
+  }
+}
