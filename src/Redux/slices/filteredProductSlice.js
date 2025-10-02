@@ -9,7 +9,7 @@ export const fetchSimilarProducts = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
       const res = await api.get(`${BASE_URL}/getSimilarProducts/${productId}`);
-      return res.data.data; // assuming API returns { data: [...] }
+      return res.data?.data || []; // fallback to []
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -25,7 +25,7 @@ export const addRecentlyViewed = createAsyncThunk(
         userId,
         productId,
       });
-      return res.data.data; // assuming it returns updated "recentlyViewed" list
+      return res.data?.data || []; // fallback to []
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -38,7 +38,7 @@ export const fetchRecentlyViewed = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.get(`${BASE_URL}/getRecentlyViewed/${userId}`);
-      return res.data.data; // returns recently viewed products
+      return res.data?.data || []; // fallback to []
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -57,46 +57,51 @@ const filteredProductSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Get Similar
+      // ✅ Get Similar
       .addCase(fetchSimilarProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.similarProducts = action.payload;
+        state.similarProducts = action.payload || [];
       })
       .addCase(fetchSimilarProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.similarProducts = []; // reset to []
       })
 
-      // Add Recently Viewed
+      // ✅ Add Recently Viewed
       .addCase(addRecentlyViewed.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(addRecentlyViewed.fulfilled, (state, action) => {
         state.loading = false;
-        state.recentlyViewed = action.payload;
+        // if API doesn’t return full list, keep old list
+        state.recentlyViewed = action.payload?.length
+          ? action.payload
+          : state.recentlyViewed;
       })
       .addCase(addRecentlyViewed.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Get Recently Viewed
+      // ✅ Get Recently Viewed
       .addCase(fetchRecentlyViewed.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchRecentlyViewed.fulfilled, (state, action) => {
         state.loading = false;
-        state.recentlyViewed = action.payload;
+        state.recentlyViewed = action.payload || [];
       })
       .addCase(fetchRecentlyViewed.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.recentlyViewed = []; // reset to []
       });
   },
 });
