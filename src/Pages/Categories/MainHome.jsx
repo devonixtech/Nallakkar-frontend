@@ -27,7 +27,6 @@ export default function MainHome() {
     },[dispatch])
     const categories  = useSelector((state) => state?.ctegory?.categories);
     const products = useSelector((state) => state?.products?.products);
-  console.log(products)
   return (
     <>
       <Helmet>

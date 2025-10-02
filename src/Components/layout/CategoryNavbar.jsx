@@ -29,7 +29,6 @@ export default function CategoryNavbar() {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  console.log("abc",categories);
   // const linkClass = (path) =>
   //   `${location.pathname === path ? "text-darkpink font-bold" : ""}`;
    

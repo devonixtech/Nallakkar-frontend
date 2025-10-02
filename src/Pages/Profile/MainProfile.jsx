@@ -10,7 +10,6 @@ const MainProfile = ({ setActiveTab }) => {
      }
    }, [dispatch, userId]);
    const userData = useSelector((state) => state?.user?.userData);
-    console.log(userData)
   return (
     <div className="w-3/4 bg-white p-6">
       <div className="flex justify-between">

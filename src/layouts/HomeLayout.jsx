@@ -41,8 +41,6 @@ export default function HomeLayout() {
   const shouldHideFooter = hideFooterRoutes.some((route) =>
     location.pathname.startsWith(route)
   );
-console.log("Current Path:", location.pathname);
-console.log("Should Hide Footer:", shouldHideFooter);
   return (
     <>
       <MainNavbar />

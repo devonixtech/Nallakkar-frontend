@@ -18,7 +18,6 @@ const dispatch = useDispatch();
      }
    }, [dispatch]);
    const userData = useSelector((state) => state?.user?.userData);
-    console.log("userdata",userData)
   return (
     <div className="w-1/4 bg-white p-4">
       <div className="flex flex-col items-center">

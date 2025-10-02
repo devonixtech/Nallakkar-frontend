@@ -12,7 +12,6 @@ export default function CategoriesPage() {
     const categories  = useSelector((state) => state?.ctegory?.categories);
     const subcategoryById  = useSelector((state) => state?.subcategory?.subcategoryData?.data);
     
-      console.log("cat",categories)
 
   const [subcategories, setSubcategories] = useState([
     { id: 1, name: 'Smartphones', slug: 'smartphones', description: 'Mobile phones and accessories', status: 'Active', categoryId: 1, parentCategoryName: 'Electronics', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=smartphone%20subcategory%20icon%20modern%20mobile%20phone%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub1&orientation=squarish' },

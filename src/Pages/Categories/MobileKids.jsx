@@ -168,7 +168,6 @@ const products1 = useSelector((state) => state?.products?.products);
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
-console.log("products", products1);
 
   const toggleWishlist = (index) => {
     setWishlist((prev) =>

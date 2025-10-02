@@ -110,7 +110,6 @@ const userId =  "7";
 
   }, [dispatch,productId?.id]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
-  // console.log("reviews",reviews)
   const toggleWishlist = (index) => {
     setWishlist((prev) =>
       prev.includes(index)

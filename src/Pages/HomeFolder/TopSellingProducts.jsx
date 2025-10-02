@@ -94,7 +94,6 @@ export default function TopSellingProducts() {
   const totalPages = Math.ceil(products?.length / productsPerPage);
   const wishlist = useSelector((state) => state.wishlist.items || []);
 
-  console.log("wishlistItems", wishlist);
    
   return (
     <section className="px-4 md:px-6 py-11 font-montserrat">

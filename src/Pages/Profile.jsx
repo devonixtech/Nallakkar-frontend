@@ -13,7 +13,6 @@ const dispatch = useDispatch();
      }
    }, [dispatch]);
    const userData = useSelector((state) => state?.users?.userData?.data);
-    console.log("userdata",userData)
   return (
     <div className="w-full md:w-1/4 p-6 md:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-gray-200">
       <img
