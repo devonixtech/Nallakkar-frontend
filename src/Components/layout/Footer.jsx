@@ -169,17 +169,17 @@ const Footer = () => {
       </div>
 
       {/* Bottom Links */}
-      <div className="border-t border-gray-500 py-4 px-6 flex justify-center">
+       <div className="border-t border-gray-500 py-4 px-6 flex justify-center">
         <div className="flex flex-wrap gap-6 text-xs text-gray-200 justify-center">
-          <a href="#" className={hoverClasses}>
+          <Link to="/TermsAndConditions" className={hoverClasses}>
             Returns Policy
-          </a>
-          <a href="#" className={hoverClasses}>
+          </Link>
+          <Link to="/ShippingPolicy" className={hoverClasses}>
             Privacy Policy
-          </a>
-          <a href="#" className={hoverClasses}>
+          </Link>
+          <Link to="/TermsAndConditions" className={hoverClasses}>
             Terms & Conditions
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

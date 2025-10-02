@@ -1,4 +1,4 @@
-
+ 
 
 import React, { useState,useEffect } from "react";
 import { FiHeart, FiShare2, FiStar, FiChevronLeft } from "react-icons/fi";
@@ -7,13 +7,9 @@ import img1 from "../../assets/details1.png";
 import img2 from "../../assets/details2.png";
 import img3 from "../../assets/details3.png";
 import img4 from "../../assets/details4.png";
-import man from "../../assets/man.png";
-import shoes from "../../assets/mens.png";
-import jacket from "../../assets/women-white.png";
-import women from "../../assets/dancing-team-studio.png";
-import doll from "../../assets/3d-children.png";
+ 
 import { Heart } from "lucide-react";
-import discountIcon from "../../assets/Layer_2.png"; // replace with your icon
+import discountIcon from "../../assets/Layer_2.png";  
 import packageIcon from "../../assets/box.png"; 
 import daysIcon from "../../assets/time.png";  
 import arrivalIcon from "../../assets/delivery-truck.png";
@@ -21,8 +17,10 @@ import { Link } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
   import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
   import { useParams } from "react-router-dom";
-  import { fetchProductById , fetchSimilarProducts} from "../../Redux/slices/productSlice";
-import Slider from "react-slick"; // Assuming react-slick
+  import { fetchProductById } from "../../Redux/slices/productSlice";
+  import {fetchSimilarProducts , addRecentlyViewed , fetchRecentlyViewed} from "../../Redux/slices/filteredProductSlice"
+  import { addToCart } from "../../Redux/slices/cartSlice";
+import Slider from "react-slick";  
   import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 
@@ -101,11 +99,16 @@ export default function ProductDetailsPage() {
 
 const dispatch = useDispatch();
 const productId = useParams();
+// const userId = localStorage.getItem("userId");
+const userId =  "7";
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
     dispatch(fetchProductById(productId?.id));
     dispatch(fetchSimilarProducts(productId?.id))
-  }, [dispatch]);
+    dispatch(addRecentlyViewed({ userId, productId: productId?.id }));
+    dispatch(fetchRecentlyViewed(userId));
+
+  }, [dispatch,productId?.id]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
   // console.log("reviews",reviews)
   const toggleWishlist = (index) => {
@@ -117,7 +120,42 @@ const productId = useParams();
   };
   
   const product = useSelector((state) => state)?.products?.productData?.data;
-  const  similarProducts = useSelector((state)=>state?.products?.similarProducts)
+  const  similarProducts = useSelector((state)=>state?.filteredProducts?.similarProducts)
+  const recentlyViewed = useSelector((state)=>state?.filteredProducts?.recentlyViewed)
+  console.log("recently",recentlyViewed)
+ const handleAddToCart = () => {
+  if (!userId) {
+    alert("Please login to add items to cart");
+    return;
+  }
+
+  // Ensure all variant selections are made
+  const requiredVariants = product?.variants ? Object.keys(product.variants) : [];
+  const missingVariants = requiredVariants.filter(
+    (v) => !selectedVariant[v]
+  );
+  if (missingVariants.length > 0) {
+    alert(`Please select: ${missingVariants.join(", ")}`);
+    return;
+  }
+
+  const payload = {
+    userId, 
+    productId: product?.id,
+    variant: selectedVariant,
+    quantity: 1, // You can later add quantity selector
+  };
+
+  dispatch(addToCart(payload))
+    .unwrap()
+    .then((res) => {
+      alert("Product added to cart!");
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Failed to add to cart");
+    });
+};
 
 
 // Custom Arrows
@@ -170,14 +208,7 @@ const sliderSettings = {
   ],
 };
 
-  console.log("similarProducts1",similarProducts)
-  console.log("product",product)
-
-
-
-  
-  // setSelectedImage(product?.image[0] || "");
-  // const stats = reviews?.stats || {};
+   
   useEffect(() => {
   if (product?.image?.length > 0) {
     setSelectedImage(product?.image[0]);
@@ -371,59 +402,47 @@ const RatingBreakdown = ({ stats }) => {
                 Order in 12h 30m to get next day delivery
               </p>
             </div>
-             <div>
-  { Array.isArray(product?.variants) && product.variants.length > 0 &&
-  Object.keys(product.variants[0]).map((key) => (
-    <div key={key} className="mb-4">
-      <p className="text-sm font-bold mb-3">{`Select ${key}`}</p>
-      <div className="flex flex-wrap gap-3">
-        {Array?.from(new Set(product?.variants?.map(v => v[key]))).map(option => (
-          <button
-            key={option}
-            onClick={() =>
-              setSelectedVariant(prev => ({ ...prev, [key]: option }))
-            }
-            className={`w-20 h-12 flex items-center justify-center rounded-[3px] font-bold text-lg transition-colors
-              ${selectedVariant[key] === option
-                ? "bg-primary text-white"
-                : "bg-gray-100 text-primary border-gray-300 hover:bg-gray-100"
-              }`}
-          >
-            {option}
-          </button>
-        ))}
+           {/* Variants Section */}
+<div>
+  {product?.variants &&
+    Object?.keys(product?.variants)?.map((variantKey) => (
+      <div key={variantKey} className="mb-4">
+        <p className="text-sm font-bold mb-3">{`Select ${variantKey}`}</p>
+        <div className="flex flex-wrap gap-3">
+          {product.variants[variantKey].map((option) => (
+            <button
+              key={option}
+              onClick={() =>
+                setSelectedVariant((prev) => ({ ...prev, [variantKey]: option }))
+              }
+              className={`px-4 py-2 rounded-[3px] font-bold text-sm transition-colors
+                ${
+                  selectedVariant[variantKey] === option
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-primary border border-gray-300 hover:bg-gray-200"
+                }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
-  ))}
+    ))}
 </div>
 
-            {/* <div>
-              <p className="text-sm font-bold mb-3">Select Size</p>
-              <div className="flex flex-wrap gap-3">
-                {productData?.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-16 h-12 flex items-center justify-center rounded-[3px] font-bold text-lg transition-colors
-                                            ${
-                                              selectedSize === size
-                                                ? "bg-primary text-white"
-                                                : "bg-gray-100 text-primary border-gray-300 hover:bg-gray-100"
-                                            }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div> */}
-
             <div className="flex gap-4 items-center">
-              <Link
+              {/* <Link
                 to={"/cart"}
                 className="py-3 px-6 bg-primary text-white font-bold transition-colors"
               >
-                Add to Cart
-              </Link>
+                Add to Carts
+              </Link> */}
+              <button
+  onClick={handleAddToCart}
+  className="py-3 px-6 bg-primary text-white font-bold transition-colors"
+>
+  Add to Cart
+</button>
               <Link
                 to={"/buyNow"}
                 className="py-3 px-8 bg-rose text-white font-bold transition-colors"
@@ -638,20 +657,16 @@ const RatingBreakdown = ({ stats }) => {
           </section>
         </main>
 
-        {/* --- SIMILAR PRODUCTS SLIDER CHANGE --- */}
         <div className="py-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Similar Products
           </h2>
-          {/* Change 1: Replace the old flex container with Slider component */}
           <div className="slider-container">
-            {/* Pass the settings to the Slider component */}
-            <Slider {...sliderSettings}>
+             <Slider {...sliderSettings}>
               {similarProducts?.map((item, index) => (
-                // Important: The Slider requires direct children, so remove flex-shrink-0 or min-w/w classes on the wrapper inside the map if they conflict with the library's styling. The library will handle the layout.
                 <div
                   key={index}
-                  className={`group slidercard text-center bg-white p-2 transition-all duration-300 transform ${
+                  className={`group text-center bg-white p-2 transition-all duration-300 transform ${
                     activeCard === index
                       ? "shadow-xl scale-[1.02]"
                       : "hover:shadow-lg hover:-translate-y-1"
@@ -673,7 +688,6 @@ const RatingBreakdown = ({ stats }) => {
                       />
                     </Link>
 
-                    {/* Hover Add to Cart Button with Icon */}
                     <Link to={`/product/${item?.id}`}>
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <Link
@@ -699,13 +713,11 @@ const RatingBreakdown = ({ stats }) => {
                       </div>
                     </Link>
 
-                    {/* Rating */}
                     <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                       <span>{item?.rating}</span> •{" "}
                       <span>{item?.reviewCount}</span>
                     </div>
 
-                    {/* Heart Icon */}
                     <button
                       onClick={() => toggleWishlist(index)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
@@ -739,22 +751,18 @@ const RatingBreakdown = ({ stats }) => {
                   </div>
                 </div>
               ))}
-            </Slider>
+            </Slider> 
           </div>
         </div>
-        {/* --- SIMILAR PRODUCTS SLIDER CHANGE END --- */}
 
 
-        {/* --- RECENTLY VIEWED SLIDER CHANGE --- */}
         <div className="pb-14 pt-14">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-5">
             Recently Viewed
           </h2>
-          {/* Change 2: Replace the old flex container with Slider component */}
           <div className="slider-container">
-            <Slider {...sliderSettings}>
-              {/* Using similarProducts as a placeholder for recently viewed data */}
-              {similarProducts?.map((item, index) => (
+             <Slider {...sliderSettings}>
+              {recentlyViewed?.map((item, index) => (
                 <div
                   key={index}
                   className={`group text-center bg-white p-2 transition-all duration-300 transform ${
@@ -779,7 +787,6 @@ const RatingBreakdown = ({ stats }) => {
                       />
                     </Link>
 
-                    {/* Hover Add to Cart Button with Icon */}
                     <Link to={`/product/${item.id}`}>
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <Link
@@ -805,13 +812,11 @@ const RatingBreakdown = ({ stats }) => {
                       </div>
                     </Link>
 
-                    {/* Rating */}
                     <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                       <span>{item.rating}</span> •{" "}
                       <span>{item?.reviewCount}</span>
                     </div>
 
-                    {/* Heart Icon */}
                     <button
                       onClick={() => toggleWishlist(index)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
@@ -845,7 +850,7 @@ const RatingBreakdown = ({ stats }) => {
                   </div>
                 </div>
               ))}
-            </Slider>
+            </Slider> 
           </div>
         </div>
       </div>
