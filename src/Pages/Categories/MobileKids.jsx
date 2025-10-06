@@ -152,7 +152,7 @@ const ProductListing = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showSort, setShowSort] = useState(false);
   const [selectedSort, setSelectedSort] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Girl");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
 
@@ -205,12 +205,20 @@ const ProductListing = () => {
           {/* [CHANGED] The mapping now passes selection state and click handler to each pill */}
           <div className="flex gap-8 overflow-x-auto pb-4 -mx-4 px-4 lg:px-[10rem] hide-scrollbar pt-0 lg:pt-0 md:pt-16">
             {categories.map((cat) => (
-              <CategoryPill
-                key={cat.name}
-                {...cat}
-                isSelected={selectedCategory === cat.name}
-                onClick={setSelectedCategory}
-              />
+                       <CategoryPill
+              key={cat?.id}
+              img={cat?.img}
+              name={cat?.name}
+              isSelected={selectedCategory === cat?.name}
+              onClick={() => {
+                setSelectedCategory(cat.name);
+                setSelectedFilters(cat.filters || {});
+                if (cat.id) {
+                  dispatch(fetchAllProducts({ subCategoryId: cat.id }));
+                }
+              
+              }}
+            />
             ))}
           </div>
         </div>
