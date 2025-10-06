@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { Heart } from "lucide-react";
@@ -15,7 +15,7 @@ import toy from "../../assets/access.png";
 import access from "../../assets/toy.png";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSubcategoryBycategoryId} from "../../Redux/slices/subcategorySlice";
+import { fetchSubcategoryBycategoryId } from "../../Redux/slices/subcategorySlice";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
 
 const products = [
@@ -60,7 +60,7 @@ const products = [
     image: doll,
   },
 ];
- 
+
 const categories = [
   {
     name: "Girl",
@@ -147,6 +147,7 @@ const ProductCard = ({ product }) => (
   </div>
 );
 
+//Added the filltered Products on this Mobile Version
 const ProductListing = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showSort, setShowSort] = useState(false);
@@ -155,15 +156,30 @@ const ProductListing = () => {
   const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
 
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
+
   const selectedCategoryId = localStorage.getItem("selectedCategoryId");
+
   useEffect(() => {
-    dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
-  }, [dispatch])
-  
-  const subcategory = useSelector((state) => state?.subcategory
-    ?.subcategoryData?.data);
-const products1 = useSelector((state) => state?.products?.products);
+    if (selectedCategoryId) {
+      dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
+    }
+  }, [dispatch, selectedCategoryId]);
+
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
+  const products = useSelector((state) => state?.products?.products);
+  console.log("All products:", products);
+  console.log("selectedCategoryId:", selectedCategoryId);
+
+  const filteredProducts = products?.filter(
+    (product) => String(product.categoryId) === String(selectedCategoryId)
+  );
+  console.log("Filtered products:", filteredProducts);
+
+ 
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -240,7 +256,7 @@ const products1 = useSelector((state) => state?.products?.products);
         </aside>
 
         <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 sm:overflow-visible overflow-x-auto flex sm:flex-none flex-nowrap gap-4 pb-20">
-          {products1?.map((item, index) => (
+          {filteredProducts?.map((item, index) => (
             <div
               key={index}
               className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${

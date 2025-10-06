@@ -3,8 +3,9 @@ import { FaUser, FaHeart, FaShoppingCart, FaSearch } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import logo from "../../assets/logo.png"; // Replace with your N logo image
 import { Link, useLocation } from "react-router-dom";
-import { useSelector , useDispatch} from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
+ 
 export default function CategoryNavbar() {
   const [category, setCategory] = useState("All Categories");
   const [selectedCategory, setSelectedCategory] = useState(
@@ -15,8 +16,8 @@ export default function CategoryNavbar() {
   useEffect(() => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
-    const categories  = useSelector((state) => state?.ctegory?.categories);
- // ✅ Keep selectedCategory in sync with localStorage changes
+  const categories = useSelector((state) => state?.ctegory?.categories);
+  // ✅ Keep selectedCategory in sync with localStorage changes
   useEffect(() => {
     const handleStorageChange = () => {
       setSelectedCategory(localStorage.getItem("selectedCategoryId"));
@@ -31,8 +32,8 @@ export default function CategoryNavbar() {
 
   // const linkClass = (path) =>
   //   `${location.pathname === path ? "text-darkpink font-bold" : ""}`;
-   
- const handleCategoryClick = (id) => {
+
+  const handleCategoryClick = (id) => {
     localStorage.setItem("selectedCategoryId", id);
     setSelectedCategory(id); // ✅ immediately update state
     window.dispatchEvent(new Event("storage")); // ✅ notify same tab
@@ -56,7 +57,7 @@ export default function CategoryNavbar() {
           {/* <Link to="/category/kids" className={linkClass("/category/kids")}>
             Kids
           </Link> */}
-            {categories?.map((cat) => (
+          {categories?.map((cat) => (
             <Link
               to="/category/kids"
               key={cat.id}
@@ -102,17 +103,18 @@ export default function CategoryNavbar() {
             role="menu"
           >
             <ul className="py-2 text-sm text-primary">
-               {categories?.map((cat) => (
-                <li>
-            <Link
-              to="/category/kids"
-              key={cat.id}
-                className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
-              onClick={() => handleCategoryClick(cat.id)}
-            >
-              {cat.name}
-            </Link> </li>
-          ))}
+              {categories?.map((cat) => (
+                <li key={cat.id}>
+                  <Link
+                    to="/category/kids"
+                    className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
+                    onClick={() => handleCategoryClick(cat.id)}
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
+
               {/* <li>
                 <Link
                   to="/category/kids"
