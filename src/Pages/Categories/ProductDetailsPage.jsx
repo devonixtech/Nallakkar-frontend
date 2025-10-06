@@ -23,6 +23,7 @@ import { useDispatch,useSelector } from "react-redux";
 import Slider from "react-slick";  
   import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+import { fetchWishlistByUserId , toggleWishlist} from "../../Redux/slices/wishlistSlice";
 
 const productData = {
   id: 1,
@@ -93,9 +94,10 @@ const ProductCarousel = ({ title, products }) => (
 export default function ProductDetailsPage() {
   const [selectedImage, setSelectedImage] = useState(productData.images[0]);
   // const [selectedSize, setSelectedSize] = useState("M");
-  const [wishlist, setWishlist] = useState([]);
+  // const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState({});
+  const wishlist = useSelector((state) => state.wishlist.items || []);
 
 const dispatch = useDispatch();
 const productId = useParams();
@@ -110,18 +112,32 @@ const userId =  "7";
 
   }, [dispatch,productId?.id]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
-  const toggleWishlist = (index) => {
-    setWishlist((prev) =>
-      prev.includes(index)
-        ? prev.filter((id) => id !== index)
-        : [...prev, index]
-    );
-  };
+  
   
   const product = useSelector((state) => state)?.products?.productData?.data;
   const  similarProducts = useSelector((state)=>state?.filteredProducts?.similarProducts)
   const recentlyViewed = useSelector((state)=>state?.filteredProducts?.recentlyViewed)
-  console.log("recently",recentlyViewed)
+  // console.log("recently",recentlyViewed)
+
+  // ---------------- SOME USEFFECTS 
+
+  
+     useEffect(() => {
+      if (userId) {
+        dispatch(fetchWishlistByUserId(userId));
+      }
+    }, [dispatch, userId]);
+   
+ 
+
+// HERE ADDING THE FUNCTIONALITY OF ADDING THE PRODUCT TO WISHLIST
+ const handleWishlist = async (productId) => {
+  const isFavourite = !wishlist?.some((w) => w.productId === productId);
+  await dispatch(toggleWishlist({ productId, userId, isFavourite })).unwrap();
+  dispatch(fetchWishlistByUserId(userId));
+};
+
+
  const handleAddToCart = () => {
   if (!userId) {
     alert("Please login to add items to cart");
@@ -717,13 +733,14 @@ const RatingBreakdown = ({ stats }) => {
                       <span>{item?.reviewCount}</span>
                     </div>
 
-                    <button
-                      onClick={() => toggleWishlist(index)}
+{/* --------------------------------------- WORKING ----------------------------------- */}
+                     <button
+                      onClick={() => handleWishlist(item.id)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
                     >
                       <Heart
                         className={`w-5 h-5 transition-colors ${
-                          wishlist.includes(index)
+                           wishlist.some((w) => w.productId == (item.id || item.productId))
                             ? "fill-rose text-rose"
                             : "text-white"
                         }`}
@@ -816,13 +833,13 @@ const RatingBreakdown = ({ stats }) => {
                       <span>{item?.reviewCount}</span>
                     </div>
 
-                    <button
-                      onClick={() => toggleWishlist(index)}
+                      <button
+                      onClick={() => handleWishlist(item.id)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
                     >
                       <Heart
                         className={`w-5 h-5 transition-colors ${
-                          wishlist.includes(index)
+                           wishlist.some((w) => w.productId == (item.id || item.productId))
                             ? "fill-rose text-rose"
                             : "text-white"
                         }`}
