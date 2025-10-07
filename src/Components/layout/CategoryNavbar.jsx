@@ -57,6 +57,7 @@ export default function CategoryNavbar() {
           {/* <Link to="/category/kids" className={linkClass("/category/kids")}>
             Kids
           </Link> */}
+          {/*  */}
           {categories?.map((cat) => (
             <Link
               to="/category/kids"
