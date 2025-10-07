@@ -3,12 +3,13 @@ import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { Heart } from "lucide-react";
 import ShoppingBag from "../../assets/shopping-bags.png";
- 
+
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSubcategoryBycategoryId} from "../../Redux/slices/subcategorySlice";
+import { fetchSubcategoryBycategoryId } from "../../Redux/slices/subcategorySlice";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
- 
+import { toggleWishlist } from "../../Redux/slices/wishlistSlice";
+import { fetchWishlistByUserId } from "../../Redux/slices/wishlistSlice";
 
 const appliedFiltersData = [
   "Girl",
@@ -29,14 +30,10 @@ const colorsData = [
   "#EF4444",
 ];
 
-
 const CategoryPill = ({ name, img, isSelected, onClick }) => (
   <div
     className="text-center flex-shrink-0 cursor-pointer"
-    onClick={() => onClick(name)
-
-
-    }
+    onClick={() => onClick(name)}
   >
     <div className="relative w-40 h-24 mx-auto rounded-full overflow-hidden">
       <img src={img} alt={name} className="w-full h-full object-cover" />
@@ -48,8 +45,9 @@ const CategoryPill = ({ name, img, isSelected, onClick }) => (
       )}
     </div>
     <p
-      className={`mt-2 text-sm font-semibold ${isSelected ? "bg-opacity-35" : "text-gray-700"
-        }`}
+      className={`mt-2 text-sm font-semibold ${
+        isSelected ? "bg-opacity-35" : "text-gray-700"
+      }`}
     >
       {name}
     </p>
@@ -72,7 +70,7 @@ const FilterSection = ({ title, children, defaultOpen = false }) => {
   );
 };
 
- const Checkbox = ({ label, checked, onChange }) => (
+const Checkbox = ({ label, checked, onChange }) => (
   <div className="flex items-center mb-2">
     <input
       type="checkbox"
@@ -87,8 +85,7 @@ const FilterSection = ({ title, children, defaultOpen = false }) => {
   </div>
 );
 
-
- 
+//
 
 // const ProductCard = ({ product }) => (
 //   <div className="group">
@@ -132,83 +129,81 @@ const FilterSection = ({ title, children, defaultOpen = false }) => {
 
 export default function ProductListingPage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
-   const [selectedCategoryId, setSelectedCategoryId] = useState(
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
     localStorage.getItem("selectedCategoryId")
   );
-  const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
-const [selectedFilters, setSelectedFilters] = useState({});
-const [appliedFilters, setAppliedFilters] = useState({});
+  const [selectedFilters, setSelectedFilters] = useState({});
+  const [appliedFilters, setAppliedFilters] = useState({});
+  const [showFilters, setShowFilters] = useState(false);
+  const [showSort, setShowSort] = useState(false);
+  const wishlist = useSelector((state) => state.wishlist.items || []);
 
-
-  const toggleWishlist = (index) => {
-    setWishlist((prev) =>
-      prev.includes(index)
-        ? prev.filter((id) => id !== index)
-        : [...prev, index]
-    );
-  };
+ 
   const dispatch = useDispatch();
-   
+
   useEffect(() => {
     const handleStorageChange = () => {
-        
       setSelectedCategoryId(localStorage.getItem("selectedCategoryId"));
     };
-    
+
     window.addEventListener("storage", handleStorageChange);
-    
+
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
-    useEffect(() => {
-      
-      
-      dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
-      dispatch(fetchAllProducts({ categoryId: selectedCategoryId }));
-   
+  useEffect(() => {
+    dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
+    dispatch(fetchAllProducts({ categoryId: selectedCategoryId }));
   }, [dispatch, selectedCategoryId]);
 
-  
-  const subcategory = useSelector((state) => state?.subcategory
-    ?.subcategoryData?.data);
-const products = useSelector((state) => state?.products?.products);
-const filteredProducts = products?.filter(
-  (product) => product.subCategoryName === selectedCategory
-);
+  const subcategory = useSelector(
+    (state) => state?.subcategory?.subcategoryData?.data
+  );
+  const products = useSelector((state) => state?.products?.products);
+  const filteredProducts = products?.filter(
+    (product) => product.subCategoryName === selectedCategory
+  );
 
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
-useEffect(() => {
-  if (subcategory?.length > 0) {
-    // Always reset to first subcategory of this category when category changes
-    const first = subcategory[0];
-    setSelectedCategory(first.name);
-    setSelectedFilters(first.filters || {});
+  useEffect(() => {
+    if (subcategory?.length > 0) {
+      // Always reset to first subcategory of this category when category changes
+      const first = subcategory[0];
+      setSelectedCategory(first.name);
+      setSelectedFilters(first.filters || {});
 
-    if (first.id) {
-      dispatch(fetchAllProducts({ subCategoryId: first.id }));
+      if (first.id) {
+        dispatch(fetchAllProducts({ subCategoryId: first.id }));
+      }
     }
-  }
-}, [subcategory, selectedCategoryId]);
-const handleFilterChange = (filterName, value) => {
-  setAppliedFilters((prev) => {
-    const currentValues = prev[filterName] || [];
-    if (currentValues.includes(value)) {
-      // remove value
-      return {
-        ...prev,
-        [filterName]: currentValues.filter((v) => v !== value),
-      };
-    } else {
-      // add value
-      return {
-        ...prev,
-        [filterName]: [...currentValues, value],
-      };
-    }
-  });
-};
+  }, [subcategory, selectedCategoryId]);
+  const handleFilterChange = (filterName, value) => {
+    setAppliedFilters((prev) => {
+      const currentValues = prev[filterName] || [];
+      if (currentValues.includes(value)) {
+        // remove value
+        return {
+          ...prev,
+          [filterName]: currentValues.filter((v) => v !== value),
+        };
+      } else {
+        // add value
+        return {
+          ...prev,
+          [filterName]: [...currentValues, value],
+        };
+      }
+    });
+  };
+  // Not dynamic -- for
+  const userId = "7";
+  const handleWishlist = async (productId) => {
+    const isFavourite = !wishlist?.some((w) => w.productId === productId);
+    await dispatch(toggleWishlist({ productId, userId, isFavourite })).unwrap();
+    dispatch(fetchWishlistByUserId(userId));
+  };
 
   return (
     <div className="bg-[#FCFCFC] font-sans">
@@ -223,20 +218,18 @@ const handleFilterChange = (filterName, value) => {
           <div className="flex gap-8 overflow-x-auto pb-4 -mx-4 px-4 lg:px-[10rem] hide-scrollbar pt-0 lg:pt-0 md:pt-16">
             {subcategory?.map((cat) => (
               <CategoryPill
-  key={cat?.id}
-  img={cat?.image[0]}
-  name={cat?.name}
-  isSelected={selectedCategory === cat?.name}
-  onClick={() => {
-    setSelectedCategory(cat.name);
-    setSelectedFilters(cat.filters || {});
-    if (cat.id) {
-      dispatch(fetchAllProducts({ subCategoryId: cat.id }));
-    }
-  }}
-/>
-
-
+                key={cat?.id}
+                img={cat?.image[0]}
+                name={cat?.name}
+                isSelected={selectedCategory === cat?.name}
+                onClick={() => {
+                  setSelectedCategory(cat.name);
+                  setSelectedFilters(cat.filters || {});
+                  if (cat.id) {
+                    dispatch(fetchAllProducts({ subCategoryId: cat.id }));
+                  }
+                }}
+              />
             ))}
           </div>
         </div>
@@ -244,34 +237,45 @@ const handleFilterChange = (filterName, value) => {
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8 py-8">
-          {/* Filters Sidebar (No changes here) */}
-          <aside className="w-full lg:w-1/4 lg:pr-8">
+          {/* Filters Sidebar (No changes here) -- -DESKTOP VERSION */}
+          <aside className="w-full lg:w-1/4 lg:pr-8 hidden lg:block">
             <div className="sticky top-8">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-gray-800">FILTERS</h2>
-                <button className="text-sm text-pink-500 hover:underline"
-                onClick={() => setAppliedFilters({})}
+                <button
+                  className="text-sm text-pink-500 hover:underline"
+                  onClick={() => setAppliedFilters({})}
                 >
                   Clear all
                 </button>
               </div>
               <div className="max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar pr-2">
                 {/* Dynamic Filters */}
-                 {Object.entries(selectedFilters).map(([filterName, filterValues]) => (
-  <FilterSection key={filterName} title={filterName} defaultOpen={false}>
-    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-      {filterValues.map((value) => (
-        <Checkbox
-          key={value}
-          label={value}
-          checked={appliedFilters[filterName]?.includes(value) || false}
-          onChange={() => handleFilterChange(filterName, value)}
-        />
-      ))}
-    </div>
-  </FilterSection>
-))}
-
+                {Object.entries(selectedFilters).map(
+                  ([filterName, filterValues]) => (
+                    <FilterSection
+                      key={filterName}
+                      title={filterName}
+                      defaultOpen={false}
+                    >
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        {filterValues.map((value) => (
+                          <Checkbox
+                            key={value}
+                            label={value}
+                            checked={
+                              appliedFilters[filterName]?.includes(value) ||
+                              false
+                            }
+                            onChange={() =>
+                              handleFilterChange(filterName, value)
+                            }
+                          />
+                        ))}
+                      </div>
+                    </FilterSection>
+                  )
+                )}
 
                 {/* <FilterSection title="Pricing">
                   <div className="mt-2">
@@ -304,38 +308,119 @@ const handleFilterChange = (filterName, value) => {
             </div>
           </aside>
 
+          {/* ---------------For Testing----- ONLY NOW --------------- */}
+          {/* Here are the filters and sort options for MOBILE VERSION */}
+          <div>
+            {/* Sticky Filter/Sort Bar (Mobile) */}
+            <div className="lg:hidden sticky top-0 z-20 bg-white py-2 border-y flex justify-between px-2 mb-4">
+              <button
+                onClick={() => setShowFilters(true)}
+                className="px-4 py-2 border rounded text-sm font-medium"
+              >
+                Filters
+              </button>
+              <button
+                onClick={() => setShowSort(true)}
+                className="px-4 py-2 border rounded text-sm font-medium"
+              >
+                Sort
+              </button>
+            </div>
+
+            {/* Mobile Filters Drawer */}
+            {showFilters && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-end z-50">
+                <div className="w-3/4 bg-white h-full p-4 overflow-y-auto">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-semibold text-lg">Filters</h3>
+                    <button onClick={() => setShowFilters(false)}>✖</button>
+                  </div>
+                  <div className="space-y-6">
+                    {filterGroups.map((group) => (
+                      <div key={group.title}>
+                        <h4 className="font-medium mb-2">{group.title}</h4>
+                        <div className="space-y-2">
+                          {group.options.map((opt) => (
+                            <label
+                              key={opt}
+                              className="flex items-center gap-2 text-sm"
+                            >
+                              <input type="checkbox" /> {opt}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Mobile Sort Modal */}
+            {showSort && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 flex items-end z-50">
+                <div className="w-full bg-white rounded-t-2xl p-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-semibold">Sort By</h3>
+                    <button onClick={() => setShowSort(false)}>✖</button>
+                  </div>
+                  <div className="space-y-3">
+                    {sortOptions.map((option) => (
+                      <label
+                        key={option}
+                        className="flex items-center gap-2 cursor-pointer"
+                        onClick={() => {
+                          setSelectedSort(option);
+                          setShowSort(false);
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="sort"
+                          checked={selectedSort === option}
+                          readOnly
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Products Section (No changes here) */}
           {/* Products Section */}
           <section className="w-full lg:w-3/4">
-             <div className="flex flex-wrap items-center gap-2 mb-6">
-  {Object.entries(appliedFilters).map(([filterName, values]) =>
-    values.map((val) => (
-      <span
-        key={`${filterName}-${val}`}
-        className="flex items-center bg-white border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700"
-      >
-        {val}
-        <button
-          onClick={() => handleFilterChange(filterName, val)}
-          className="ml-2 text-gray-500 hover:text-gray-800"
-        >
-          <IoClose size={16} />
-        </button>
-      </span>
-    ))
-  )}
-</div>
-
+            <div className="flex flex-wrap items-center gap-2 mb-6">
+              {Object.entries(appliedFilters).map(([filterName, values]) =>
+                values.map((val) => (
+                  <span
+                    key={`${filterName}-${val}`}
+                    className="flex items-center bg-white border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700"
+                  >
+                    {val}
+                    <button
+                      onClick={() => handleFilterChange(filterName, val)}
+                      className="ml-2 text-gray-500 hover:text-gray-800"
+                    >
+                      <IoClose size={16} />
+                    </button>
+                  </span>
+                ))
+              )}
+            </div>
 
             {/* Mobile → Horizontal scroll | Desktop → Grid */}
             <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 sm:overflow-visible overflow-x-auto flex sm:flex-none flex-nowrap gap-4 pb-9">
               {filteredProducts?.map((item, index) => (
                 <div
                   key={index}
-                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
+                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
+                    activeCard === index
                       ? "shadow-xl scale-[1.02]"
                       : "hover:shadow-lg hover:-translate-y-1"
-                    }`}
+                  }`}
                   onMouseDown={() => setActiveCard(index)}
                   onMouseUp={() => setActiveCard(null)}
                   onMouseLeave={() => setActiveCard(null)}
@@ -346,10 +431,11 @@ const handleFilterChange = (filterName, value) => {
                       <img
                         src={item.image[0]}
                         alt={item.title}
-                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
+                          activeCard === index
                             ? "scale-105"
                             : "group-hover:scale-105"
-                          }`}
+                        }`}
                       />
                     </Link>
 
@@ -382,19 +468,23 @@ const handleFilterChange = (filterName, value) => {
 
                     {/* Rating */}
                     <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-4">
-                      <span>{item?.rating}</span>  <span>{item?.reviewCount}</span>
+                      <span>{item?.rating}</span>{" "}
+                      <span>{item?.reviewCount}</span>
                     </div>
 
                     {/* Heart Icon */}
                     <button
-                      onClick={() => toggleWishlist(index)}
+                      onClick={() => handleWishlist(item.id)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
                     >
                       <Heart
-                        className={`w-5 h-5 transition-colors ${wishlist.includes(index)
+                        className={`w-5 h-5 transition-colors ${
+                          wishlist.some(
+                            (w) => w.productId == (item.id || item.productId)
+                          )
                             ? "fill-rose text-rose"
                             : "text-white"
-                          }`}
+                        }`}
                         strokeWidth={2}
                       />
                     </button>
@@ -413,7 +503,7 @@ const handleFilterChange = (filterName, value) => {
                       {item.price}
                     </span>
                     <span className="text-gray-500 text-xs">
-                     (off {item.discount})
+                      (off {item.discount})
                     </span>
                   </div>
                 </div>
