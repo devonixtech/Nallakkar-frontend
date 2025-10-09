@@ -10,11 +10,37 @@ import { FiPhone } from "react-icons/fi";
 import { MdOutlineMail } from "react-icons/md";
 import logo from "../../assets/whitelogo.png";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
 const Footer = () => {
+  const categories = useSelector((state) => state?.ctegory?.categories);
+    const dispatch = useDispatch();
+  const [selectedCategory, setSelectedCategory] = useState(
+    localStorage.getItem("selectedCategoryId") || null
+  );
+
+
+   const handleCategoryClick = (id) => {
+    localStorage.setItem("selectedCategoryId", id);
+    setSelectedCategory(id); // ✅ immediately update state
+    window.dispatchEvent(new Event("storage")); // ✅ notify same tab
+  };
+    useEffect(() => {
+      const handleStorageChange = () => {
+        setSelectedCategory(localStorage.getItem("selectedCategoryId"));
+      };
+      window.addEventListener("storage", handleStorageChange);
+  
+      // ✅ Also check on mount in case it was updated in same tab
+      setSelectedCategory(localStorage.getItem("selectedCategoryId"));
+  
+      return () => window.removeEventListener("storage", handleStorageChange);
+    }, []);
   const hoverClasses =
     "hover:text-rose hover:underline transition-colors duration-200";
-
+  const linkClass = (id) =>
+    `${selectedCategory == id ? "text-darkpink font-bold" : ""}`;
   return (
     <footer className="bg-[#151a3e] text-white text-sm">
       <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row md:justify-between gap-8">
@@ -31,26 +57,41 @@ const Footer = () => {
           </p>
           {/* Social Icons */}
           <div className="flex gap-3 text-lg">
-            <a href="https://www.facebook.com/profile.php?id=61580089041886" aria-label="Facebook" className={hoverClasses}>
+            <a
+              href="https://www.facebook.com/profile.php?id=61580089041886"
+              aria-label="Facebook"
+              className={hoverClasses}
+            >
               <FaFacebookF />
             </a>
-            <a href="https://x.com/Nallakkar" aria-label="X" className={hoverClasses}>
+            <a
+              href="https://x.com/Nallakkar"
+              aria-label="X"
+              className={hoverClasses}
+            >
               <FaXTwitter />
             </a>
-            <a href="https://wa.me/message/XAW5HLMIHRG7M1" aria-label="WhatsApp" className={hoverClasses}>
+            <a
+              href="https://wa.me/message/XAW5HLMIHRG7M1"
+              aria-label="WhatsApp"
+              className={hoverClasses}
+            >
               <FaWhatsapp />
             </a>
-            <a href="https://www.instagram.com/nallakkar_official/" aria-label="Instagram" className={hoverClasses}>
+            <a
+              href="https://www.instagram.com/nallakkar_official/"
+              aria-label="Instagram"
+              className={hoverClasses}
+            >
               <FaInstagram />
             </a>
-             <a 
-  href="mailto:connect@nallakkar.com" 
-  aria-label="Email" 
-  className={hoverClasses}
->
-  <FaRegEnvelope />
-</a>
-
+            <a
+              href="mailto:connect@nallakkar.com"
+              aria-label="Email"
+              className={hoverClasses}
+            >
+              <FaRegEnvelope />
+            </a>
           </div>
         </div>
 
@@ -113,33 +154,18 @@ const Footer = () => {
               <div className="font-semibold mb-3 text-base text-nowrap">
                 Product Details
               </div>
-              <ul className="space-y-2">
-                <li>
-                  <Link to={"/category/kids"} className={hoverClasses}>
-                    Kids
+              <div className="space-y-2 flex flex-col">
+                {categories?.map((cat) => (
+                  <Link
+                    to="/category/kids"
+                    key={cat.id}
+                    className={linkClass(cat.id)}
+                    onClick={() => handleCategoryClick(cat.id)}
+                  >
+                    {cat.name}
                   </Link>
-                </li>
-                <li>
-                  <Link to={"/category/women"} className={hoverClasses}>
-                    Women
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/category/toys"} className={hoverClasses}>
-                    Toys
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/category/home-decors"} className={hoverClasses}>
-                    Home Decors
-                  </Link>
-                </li>
-                <li>
-                  <a href="#" className={hoverClasses}>
-                    Accessories
-                  </a>
-                </li>
-              </ul>
+                ))}
+              </div>
             </div>
 
             {/* REACH US */}
@@ -169,7 +195,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Links */}
-       <div className="border-t border-gray-500 py-4 px-6 flex justify-center">
+      <div className="border-t border-gray-500 py-4 px-6 flex justify-center">
         <div className="flex flex-wrap gap-6 text-xs text-gray-200 justify-center">
           <Link to="/TermsAndConditions" className={hoverClasses}>
             Returns Policy

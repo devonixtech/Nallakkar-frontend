@@ -1,4 +1,4 @@
- import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/favourite";
@@ -74,69 +74,104 @@ export const clearWishlist = createAsyncThunk(
 );
 
 // 🔽 Slice
+// ... your imports and thunks remain the same ...
+
 const wishlistSlice = createSlice({
   name: "wishlist",
   initialState: {
-    items: [], // products in wishlist
-    singleFavourite: null, // result of fetchWishlistByUserAndProduct
+    items: [],
+    singleFavourite: null,
     loading: false,
+    toggleLoading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Toggle add/remove
-      .addCase(toggleWishlist.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(toggleWishlist.fulfilled, (state, action) => {
-        state.loading = false;
-        const { productId, favourite } = action.payload;
-        if (favourite) {
-          // ✅ Add if favourite is true
-          if (!state.items.find((item) => item.productId === productId)) {
-            state.items.push(action.payload);
-          }
-        } else {
-          // ✅ Remove if favourite is false
-          state.items = state.items.filter(
-            (item) => item.productId !== productId
-          );
-        }
-      })
-      .addCase(toggleWishlist.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      // OPTIMISTIC: Update immediately on pending so UI reacts fast
+ .addCase(toggleWishlist.pending, (state, action) => {
+  state.toggleLoading = true;
+  state.error = null;
 
-      // Fetch by userId
+  const { productId, isFavourite, product } = action?.meta?.arg || {};
+  if (typeof isFavourite === "boolean") {
+    if (isFavourite) {
+      if (!state.items.find((it) => it.productId === productId)) {
+        state.items.push(product || { productId });
+      }
+    } else {
+      state.items = state.items.filter((it) => it.productId !== productId);
+    }
+  }
+})
+
+.addCase(toggleWishlist.fulfilled, (state, action) => {
+  state.toggleLoading = false;
+  const payload = action.payload || {};
+  const arg = action?.meta?.arg || {};
+  const { productId } = arg;
+
+  const favourite = payload.favourite ?? payload.isFavourite ?? payload.favourited;
+  const returnedProduct = payload.product ?? payload.item ?? payload.data;
+
+  if (typeof favourite === "boolean") {
+    if (favourite) {
+      if (returnedProduct) {
+        const exists = state.items.find((it) => it.productId === productId);
+        if (exists) {
+          state.items = state.items.map((it) =>
+            it.productId === productId ? returnedProduct : it
+          );
+        } else {
+          state.items.push(returnedProduct);
+        }
+      }
+    } else {
+      state.items = state.items.filter((it) => it.productId !== productId);
+    }
+  }
+})
+
+.addCase(toggleWishlist.rejected, (state, action) => {
+  state.toggleLoading = false;
+  state.error = action.payload || action.error?.message || "Toggle wishlist failed";
+
+  const { productId, isFavourite, product } = action?.meta?.arg || {};
+  if (typeof isFavourite === "boolean") {
+    if (isFavourite) {
+      state.items = state.items.filter((it) => it.productId !== productId);
+    } else {
+      if (!state.items.find((it) => it.productId === productId)) {
+        state.items.push(product || { productId });
+      }
+    }
+  }
+})
+
+
+      // existing fetch handlers
       .addCase(fetchWishlistByUserId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchWishlistByUserId.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
+        state.items = action.payload || [];
       })
       .addCase(fetchWishlistByUserId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Fetch by user + product
+      // the rest unchanged...
       .addCase(fetchWishlistByUserAndProduct.fulfilled, (state, action) => {
         state.singleFavourite = action.payload;
       })
-
-      // Remove
       .addCase(removeFromWishlist.fulfilled, (state, action) => {
         state.items = state.items.filter(
           (item) => item.productId !== action.payload
         );
       })
-
-      // Clear
       .addCase(clearWishlist.fulfilled, (state) => {
         state.items = [];
       });

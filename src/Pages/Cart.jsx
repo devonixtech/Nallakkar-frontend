@@ -3,43 +3,72 @@ import shoppingcart from "../assets/ShoppingCart.png";
 import details from "../assets/details2.png";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import { fetchCartByUserId , removeFromCart , updateCartItem } from "../Redux/slices/cartSlice";
+import {
+  fetchCartByUserId,
+  removeFromCart,
+  updateCartItem,
+} from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 const ShoppingCart = () => {
   // const userId = localStorage.getItem("userId");
   const userId = 7; // temp userId
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector((state) => state.cart);
-  
+
   useEffect(() => {
     if (userId) {
       dispatch(fetchCartByUserId(userId));
     }
   }, [dispatch, userId]);
 
-    const handleRemove = (cartItemId) => {
+  const handleRemove = (cartItemId) => {
     if (window.confirm("Are you sure you want to remove this item?")) {
       dispatch(removeFromCart(cartItemId));
-       dispatch(fetchCartByUserId(userId));
+      dispatch(fetchCartByUserId(userId));
+    }
+  };
+
+  const handleIncrement = (item) => {
+    dispatch(
+      updateCartItem({
+        cartId: item.cartId,
+        action: 1,
+      })
+    );
+  };
+
+  const handleDecrement = (item) => {
+    if (item.quantity > 1) {
+      dispatch(
+        updateCartItem({
+          cartId: item.cartId,
+          action: -1,
+        })
+      );
     }
   };
   
- const handleIncrement = (item) => {
-  dispatch(updateCartItem({
-    cartId: item.cartId,
-    action: 1
-  }));
-};
 
-const handleDecrement = (item) => {
-  if (item.quantity > 1) {
-    dispatch(updateCartItem({
-      cartId: item.cartId,
-      action: -1
-    }));
-  }
-};
+  // Data for the right side 
 
+  // Calculate Price Details
+const totalItems = items?.reduce(
+  (sum, item) => sum + Number(item.quantity),
+  0
+) || 0;
+
+
+  const totalPrice =
+    items?.reduce((sum, item) => sum + item.productPrice * item.quantity, 0) ||
+    0;
+
+  // Example discounts / GST
+  const discountRate = 0.05; // 5% discount
+  const discountAmount = totalPrice * discountRate;
+  const gstRate = 0.18; // 18% GST (example)
+  const gstAmount = (totalPrice - discountAmount) * gstRate;
+
+  const finalAmount = totalPrice - discountAmount + gstAmount;
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -78,6 +107,8 @@ const handleDecrement = (item) => {
               key={item?.id}
               className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
             >
+
+              
               {/* Product Info */}
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <img
@@ -88,15 +119,19 @@ const handleDecrement = (item) => {
                 <div>
                   <p className="text-sm text-gray-400">Nallakkar</p>
                   <p className="text-xs sm:text-sm font-semibold">
-                     {item?.productName}  ({" "}
-  {item?.variant &&
-    Object?.entries(item?.variant)?.map(([key, value], index) => (
-      <span key={key}>
-        {key}: {value}
-        {index < Object?.entries(item.variant).length - 1 ? ", " : ""}
-      </span>
-    ))}{" "}
-  )
+                    {item?.productName} ({" "}
+                    {item?.variant &&
+                      Object?.entries(item?.variant)?.map(
+                        ([key, value], index) => (
+                          <span key={key}>
+                            {key}: {value}
+                            {index < Object?.entries(item.variant).length - 1
+                              ? ", "
+                              : ""}
+                          </span>
+                        )
+                      )}{" "}
+                    )
                   </p>
                   {/* <div className="w-5 h-5 rounded-full bg-yellow-700 border mt-2"></div> */}
                 </div>
@@ -109,24 +144,30 @@ const handleDecrement = (item) => {
 
               {/* Quantity */}
               <div className="flex items-center gap-2 sm:justify-center">
-                <button className="px-2 py-1 border rounded"
-                onClick={() => handleDecrement(item)}
+                <button
+                  className="px-2 py-1 border rounded"
+                  onClick={() => handleDecrement(item)}
                 >
                   <FaMinus size={12} />
                 </button>
                 <span className="text-sm sm:text-base">{item?.quantity}</span>
-                <button className="px-2 py-1 border rounded"
-                 onClick={() => handleIncrement(item)}
-                 >
+                <button
+                  className="px-2 py-1 border rounded"
+                  onClick={() => handleIncrement(item)}
+                >
                   <FaPlus size={12} />
                 </button>
               </div>
 
               {/* Total */}
               <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-                <p className="text-gray-700 text-sm sm:text-base">3000.00</p>
-                <button className="text-gray-500 hover:text-red-500"
-                 onClick={() => handleRemove(item?.cartId)}>
+                <p className="text-gray-700 text-sm sm:text-base">
+                  {(item?.productPrice * item?.quantity).toFixed(2)}
+                </p>
+                <button
+                  className="text-gray-500 hover:text-red-500"
+                  onClick={() => handleRemove(item?.cartId)}
+                >
                   <FaTimes />
                 </button>
               </div>
@@ -135,31 +176,39 @@ const handleDecrement = (item) => {
         </div>
 
         {/* Right - Price Details */}
+        {/* I have updated the right side too now everything is in sync */}
         <div className="pb-12 lg:pb-0 font-semibold text-black">
           <div className="border rounded-lg shadow p-6 space-y-4">
             <h2 className="text-lg font-semibold">Price Details</h2>
             <div className="flex justify-between text-sm sm:text-base">
-              <p>Price (7 items)</p>
-              <p>₹ 12000/-</p>
+              <p>Price ({parseInt(totalItems, 10)} items)</p>
+              <p>₹ {totalPrice.toFixed(2)}/-</p>
             </div>
+
             <div className="flex justify-between text-sm sm:text-base">
-              <p>Discounts</p>
-              <p>5%</p>
+              <p>Discount</p>
+              <p>- ₹ {discountAmount.toFixed(2)}</p>
             </div>
+
             <div className="flex justify-between text-sm sm:text-base">
-              <p>GST %</p>
-              <p>0000</p>
+              <p>GST (18%)</p>
+              <p>₹ {gstAmount.toFixed(2)}</p>
             </div>
+
             <div className="flex justify-between font-semibold border-t pt-3 text-sm sm:text-base">
               <p>Total Amount</p>
-              <p>₹ 12000/-</p>
+              <p>₹ {finalAmount.toFixed(2)}/-</p>
             </div>
+
             <p className="text-green-600 text-xs sm:text-sm">
-              You will save ₹1000.00 on this order
+              You saved ₹ {discountAmount.toFixed(2)} on this order
             </p>
 
             {/* Buttons */}
-            <Link to={'/category/kids'} className="block text-center w-full border py-2 font-medium hover:bg-gray-100 text-sm sm:text-base">
+            <Link
+              to={"/category/kids"}
+              className="block text-center w-full border py-2 font-medium hover:bg-gray-100 text-sm sm:text-base"
+            >
               Continue Shopping
             </Link>
             <Link

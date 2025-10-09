@@ -1,28 +1,34 @@
- 
-
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FiHeart, FiShare2, FiStar, FiChevronLeft } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import img1 from "../../assets/details1.png";
 import img2 from "../../assets/details2.png";
 import img3 from "../../assets/details3.png";
 import img4 from "../../assets/details4.png";
- 
+
 import { Heart } from "lucide-react";
-import discountIcon from "../../assets/Layer_2.png";  
-import packageIcon from "../../assets/box.png"; 
-import daysIcon from "../../assets/time.png";  
+import discountIcon from "../../assets/Layer_2.png";
+import packageIcon from "../../assets/box.png";
+import daysIcon from "../../assets/time.png";
 import arrivalIcon from "../../assets/delivery-truck.png";
 import { Link } from "react-router-dom";
-import { useDispatch,useSelector } from "react-redux";
-  import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
-  import { useParams } from "react-router-dom";
-  import { fetchProductById } from "../../Redux/slices/productSlice";
-  import {fetchSimilarProducts , addRecentlyViewed , fetchRecentlyViewed} from "../../Redux/slices/filteredProductSlice"
-  import { addToCart } from "../../Redux/slices/cartSlice";
-import Slider from "react-slick";  
-  import "slick-carousel/slick/slick.css"; 
+import { useDispatch, useSelector } from "react-redux";
+import { fetchReviewsByProduct } from "../../Redux/slices/reviewSlice";
+import { useParams } from "react-router-dom";
+import { fetchProductById } from "../../Redux/slices/productSlice";
+import {
+  fetchSimilarProducts,
+  addRecentlyViewed,
+  fetchRecentlyViewed,
+} from "../../Redux/slices/filteredProductSlice";
+import { addToCart } from "../../Redux/slices/cartSlice";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import {
+  fetchWishlistByUserId,
+  toggleWishlist,
+} from "../../Redux/slices/wishlistSlice";
 
 const productData = {
   id: 1,
@@ -88,169 +94,201 @@ const ProductCarousel = ({ title, products }) => (
   </div>
 );
 
-
-
 export default function ProductDetailsPage() {
   const [selectedImage, setSelectedImage] = useState(productData.images[0]);
   // const [selectedSize, setSelectedSize] = useState("M");
-  const [wishlist, setWishlist] = useState([]);
+  // const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState({});
+  const wishlist = useSelector((state) => state.wishlist.items || []);
 
-const dispatch = useDispatch();
-const productId = useParams();
-// const userId = localStorage.getItem("userId");
-const userId =  "7";
+  const dispatch = useDispatch();
+  const productId = useParams();
+  // const userId = localStorage.getItem("userId");
+  const userId = "7";
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
     dispatch(fetchProductById(productId?.id));
-    dispatch(fetchSimilarProducts(productId?.id))
+    dispatch(fetchSimilarProducts(productId?.id));
     dispatch(addRecentlyViewed({ userId, productId: productId?.id }));
     dispatch(fetchRecentlyViewed(userId));
-
-  }, [dispatch,productId?.id]);
+  }, [dispatch, productId?.id]);
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
-  const toggleWishlist = (index) => {
-    setWishlist((prev) =>
-      prev.includes(index)
-        ? prev.filter((id) => id !== index)
-        : [...prev, index]
+
+  const product = useSelector((state) => state)?.products?.productData?.data;
+  const similarProducts = useSelector(
+    (state) => state?.filteredProducts?.similarProducts
+  );
+  const recentlyViewed = useSelector(
+    (state) => state?.filteredProducts?.recentlyViewed
+  );
+  // console.log("recently",recentlyViewed)
+
+  // ---------------- SOME USEFFECTS
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchWishlistByUserId(userId));
+    }
+  }, [dispatch, userId]);
+
+  // HERE ADDING THE FUNCTIONALITY OF ADDING THE PRODUCT TO WISHLIST
+  const handleWishlist = async (productId) => {
+    const isFavourite = !wishlist?.some((w) => w.productId === productId);
+    await dispatch(toggleWishlist({ productId, userId, isFavourite })).unwrap();
+    dispatch(fetchWishlistByUserId(userId));
+  };
+
+  const handleAddToCart = () => {
+    if (!userId) {
+      alert("Please login to add items to cart");
+      return;
+    }
+
+    // Ensure all variant selections are made
+    const requiredVariants = product?.variants
+      ? Object.keys(product.variants)
+      : [];
+    const missingVariants = requiredVariants.filter((v) => !selectedVariant[v]);
+    if (missingVariants.length > 0) {
+      alert(`Please select: ${missingVariants.join(", ")}`);
+      return;
+    }
+
+    const payload = {
+      userId,
+      productId: product?.id,
+      variant: selectedVariant,
+      quantity: 1, // You can later add quantity selector
+    };
+
+    dispatch(addToCart(payload))
+      .unwrap()
+      .then((res) => {
+        alert("Product added to cart!");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to add to cart");
+      });
+  };
+
+  // Custom Arrows
+  const NextArrow = ({ onClick }) => (
+    <button
+      className="w-10 h-10 flex items-center justify-center rounded-full  text-black absolute -bottom-14 right-[45%] z-10 shadow-md"
+      style={{ backgroundColor: "#1a214c", color: "white" }}
+      onClick={onClick}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 5l7 7-7 7"
+        />
+      </svg>
+    </button>
+  );
+
+  const PrevArrow = ({ onClick }) => (
+    <button
+      className="w-10  h-10 flex items-center justify-center rounded-full  text-black absolute -bottom-14 left-[48%] z-10 shadow-md"
+      onClick={onClick}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+    </button>
+  );
+
+  // Slider Settings
+  const sliderSettings = {
+    dots: false, // dots hata diye
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 5,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        },
+      },
+      {
+        breakpoint: 640,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        },
+      },
+    ],
+  };
+
+  useEffect(() => {
+    if (product?.image?.length > 0) {
+      setSelectedImage(product?.image[0]);
+    }
+  }, [product]);
+  const getRatingBreakdown = (stats) => {
+    const total = Number(stats?.totalReviews) || 1;
+
+    return [
+      { stars: 5, count: Number(stats?.fiveStar) },
+      { stars: 4, count: Number(stats?.fourStar) },
+      { stars: 3, count: Number(stats?.threeStar) },
+      { stars: 2, count: Number(stats?.twoStar) },
+      { stars: 1, count: Number(stats?.oneStar) },
+    ].map((item) => ({
+      ...item,
+      percent: (item.count / total) * 100,
+    }));
+  };
+  const RatingBreakdown = ({ stats }) => {
+    const ratingBreakdown = getRatingBreakdown(stats);
+
+    return (
+      <div className="mt-4 space-y-1">
+        {ratingBreakdown?.map((item) => (
+          <div
+            key={item?.stars}
+            className="flex items-center gap-2 text-sm text-gray-600"
+          >
+            <span>{item?.stars}</span>
+            <FaStar className="text-yellow-400" />
+            <div className="w-full bg-gray-200 rounded-full h-1.5">
+              <div
+                className="bg-yellow-400 h-1.5 rounded-full"
+                style={{ width: `${item?.percent}%` }}
+              ></div>
+            </div>
+            <span className="ml-2 text-xs">{item?.count}</span>
+          </div>
+        ))}
+      </div>
     );
   };
-  
-  const product = useSelector((state) => state)?.products?.productData?.data;
-  const  similarProducts = useSelector((state)=>state?.filteredProducts?.similarProducts)
-  const recentlyViewed = useSelector((state)=>state?.filteredProducts?.recentlyViewed)
-  console.log("recently",recentlyViewed)
- const handleAddToCart = () => {
-  if (!userId) {
-    alert("Please login to add items to cart");
-    return;
-  }
-
-  // Ensure all variant selections are made
-  const requiredVariants = product?.variants ? Object.keys(product.variants) : [];
-  const missingVariants = requiredVariants.filter(
-    (v) => !selectedVariant[v]
-  );
-  if (missingVariants.length > 0) {
-    alert(`Please select: ${missingVariants.join(", ")}`);
-    return;
-  }
-
-  const payload = {
-    userId, 
-    productId: product?.id,
-    variant: selectedVariant,
-    quantity: 1, // You can later add quantity selector
-  };
-
-  dispatch(addToCart(payload))
-    .unwrap()
-    .then((res) => {
-      alert("Product added to cart!");
-    })
-    .catch((err) => {
-      console.error(err);
-      alert("Failed to add to cart");
-    });
-};
-
-
-// Custom Arrows
-const NextArrow = ({ onClick }) => (
-  <button
-    className="w-10 h-10 flex items-center justify-center rounded-full  text-black absolute -bottom-14 right-[45%] z-10 shadow-md" style={{backgroundColor: "#1a214c", color: "white"}}
-    onClick={onClick}
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-    </svg>
-  </button>
-);
-
-const PrevArrow = ({ onClick }) => (
-  <button
-    className="w-10  h-10 flex items-center justify-center rounded-full  text-black absolute -bottom-14 left-[48%] z-10 shadow-md"
-    onClick={onClick}
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-    </svg>
-  </button>
-);
-
-// Slider Settings
-const sliderSettings = {
-  dots: false,   // dots hata diye
-  infinite: true,
-  speed: 500,
-  slidesToShow: 5,
-  slidesToScroll: 5,
-  nextArrow: <NextArrow />,
-  prevArrow: <PrevArrow />,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3,
-      },
-    },
-    {
-      breakpoint: 640,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2,
-      },
-    },
-  ],
-};
-
-   
-  useEffect(() => {
-  if (product?.image?.length > 0) {
-    setSelectedImage(product?.image[0]);
-  }
-}, [product]);
-const getRatingBreakdown = (stats) => {
-  const total = Number(stats?.totalReviews) || 1;
-
-  return [
-    { stars: 5, count: Number(stats?.fiveStar) },
-    { stars: 4, count: Number(stats?.fourStar) },
-    { stars: 3, count: Number(stats?.threeStar) },
-    { stars: 2, count: Number(stats?.twoStar) },
-    { stars: 1, count: Number(stats?.oneStar) },
-  ].map((item) => ({
-    ...item,
-    percent: (item.count / total) * 100,
-  }));
-};
-const RatingBreakdown = ({ stats }) => {
-  const ratingBreakdown = getRatingBreakdown(stats);
-
-  return (
-    <div className="mt-4 space-y-1">
-      {ratingBreakdown?.map((item) => (
-        <div
-          key={item?.stars}
-          className="flex items-center gap-2 text-sm text-gray-600"
-        >
-          <span>{item?.stars}</span>
-          <FaStar className="text-yellow-400" />
-          <div className="w-full bg-gray-200 rounded-full h-1.5">
-            <div
-              className="bg-yellow-400 h-1.5 rounded-full"
-              style={{ width: `${item?.percent}%` }}
-            ></div>
-          </div>
-          <span className="ml-2 text-xs">{item?.count}</span>
-        </div>
-      ))}
-    </div>
-  );
-};
 
   return (
     <div className="bg-white font-sans mb-14">
@@ -270,36 +308,37 @@ const RatingBreakdown = ({ stats }) => {
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-x-[2rem] mt-8">
           <div>
-           <div className="flex flex-col md:flex-row gap-4">
-  {/* Thumbnail Section */}
-  <div className="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-visible">
-    {product?.image?.map((img, index) => (
-      <button
-        key={index}
-        onClick={() => setSelectedImage(img)}
-        className={`w-20 h-28 md:w-28 md:h-40 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
-          selectedImage === img ? "border-gray-800" : "border-transparent"
-        }`}
-      >
-        <img
-          src={img}
-          alt={`Thumbnail ${index + 1}`}
-          className="w-full h-full object-cover"
-        />
-      </button>
-    ))}
-  </div>
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* Thumbnail Section */}
+              <div className="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-visible">
+                {product?.image?.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(img)}
+                    className={`w-20 h-28 md:w-28 md:h-40 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
+                      selectedImage === img
+                        ? "border-gray-800"
+                        : "border-transparent"
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
 
-  {/* Main Image Section */}
-  <div className="order-1 md:order-2 flex-1">
-    <img
-      src={selectedImage}
-      alt="Selected Product"
-      className="w-full h-[400px] md:h-[680px] object-cover rounded-lg aspect-[4/5]"
-    />
-  </div>
-</div>
-
+              {/* Main Image Section */}
+              <div className="order-1 md:order-2 flex-1">
+                <img
+                  src={selectedImage}
+                  alt="Selected Product"
+                  className="w-full h-[400px] md:h-[680px] object-cover rounded-lg aspect-[4/5]"
+                />
+              </div>
+            </div>
 
             {/* Ratings & Reviews (image ke neeche) */}
             <section className="my-16 hidden lg:block">
@@ -309,7 +348,9 @@ const RatingBreakdown = ({ stats }) => {
                     Product Ratings & Reviews
                   </h2>
                   <div className="flex items-center gap-4">
-                    <p className="text-5xl font-bold">{reviews?.stats?.avgRating}/5</p>
+                    <p className="text-5xl font-bold">
+                      {reviews?.stats?.avgRating}/5
+                    </p>
                     <div>
                       <p className="text-gray-600">
                         {reviews?.stats?.totalReviews} New Reviews
@@ -382,8 +423,7 @@ const RatingBreakdown = ({ stats }) => {
           </div>
 
           {/* Product Information */}
-        <div className="flex flex-col gap-y-6 lg:mt-0 lg:pl-[2rem] lg:border-l-2">
-
+          <div className="flex flex-col gap-y-6 lg:mt-0 lg:pl-[2rem] lg:border-l-2">
             <div>
               <button className="text-xs mb-4 uppercase font-bold border py-1 px-2 rounded-sm text-gray-400 tracking-wider">
                 {productData?.category}
@@ -401,33 +441,36 @@ const RatingBreakdown = ({ stats }) => {
                 Order in 12h 30m to get next day delivery
               </p>
             </div>
-           {/* Variants Section */}
-<div>
-  {product?.variants &&
-    Object?.keys(product?.variants)?.map((variantKey) => (
-      <div key={variantKey} className="mb-4">
-        <p className="text-sm font-bold mb-3">{`Select ${variantKey}`}</p>
-        <div className="flex flex-wrap gap-3">
-          {product.variants[variantKey].map((option) => (
-            <button
-              key={option}
-              onClick={() =>
-                setSelectedVariant((prev) => ({ ...prev, [variantKey]: option }))
-              }
-              className={`px-4 py-2 rounded-[3px] font-bold text-sm transition-colors
+            {/* Variants Section */}
+            <div>
+              {product?.variants &&
+                Object?.keys(product?.variants)?.map((variantKey) => (
+                  <div key={variantKey} className="mb-4">
+                    <p className="text-sm font-bold mb-3">{`Select ${variantKey}`}</p>
+                    <div className="flex flex-wrap gap-3">
+                      {product.variants[variantKey].map((option) => (
+                        <button
+                          key={option}
+                          onClick={() =>
+                            setSelectedVariant((prev) => ({
+                              ...prev,
+                              [variantKey]: option,
+                            }))
+                          }
+                          className={`px-4 py-2 rounded-[3px] font-bold text-sm transition-colors
                 ${
                   selectedVariant[variantKey] === option
                     ? "bg-primary text-white"
                     : "bg-gray-100 text-primary border border-gray-300 hover:bg-gray-200"
                 }`}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      </div>
-    ))}
-</div>
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+            </div>
 
             <div className="flex gap-4 items-center">
               {/* <Link
@@ -437,19 +480,31 @@ const RatingBreakdown = ({ stats }) => {
                 Add to Carts
               </Link> */}
               <button
-  onClick={handleAddToCart}
-  className="py-3 px-6 bg-primary text-white font-bold transition-colors"
->
-  Add to Cart
-</button>
+                onClick={handleAddToCart}
+                className="py-3 px-6 bg-primary text-white font-bold transition-colors"
+              >
+                Add to Cart
+              </button>
               <Link
                 to={"/buyNow"}
                 className="py-3 px-8 bg-rose text-white font-bold transition-colors"
               >
                 Buy Now
               </Link>
-              <button className="p-3 rounded-md hover:bg-gray-100 transition-colors">
-                <FiHeart size={24} className="text-gray-600" />
+              <button
+                onClick={() => handleWishlist(product?.id)}
+                className="p-3 rounded-md hover:bg-gray-100 transition-colors"
+              >
+                <FiHeart
+                  size={24}
+                  className={`w-5 h-5 transition-colors ${
+                    wishlist.some(
+                      (w) => w.productId == (product?.id || product?.id)
+                    )
+                      ? "fill-rose text-rose"
+                      : "text-white"
+                  }`}
+                />
               </button>
             </div>
 
@@ -473,7 +528,7 @@ const RatingBreakdown = ({ stats }) => {
 
             <div className="-mt-3 font-medium space-y-1">
               <p>{product?.description}</p>
-             {/* <p>
+              {/* <p>
                  <span>100% Original Products</span>
               </p>
               <p>Pay on delivery might be available</p>
@@ -548,9 +603,7 @@ const RatingBreakdown = ({ stats }) => {
                 </div>
               </div>
               <div className="mt-4 pt-4 text-[15px] font-bold text-gray-600 space-y-2">
-                <p>
-                  {product?.description2}
-                </p>
+                <p>{product?.description2}</p>
                 {/* <p>
                   <span>Name:</span> {productData.details.name}
                 </p>
@@ -583,7 +636,7 @@ const RatingBreakdown = ({ stats }) => {
                 <button className=" underline font-bold mt-2">
                   More Information
                 </button>*/}
-              </div> 
+              </div>
             </div>
           </div>
 
@@ -595,10 +648,13 @@ const RatingBreakdown = ({ stats }) => {
                   Product Ratings & Reviews
                 </h2>
                 <div className="flex items-center gap-4">
-                  <p className="text-5xl font-bold"> {reviews?.stats?.avgRating}/5</p>
+                  <p className="text-5xl font-bold">
+                    {" "}
+                    {reviews?.stats?.avgRating}/5
+                  </p>
                   <div>
                     <p className="text-gray-600">
-                       {reviews?.stats?.totalReviews} New Reviews
+                      {reviews?.stats?.totalReviews} New Reviews
                     </p>
                   </div>
                 </div>
@@ -647,11 +703,7 @@ const RatingBreakdown = ({ stats }) => {
                     </div>
                   ))}
                 </div>
-              </div> 
-               
-
-
-
+              </div>
             </div>
           </section>
         </main>
@@ -661,7 +713,7 @@ const RatingBreakdown = ({ stats }) => {
             Similar Products
           </h2>
           <div className="slider-container">
-             <Slider {...sliderSettings}>
+            <Slider {...sliderSettings}>
               {similarProducts?.map((item, index) => (
                 <div
                   key={index}
@@ -717,13 +769,16 @@ const RatingBreakdown = ({ stats }) => {
                       <span>{item?.reviewCount}</span>
                     </div>
 
+                    {/* --------------------------------------- WORKING ----------------------------------- */}
                     <button
-                      onClick={() => toggleWishlist(index)}
+                      onClick={() => handleWishlist(item.id)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
                     >
                       <Heart
                         className={`w-5 h-5 transition-colors ${
-                          wishlist.includes(index)
+                          wishlist.some(
+                            (w) => w.productId == (item.id || item.productId)
+                          )
                             ? "fill-rose text-rose"
                             : "text-white"
                         }`}
@@ -750,17 +805,16 @@ const RatingBreakdown = ({ stats }) => {
                   </div>
                 </div>
               ))}
-            </Slider> 
+            </Slider>
           </div>
         </div>
-
 
         <div className="pb-14 pt-14">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-5">
             Recently Viewed
           </h2>
           <div className="slider-container">
-             <Slider {...sliderSettings}>
+            <Slider {...sliderSettings}>
               {recentlyViewed?.map((item, index) => (
                 <div
                   key={index}
@@ -817,12 +871,14 @@ const RatingBreakdown = ({ stats }) => {
                     </div>
 
                     <button
-                      onClick={() => toggleWishlist(index)}
+                      onClick={() => handleWishlist(item.id)}
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
                     >
                       <Heart
                         className={`w-5 h-5 transition-colors ${
-                          wishlist.includes(index)
+                          wishlist.some(
+                            (w) => w.productId == (item.id || item.productId)
+                          )
                             ? "fill-rose text-rose"
                             : "text-white"
                         }`}
@@ -849,7 +905,7 @@ const RatingBreakdown = ({ stats }) => {
                   </div>
                 </div>
               ))}
-            </Slider> 
+            </Slider>
           </div>
         </div>
       </div>

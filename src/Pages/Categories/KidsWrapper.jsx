@@ -5,12 +5,14 @@ import MobileKids from "./MobileKids";
 const KidsWrapper = () => {
   return (
     <div>
-      <div className="hidden md:block">
+      <div className="block">
         <Kids></Kids>
       </div>
-      <div className="block md:hidden">
+
+      {/* I have removed this mobileKids added the changed component inside the KIDS -- more better approach */}
+      {/* <div className="block md:hidden">
         <MobileKids></MobileKids>
-      </div>
+      </div> */}
     </div>
   );
 };
