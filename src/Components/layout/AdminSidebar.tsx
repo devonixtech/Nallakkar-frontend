@@ -238,8 +238,8 @@ export default function Sidebar({ isOpen, onClose }) {
     } else if (role === "investor") {
       return [
         { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/investor/investorDashboard" },
-        { id: "Products", label: "Products", icon: Package, href: "/investor/investorProduct" },
-        { id: "orders", label: "My Orders", icon: ShoppingCart, href: "/investor/investorOrder" },
+        { id: "profile", label: "My Profile", icon: User, href: "/investor/investorProfile" },
+        { id: "logout", label: "Logout", icon: User, href: "/login" },
        
       ];
     }

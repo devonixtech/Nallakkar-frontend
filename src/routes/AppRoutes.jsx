@@ -54,7 +54,9 @@ import ContactPage from "../Pages/admin/ContactPage";
 import InvestorDashboard from "../Pages/Investor/InvestorDashboard"
 import InvestorOrder from "../Pages/Investor/InvestorOrder";
 import InvestorProduct from "../Pages/Investor/InvestorProduct";
+import InvestorProfile from "../Pages/Investor/InvestorProfile";
 import Addinvestor from "../Pages/admin/Addinvestor";
+import InvestoreProductList from "../Pages/admin/InvestoreProductList";
 
 export default function AppRoutes() {
   return (
@@ -131,6 +133,7 @@ export default function AppRoutes() {
         <Route path="orders" element={<Orders />} />
         <Route path="users" element={<Users />} />
         <Route path="addinvestor" element={<Addinvestor />} />
+        <Route path="investoreProductList" element={<InvestoreProductList />} />
         <Route path="categories" element={<Categories></Categories>}></Route>
         <Route path="Inquiries" element={<ContactPage></ContactPage>}></Route>
         <Route
@@ -150,6 +153,7 @@ export default function AppRoutes() {
        
         <Route path="investorProduct" element={<InvestorProduct />} />
         <Route path="investorOrder" element={<InvestorOrder />} />
+        <Route path="investorProfile" element={<InvestorProfile />} />
        
       </Route>
     </Routes>

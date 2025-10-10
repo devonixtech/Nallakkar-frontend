@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-
+import InvestorProduct from "./InvestorProduct";
 export default function InvestorDashboard() {
   const stats = [
    
@@ -97,57 +97,7 @@ export default function InvestorDashboard() {
           ))}
         </div>
 
-        {/* Recent Orders */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Recent Orders
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-2 text-gray-600">Order ID</th>
-                  <th className="text-left py-2 text-gray-600">Product</th>
-                  <th className="text-left py-2 text-gray-600">Amount</th>
-                  <th className="text-left py-2 text-gray-600">Status</th>
-                  <th className="text-left py-2 text-gray-600">Claim</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentOrders.map((order) => (
-                  <tr key={order.id} className="border-b border-gray-100">
-                    <td className="py-3 text-gray-900">{order.id}</td>
-                    <td className="py-3 text-gray-700">{order.product}</td>
-                    <td className="py-3 font-medium text-gray-900">
-                      {order.amount}
-                    </td>
-                    <td className="py-3">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          order.status
-                        )}`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="py-3">
-                      <button
-                        disabled={!order.claimable}
-                        className={`px-3 py-1 rounded-lg text-xs font-medium ${
-                          order.claimable
-                            ? "bg-blue-600 text-white hover:bg-blue-700"
-                            : "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        }`}
-                      >
-                        Claim
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <InvestorProduct/>
       </div>
     </>
   );

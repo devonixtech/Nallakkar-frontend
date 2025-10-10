@@ -440,6 +440,9 @@ export default function ProductDetailsPage() {
               <p className="text-sm font-medium mt-4">
                 Order in 12h 30m to get next day delivery
               </p>
+              <p className="text-sm font-medium mt-4 text-primary">
+               #PRO123
+              </p>
             </div>
             {/* Variants Section */}
             <div>
@@ -493,7 +496,7 @@ export default function ProductDetailsPage() {
               </Link>
               <button
                 onClick={() => handleWishlist(product?.id)}
-                className="p-3 rounded-md hover:bg-gray-100 transition-colors"
+                className="p-3 rounded-md hover:bg-gray-100 transition-colors" style={{background:"#f3f4f6"}}
               >
                 <FiHeart
                   size={24}
