@@ -1,12 +1,69 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch , useSelector } from "react-redux";
+import { createInvestor , fetchAllInvestors } from "../../Redux/slices/investorSlice";
 const AddInvestor = () => {
   const [showModal, setShowModal] = useState(false);
   const [viewInvestor, setViewInvestor] = useState(null); // For viewing full details
+  const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+  mobileNumber: "",
+  password: "",
+  branchName: "",
+  accountHolderName: "",
+  ifscCode: "",
+  accountNumber: "",
+  role: "investor",
+});
+
 const navigate = useNavigate()
+const dispatch = useDispatch();
 const addviewProduct= ()=>{
   navigate("/admin/investoreProductList")
 }
+useEffect(() => {
+  dispatch(fetchAllInvestors());
+}, [dispatch]);
+const investors1 = useSelector((state) => state);
+console.log(investors1 , "investors");
+const handleSaveInvestor = async () => {
+  console.log("Form Data:", formData);
+  try {
+    // basic validation
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.mobileNumber ||
+      !formData.password
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    const resultAction = await dispatch(createInvestor(formData));
+
+    if (createInvestor.fulfilled.match(resultAction)) {
+      alert("Investor added successfully!");
+      setShowModal(false);
+      setFormData({
+        name: "",
+        email: "",
+        mobileNumber: "",
+        password: "",
+        branchName: "",
+        accountHolderName: "",
+        ifscCode: "",
+        accountNumber: "",
+      });
+    } else {
+      alert(resultAction.payload?.message || "Failed to add investor");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
   // Dummy investors list
   const investors = [
     {
@@ -64,12 +121,12 @@ const addviewProduct= ()=>{
               </tr>
             </thead>
             <tbody>
-              {investors.map((inv, idx) => (
+              {investors?.map((inv, idx) => (
                 <tr key={inv.id}>
                   <td className="px-4 py-2 border-b">{idx + 1}</td>
-                  <td className="px-4 py-2 border-b">{inv.name}</td>
-                  <td className="px-4 py-2 border-b">{inv.email}</td>
-                  <td className="px-4 py-2 border-b">{inv.phone}</td>
+                  <td className="px-4 py-2 border-b">{inv?.name}</td>
+                  <td className="px-4 py-2 border-b">{inv?.email}</td>
+                  <td className="px-4 py-2 border-b">{inv?.phone}</td>
                  
                   <td className="px-4 py-2 border-b">
                     <button
@@ -141,16 +198,23 @@ const addviewProduct= ()=>{
               <div>
                 <label className="block text-gray-700">Name</label>
                 <input
-                  type="text"
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                  placeholder="Enter investor name"
-                />
+  type="text"
+  name="name"
+  value={formData.name}
+  onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+  placeholder="Enter investor name"
+/>
+
               </div>
 
               <div>
                 <label className="block text-gray-700">Email</label>
                 <input
                   type="email"
+                  name="email"
+                   value={formData.email}
+  onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
                   placeholder="Enter email"
                 />
@@ -160,6 +224,9 @@ const addviewProduct= ()=>{
                 <label className="block text-gray-700">Phone</label>
                 <input
                   type="text"
+                  name="mobileNumber"
+                   value={formData.mobileNumber}
+  onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
                   placeholder="Enter phone number"
                 />
@@ -169,6 +236,9 @@ const addviewProduct= ()=>{
                 <label className="block text-gray-700">Password</label>
                 <input
                   type="password"
+                  name="password"
+                   value={formData.password}
+  onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
                   placeholder="Enter password"
                 />
@@ -180,6 +250,9 @@ const addviewProduct= ()=>{
                 <label className="block text-gray-700">Branch Name</label>
                 <input
                   type="text"
+                  name="branchName"
+                   value={formData.branchName}
+  onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
                   placeholder="Enter branch name"
                 />
@@ -188,6 +261,9 @@ const addviewProduct= ()=>{
                 <label className="block text-gray-700">Account Holder Name</label>
                 <input
                   type="text"
+                  name="accountHolderName"
+                   value={formData.accountHolderName}
+  onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
                   placeholder="Enter account holder name"
                 />
@@ -196,6 +272,9 @@ const addviewProduct= ()=>{
                 <label className="block text-gray-700">IFSC Code</label>
                 <input
                   type="text"
+                  name="ifscCode"
+                   value={formData.ifscCode}
+  onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
                   placeholder="Enter IFSC code"
                 />
@@ -204,6 +283,9 @@ const addviewProduct= ()=>{
                 <label className="block text-gray-700">Account Number</label>
                 <input
                   type="text"
+                  name="accountNumber"
+                   value={formData.accountNumber}
+  onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
                   placeholder="Enter account number"
                 />
@@ -218,11 +300,13 @@ const addviewProduct= ()=>{
                   Cancel
                 </button>
                 <button
-                  type="button"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  Save
-                </button>
+  type="button"
+  onClick={handleSaveInvestor}
+  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+>
+  Save
+</button>
+
               </div>
             </form>
           </div>
