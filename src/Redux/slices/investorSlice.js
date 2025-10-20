@@ -46,8 +46,9 @@ export const fetchInvestorById = createAsyncThunk(
 export const updateInvestor = createAsyncThunk(
   "investors/update",
   async ({ id, data }, { rejectWithValue }) => {
+    console.log("Updating investor with ID:", id, "and data:", data);
     try {
-      const res = await api.put(`${BASE_URL}/updateInvestor/${id}`, data);
+      const res = await api.patch(`${BASE_URL}/updateInvestor/${id}`, data);
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -83,7 +84,7 @@ const investorSlice = createSlice({
     // ✅ Add Recently Viewed
     addRecentlyViewedInvestor: (state, action) => {
       const investor = action.payload;
-      const exists = state.recentlyViewed.find((i) => i._id === investor._id);
+      const exists = state.recentlyViewed.find((i) => i._d === investor.id);
       if (!exists) {
         state.recentlyViewed = [investor, ...state.recentlyViewed].slice(0, 10);
         localStorage.setItem(
@@ -149,7 +150,7 @@ const investorSlice = createSlice({
       .addCase(updateInvestor.fulfilled, (state, action) => {
         state.loading = false;
         state.investors = state.investors.map((i) =>
-          i._id === action.payload._id ? action.payload : i
+          i.id === action.payload.id ? action.payload : i
         );
       })
       .addCase(updateInvestor.rejected, (state, action) => {
@@ -165,7 +166,7 @@ const investorSlice = createSlice({
       .addCase(deleteInvestor.fulfilled, (state, action) => {
         state.loading = false;
         state.investors = state.investors.filter(
-          (i) => i._id !== action.payload
+          (i) => i.id !== action.payload
         );
       })
       .addCase(deleteInvestor.rejected, (state, action) => {
