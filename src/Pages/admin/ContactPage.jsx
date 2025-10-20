@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Eye, Pencil, Trash2, Search, X, AlertTriangle, CheckCircle, Clock, Waypoints, MessageSquare, Contact } from 'lucide-react';
-import { fetchAllContacts, deleteContact } from '../../Redux/slices/contactSlice';
+import { fetchAllContacts, deleteContact , updateContactStatus } from '../../Redux/slices/contactSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Status Badge Component
@@ -16,7 +16,7 @@ const StatusBadge = ({ status }) => {
 
 // --- Modal Components ---
 
-// Add/Edit Inquiry Modal
+// Add/Edit Inquiry Modal 
 // const AddEditInquiryModal = ({ isOpen, onClose, onSave, inquiryToEdit }) => {
 //   const isEditMode = !!inquiryToEdit;
 //   const [formData, setFormData] = useState({});
@@ -359,7 +359,7 @@ const InquiriesPage = () => {
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
             </div>
-            <select
+            {/* <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -368,7 +368,7 @@ const InquiriesPage = () => {
               <option>Pending</option>
               <option>Resolved</option>
               <option>Escalated</option>
-            </select>
+            </select> */}
           </div>
         </div>
         
@@ -400,7 +400,29 @@ const InquiriesPage = () => {
   {inquiry?.createdAt ? new Date(inquiry.createdAt).toLocaleDateString("en-GB") : "-"}
 </td>
 
-      <td className="px-6 py-4 whitespace-nowrap text-sm">-</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm">
+        <td className="px-6 py-4 whitespace-nowrap text-sm">
+  <button
+   className={`px-3 py-1 rounded-full text-xs ${
+    inquiry.status === "Resolved"
+      ? "bg-green-100 text-green-800"
+      : "bg-yellow-100 text-yellow-800"
+  }`}
+    onClick={async () => {
+      try {
+        await dispatch(updateContactStatus({ id: inquiry?.id, status: "Resolved" })).unwrap();
+        // 👇 Immediately refresh contacts after successful update
+        dispatch(fetchAllContacts());
+      } catch (err) {
+        console.error("Failed to update status:", err);
+      }
+    }}
+  >
+    {inquiry?.status === null ? "Mark as Resolved" : "Resolved"}
+  </button>
+</td>
+
+        </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
         <div className="flex items-center space-x-3">
           <button onClick={() => handleOpenViewModal(inquiry)} className="text-gray-400 hover:text-blue-600"><Eye size={18} /></button>

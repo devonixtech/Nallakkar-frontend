@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/contact";
@@ -49,6 +49,19 @@ export const deleteContact = createAsyncThunk(
     try {
       await api.delete(`${BASE_URL}/deleteContact/${id}`);
       return id;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// ✅ Update contact status (admin side)
+export const updateContactStatus = createAsyncThunk(
+  "contacts/updateStatus",
+  async ({ id , status }, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`${BASE_URL}/updateContactStatus`, { id, status });
+      return res.data.data; // assuming { data: updatedContact }
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -124,9 +137,26 @@ const contactSlice = createSlice({
       })
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.loading = false;
-        state.contacts = state.contacts.filter((c) => c._id !== action.payload);
+        state.contacts = state.contacts.filter((c) => c.id !== action.payload);
       })
       .addCase(deleteContact.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // ✅ Update Contact Status
+      .addCase(updateContactStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateContactStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.contacts = state.contacts.map((c) =>
+          c.id === action.payloadid ? action.payload : c
+        );
+        state.successMessage = "Status updated successfully!";
+      })
+      .addCase(updateContactStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
