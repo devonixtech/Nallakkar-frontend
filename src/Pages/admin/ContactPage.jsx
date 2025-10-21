@@ -335,13 +335,13 @@ const InquiriesPage = () => {
                 </div>
                 <div className="bg-green-100 p-2 rounded-lg"><CheckCircle className="h-6 w-6 text-green-600"/></div>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow flex items-center justify-between">
+            {/* <div className="bg-white p-4 rounded-lg shadow flex items-center justify-between">
                 <div>
                     <p className="text-sm font-medium text-gray-500">Escalated</p>
                     <p className="text-2xl font-bold text-red-600">{stats.escalated}</p>
                 </div>
                 <div className="bg-red-100 p-2 rounded-lg"><Waypoints className="h-6 w-6 text-red-600"/></div>
-            </div>
+            </div> */}
         </div>
 
         {/* Search and Filter */}

@@ -8,7 +8,7 @@ import AddInvestoreProduct from "./AddInvestoreProduct";
 
 export default function InvestoreProductList() {
   const dispatch = useDispatch();
-
+  const investorId = localStorage.getItem('investorId');
   useEffect(() => {
     dispatch(fetchAllProducts());
     dispatch(fetchAllCategories());
@@ -16,6 +16,14 @@ export default function InvestoreProductList() {
 
   const products = useSelector((state) => state?.products?.products);
   const categories = useSelector((state) => state?.category?.categories);  
+
+  // Get investorId from localStorage
+
+// Filter products where investorId matches
+const investorProducts = products?.filter(
+  (product) => product?.investorId === investorId
+);
+
  const [showAddModal, setShowAddModal] = useState(false); 
   const getStatusColor = (status) => {
     switch (status) {
@@ -79,20 +87,20 @@ export default function InvestoreProductList() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
+              {/* <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
                 <option value="">All Categories</option>
                 {categories?.map((cat) => (
                   <option key={cat.d} value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
-              </select>
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
+              </select> */}
+              {/* <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
                 <option value="">All Status</option>
                 <option value="active">Active</option>
                 <option value="low-stock">Low Stock</option>
                 <option value="out-of-stock">Out of Stock</option>
-              </select>
+              </select> */}
             </div>
           </div>
 
@@ -109,8 +117,8 @@ export default function InvestoreProductList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {products?.map((product) => (
-                  <tr key={product?._id} className="hover:bg-gray-50">
+                {investorProducts?.map((product) => (
+                  <tr key={product?.id} className="hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="flex items-center">
                         <img
