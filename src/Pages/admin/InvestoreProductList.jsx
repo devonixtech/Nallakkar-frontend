@@ -16,7 +16,7 @@ export default function InvestoreProductList() {
 
   const products = useSelector((state) => state?.products?.products);
   const categories = useSelector((state) => state?.category?.categories);  
- const [showAddModal, setShowAddModal] = useState(false); // ✅ state for modal
+ const [showAddModal, setShowAddModal] = useState(false); 
   const getStatusColor = (status) => {
     switch (status) {
       case "Delivered":

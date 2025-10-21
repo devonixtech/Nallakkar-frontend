@@ -181,7 +181,8 @@ const AddInvestor = () => {
                     </button>
                     <button
                       className="px-3 ms-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600"
-                      onClick={() => addviewProduct()}
+                      onClick={() =>{localStorage.setItem('investorId',inv.id); 
+                        addviewProduct()}}
                     >
                       Add / View Product
                     </button>

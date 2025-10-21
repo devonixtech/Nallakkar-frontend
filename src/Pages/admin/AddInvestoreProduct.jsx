@@ -3,11 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../Redux/slices/productSlice"; // make sure this thunk exists
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
+import { id } from "ethers";
 export default function AddInvestoreProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading } = useSelector((state) => state.products);
-
+  const investorId = localStorage.getItem('investorId');
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -20,6 +21,7 @@ export default function AddInvestoreProduct() {
     shortDescription: "",
     reviewCount: "",
     rating: "",
+    investorId: investorId || "",
   });
 
   const [images, setImages] = useState([]);
@@ -104,6 +106,7 @@ const groupedVariants = customVariants.reduce((acc, v) => {
     form.append("status", formData.status || "active");
     form.append("reviewCount", formData.reviewCount || "");
     form.append("rating", formData.rating || "");
+    form.append("investorId", formData.investorId || "");
 
     // ✅ Correct variants format
     const variantsToSend = customVariants.reduce((acc, v) => {

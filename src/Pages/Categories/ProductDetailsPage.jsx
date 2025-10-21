@@ -441,7 +441,7 @@ export default function ProductDetailsPage() {
                 Order in 12h 30m to get next day delivery
               </p>
               <p className="text-sm font-medium mt-4 text-primary">
-               #PRO123
+               {product?.productCode}
               </p>
             </div>
             {/* Variants Section */}
