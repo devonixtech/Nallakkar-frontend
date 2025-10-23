@@ -13,7 +13,7 @@ const ShoppingCart = () => {
   // const userId = localStorage.getItem("userId");
   const userId = 7; // temp userId
   const dispatch = useDispatch();
-  const { items, loading, error } = useSelector((state) => state.cart);
+  const items = useSelector((state) => state.cart?.items);
 
   useEffect(() => {
     if (userId) {
@@ -52,14 +52,14 @@ const ShoppingCart = () => {
   // Data for the right side 
 
   // Calculate Price Details
-const totalItems = items?.reduce(
+const totalItems = items?.items?.reduce(
   (sum, item) => sum + Number(item?.quantity),
   0
 ) || 0;
 
 
   const totalPrice =
-    items?.reduce((sum, item) => sum + item.productPrice * item?.quantity, 0) ||
+    items?.items?.reduce((sum, item) => sum + item.productPrice * item?.quantity, 0) ||
     0;
 
   // Example discounts / GST
@@ -102,7 +102,7 @@ const totalItems = items?.reduce(
           </div>
 
           {/* Product Item */}
-          {items?.map((item, index) => (
+          {items?.items?.map((item, index) => (
             <div
               key={item?.id}
               className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"

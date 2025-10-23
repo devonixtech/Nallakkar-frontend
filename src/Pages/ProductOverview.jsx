@@ -6,7 +6,7 @@ import { fetchCartByUserId } from "../Redux/slices/cartSlice"; // ✅ import it
 
 export default function ProductOverview() {
   const navigate = useNavigate();
-  const { items } = useSelector((state) => state.cart); // ✅ Get products from Redux
+  const  items  = useSelector((state) => state.cart?.items); // ✅ Get products from Redux
   const userId = 7; // temp userId
   const dispatch = useDispatch();
 
@@ -18,7 +18,7 @@ export default function ProductOverview() {
 
   // Calculate totals
   const totalProductPrice =
-    items?.reduce((sum, item) => sum + item.productPrice * item.quantity, 0) ||
+    items?.items?.reduce((sum, item) => sum + item.productPrice * item.quantity, 0) ||
     0;
   const orderTotal = totalProductPrice;
 
@@ -40,7 +40,7 @@ export default function ProductOverview() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Left Section → Product List */}
               <div className="md:col-span-2 flex flex-col gap-4 md:pr-6 md:border-r">
-                {items?.map((item, index) => (
+                {items?.items?.map((item, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-4 border-b pb-4"
@@ -80,8 +80,8 @@ export default function ProductOverview() {
               <div className="md:col-span-1">
                 <div className="bg-gray-50 p-4 sm:p-5 rounded-lg h-full flex flex-col">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
-                    Price Details ({items?.length}{" "}
-                    {items?.length > 1 ? "items" : "item"})
+                    Price Details ({items?.items?.length}{" "}
+                    {items?.items?.length > 1 ? "items" : "item"})
                   </h3>
 
                   <div className="flex justify-between text-gray-700 mb-2 text-sm sm:text-base">

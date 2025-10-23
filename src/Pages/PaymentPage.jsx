@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoChevronUp, IoChevronDown, IoLocationSharp } from "react-icons/io5";
 import { SiGooglepay } from "react-icons/si";
 import { ArrowLeft } from "lucide-react";
 import img1 from "../assets/details2.png";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchCartByUserId } from "../Redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
@@ -265,10 +267,11 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
   );
 };
 
-const OrderSummary = () => (
+const OrderSummary = ({cartSummary}) => (
+   
   <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
     {/* Product Card */}
-    <div className="bg-white p-4 border rounded-lg shadow-sm flex space-x-4">
+    {/* <div className="bg-white p-4 border rounded-lg shadow-sm flex space-x-4">
       <img
         src={img1} // Placeholder image
         alt="Girl Jacket"
@@ -282,7 +285,7 @@ const OrderSummary = () => (
         <p className="text-gray-500">size: S</p>
         <p className="font-medium text-green-600">Free Delivery</p>
       </div>
-    </div>
+    </div> */}
 
     {/* Delivery Address */}
     <div className="bg-white p-4 border rounded-lg shadow-sm">
@@ -308,12 +311,12 @@ const OrderSummary = () => (
       <h3 className="font-bold text-gray-700">Price Details (1 items)</h3>
       <div className="flex justify-between text-gray-600">
         <p>Total Product Price</p>
-        <p>+₹1500</p>
+        <p>{cartSummary?.totalPrice}</p>
       </div>
       <hr />
       <div className="flex justify-between font-bold text-lg">
         <p>Order Total</p>
-        <p>₹1500</p>
+        <p>₹{cartSummary?.totalPrice}</p>
       </div>
       <Link
         to={"/PaymentSuccess"}
@@ -327,6 +330,15 @@ const OrderSummary = () => (
 
 function PaymentPage() {
   const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
+  const dispatch = useDispatch();
+  //  const userId = localStorage.getItem("userId");
+  const userId = 7;
+
+  useEffect(() => {
+    // Fetch cart data on mount
+    dispatch(fetchCartByUserId(userId));
+  }, [dispatch]);
+  const userCart = useSelector((state) => state?.cart?.items);
 
   return (
     <div className="bg-white min-h-screen font-sans">
@@ -336,7 +348,7 @@ function PaymentPage() {
             selectedPayment={selectedPayment}
             setSelectedPayment={setSelectedPayment}
           />
-          <OrderSummary />
+          <OrderSummary cartSummary={userCart} />
         </main>
       </div>
     </div>

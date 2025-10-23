@@ -22,7 +22,7 @@ export const fetchCartByUserId = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.get(`${BASE_URL}/getUserCart/${userId}`);
-      return res.data.items; // make sure it returns the items array
+      return res.data; // make sure it returns the items array
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
