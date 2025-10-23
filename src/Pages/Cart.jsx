@@ -38,7 +38,7 @@ const ShoppingCart = () => {
   };
 
   const handleDecrement = (item) => {
-    if (item.quantity > 1) {
+    if (item?.quantity > 1) {
       dispatch(
         updateCartItem({
           cartId: item.cartId,
@@ -53,13 +53,13 @@ const ShoppingCart = () => {
 
   // Calculate Price Details
 const totalItems = items?.reduce(
-  (sum, item) => sum + Number(item.quantity),
+  (sum, item) => sum + Number(item?.quantity),
   0
 ) || 0;
 
 
   const totalPrice =
-    items?.reduce((sum, item) => sum + item.productPrice * item.quantity, 0) ||
+    items?.reduce((sum, item) => sum + item.productPrice * item?.quantity, 0) ||
     0;
 
   // Example discounts / GST
