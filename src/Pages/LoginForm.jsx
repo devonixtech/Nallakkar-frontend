@@ -42,11 +42,13 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
         payload
       );
 
+      console.log("login",res)
+
       setLoading(false);
 
       if (res.status === 200) {
         alert("OTP sent successfully!");
-        goToOtp(payload.emailOrMobile); // Pass email/mobile to OTP screen
+        goToOtp(payload.emailOrMobile); 
       }
     } catch (error) {
       setLoading(false);
