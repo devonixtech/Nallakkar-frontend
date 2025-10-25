@@ -10,6 +10,7 @@ import reviewReducer from "./slices/reviewSlice";
 import authReducer from "./slices/authSlice";
 import filteredProductReducer from "./slices/filteredProductSlice";
 import investorReducer from "./slices/investorSlice";
+import paymentReducer from "./slices/paymentSlice";
 export const store = configureStore({
   reducer: {
     ctegory : categoryreducer,
@@ -22,7 +23,8 @@ export const store = configureStore({
     reviews : reviewReducer,
     auth: authReducer,
     filteredProducts: filteredProductReducer,
-    investors : investorReducer
+    investors : investorReducer,
+    payment : paymentReducer
   },
 });
 
