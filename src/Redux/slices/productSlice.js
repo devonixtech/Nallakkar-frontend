@@ -57,18 +57,7 @@ export const fetchProductsBySubcategory = createAsyncThunk(
   }
 );
 
-// ✅ Get similar products
-// export const fetchSimilarProducts = createAsyncThunk(
-//   "products/fetchSimilar",
-//   async (id, { rejectWithValue }) => {
-//     try {
-//       const res = await api.get(`${BASE_URL}/getSimilar/${id}`);
-//       return res.data.data;
-//     } catch (err) {
-//       return rejectWithValue(err.response?.data || err.message);
-//     }
-//   }
-// );
+ 
 export const fetchSimilarProducts = createAsyncThunk(
   "products/fetchSimilar",
   async (id, { rejectWithValue }) => {
@@ -105,6 +94,39 @@ export const deleteProduct = createAsyncThunk(
     }
   }
 );
+
+// ✅ Toggle Product Status (Active/Inactive)
+export const updateProductStatus = createAsyncThunk(
+  "products/updateStatus",
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`${BASE_URL}/updateProductStatus`, {
+        id,
+        status
+      });
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// ✅ Toggle Product Featured Status (Yes/No)
+export const updateFeaturedStatus = createAsyncThunk(
+  "products/updateFeatured",
+  async ({ id, featuredStatus }, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`${BASE_URL}/updateFeaturedStatus`, {
+        id,
+        featuredStatus
+      });
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 
 // 🔽 Slice
 const productSlice = createSlice({
@@ -243,7 +265,41 @@ const productSlice = createSlice({
       .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // Update Product Status
+      // // Update Status
+.addCase(updateProductStatus.pending, (state) => {
+  state.loading = true;
+})
+.addCase(updateProductStatus.fulfilled, (state, action) => {
+  state.loading = false;
+  state.products = state.products.map((p) =>
+    p.id === action.payload.id
+      ? { ...p, status: action.payload.status }
+      : p
+  );
+})
+.addCase(updateProductStatus.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+})
+
+// Update Featured Status
+.addCase(updateFeaturedStatus.pending, (state) => {
+  state.loading = true;
+})
+.addCase(updateFeaturedStatus.fulfilled, (state, action) => {
+  state.loading = false;
+  state.products = state.products.map((p) =>
+    p.id === action.payload.id
+      ? { ...p, featuredStatus: action.payload.featuredStatus }
+      : p
+  );
+})
+.addCase(updateFeaturedStatus.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+});
   },
 });
 
