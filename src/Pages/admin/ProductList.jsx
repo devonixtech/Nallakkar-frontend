@@ -1,6 +1,6 @@
  import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { fetchAllProducts, deleteProduct } from "../../Redux/slices/productSlice";
+import { fetchAllProducts, deleteProduct , updateProductStatus,updateFeaturedStatus } from "../../Redux/slices/productSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
@@ -46,6 +46,22 @@ export default function ProductList() {
         });
     }
   };
+  // ✅ Toggle Active/Inactive
+const handleToggleStatus = (product) => {
+  const newStatus = product.status === 1 ? 0 : 1;
+  dispatch(updateProductStatus({ id: product.id, status: newStatus }))
+    .unwrap()
+    .then(() => dispatch(fetchAllProducts()));
+};
+
+// ✅ Toggle Featured/Unfeatured
+const handleToggleFeatured = (product) => {
+  const newStatus = product.featuredStatus === 1 ? 0 : 1;
+  dispatch(updateFeaturedStatus({ id: product.id, featuredStatus: newStatus }))
+    .unwrap()
+    .then(() => dispatch(fetchAllProducts()));
+};
+
 
   return (
     <>
@@ -103,6 +119,7 @@ export default function ProductList() {
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Price</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Stock</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Status</th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Featured</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Actions</th>
                 </tr>
               </thead>
@@ -125,13 +142,30 @@ export default function ProductList() {
                     <td className="py-4 px-4 text-sm font-medium text-gray-900">{product?.price}</td>
                     <td className="py-4 px-4 text-sm text-gray-700">{product?.stock}</td>
                     <td className="py-4 px-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          product?.status
-                        )}`}
-                      >
-                        {product?.status === 1 ? "Active" : "Inactive"}
-                      </span>
+                      <button
+  onClick={() => handleToggleStatus(product)}
+  className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${
+    product?.status == 1
+      ? "bg-green-100 text-green-800"
+      : "bg-red-100 text-red-800"
+  }`}
+>
+  {product?.status == 1 ? "Active" : "Inactive"}
+</button>
+
+                    </td>
+                    <td className="py-4 px-4">
+                      <button
+  onClick={() => handleToggleFeatured(product)}
+  className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${
+    product?.featuredStatus == 1
+      ? "bg-blue-100 text-blue-800"
+      : "bg-gray-200 text-gray-700"
+  }`}
+>
+  {product?.featuredStatus == 1 ? "Featured" : "Not Featured"}
+</button>
+
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-2">
