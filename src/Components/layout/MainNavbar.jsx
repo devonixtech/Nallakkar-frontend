@@ -4,6 +4,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import logo from "../../assets/logo.png";
 import { Link, useLocation } from "react-router-dom";
 import SuccessModal from "../Custom/SuccessModal";
+import { useNavigate } from "react-router-dom";
 
 import AuthModal from "../Custom/AuthModal";
 import LoginForm from "../../Pages/LoginForm";
@@ -18,8 +19,9 @@ export default function Header() {
   const [modalType, setModalType] = useState("login");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [active, setActive] = useState("/"); // track clicked/active item
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
+  const naigate = useNavigate();
 
   // Sync active state with current route
   useEffect(() => {
@@ -30,6 +32,12 @@ export default function Header() {
     setModalType(type);
     setIsModalOpen(true);
   };
+
+    useEffect(() => {
+    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(loggedIn);
+  }, []);
+
 
   const closeModal = () => setIsModalOpen(false);
 

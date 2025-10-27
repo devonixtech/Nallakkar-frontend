@@ -1,18 +1,29 @@
-import React, { useState,useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link,  useNavigate } from "react-router-dom";
 import { fetchUserById } from "../Redux/slices/userSlice";
-import { useDispatch , useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Sidebar = ({ activeView, setActiveView }) => {
   const isSettingsActive = ["settings", "languages"].includes(activeView);
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
-   useEffect(() => {
-     if (2) {
-       dispatch(fetchUserById(2));
-     }
-   }, [dispatch]);
-   const userData = useSelector((state) => state?.users?.userData?.data);
+  const navigate = useNavigate()
+
+ const handleLogout = () => {
+  try {
+    localStorage.clear(); // easiest and cleanest
+    navigate("/", { replace: true });
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+};
+
+  useEffect(() => {
+    if (2) {
+      dispatch(fetchUserById(2));
+    }
+  }, [dispatch]);
+  const userData = useSelector((state) => state?.users?.userData?.data);
   return (
     <div className="w-full md:w-1/4 p-6 md:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-gray-200">
       <img
@@ -61,7 +72,10 @@ const dispatch = useDispatch();
           Settings
         </button>
 
-        <button className="w-full text-gray-600 bg-gray-200 py-2 rounded-lg text-sm md:text-base">
+        <button
+          onClick={handleLogout}
+          className="w-full text-gray-600 bg-gray-200 py-2 rounded-lg text-sm md:text-base"
+        >
           Logout
         </button>
       </div>
@@ -69,8 +83,9 @@ const dispatch = useDispatch();
   );
 };
 
- const ProfileView = ({ onEditClick }) => {
+const ProfileView = ({ onEditClick }) => {
   const userData = useSelector((state) => state?.users?.userData?.data);
+  console.log(userData)
 
   return (
     <div className="flex-1 p-6 md:p-12">
@@ -100,14 +115,13 @@ const dispatch = useDispatch();
             {userData?.name || "Name not found"}
           </h3>
           <p className="text-gray-500 text-sm md:text-base">
-            {userData?.mobileNumber|| "+91 **********"}
+            {userData?.mobileNumber || "+91 **********"}
           </p>
         </div>
       </div>
     </div>
   );
 };
-
 
 const EditProfileView = ({ onGoBackClick }) => (
   <div className="flex-1 max-w-xl p-6 md:p-12">

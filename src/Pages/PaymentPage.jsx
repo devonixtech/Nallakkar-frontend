@@ -7,7 +7,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { fetchCartByUserId } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import CustomPayment from "./CustomPayment";
-import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
+import {
+  createPaymentOrder,
+  verifyPaymentAndCreateShipment,
+  resetPaymentState,
+} from "../Redux/slices/paymentSlice";
 
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
@@ -269,8 +273,7 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
   );
 };
 
-const OrderSummary = ({cartSummary}) => (
-   
+const OrderSummary = ({ cartSummary }) => (
   <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
     {/* Product Card */}
     {/* <div className="bg-white p-4 border rounded-lg shadow-sm flex space-x-4">
@@ -345,7 +348,7 @@ function PaymentPage() {
   const { order, shipment, loading, error, success } = useSelector(
     (state) => state.payment
   );
- 
+
   const handlePayment = async () => {
     try {
       // Step 1️⃣: Create Razorpay Order via Redux
@@ -381,39 +384,38 @@ function PaymentPage() {
                 //   amount,
                 // },
                 orderDetails: {
-    billing_first_name: "Rahul",
-    billing_last_name: "Sharma",
-    billing_email: "rahul.sharma@example.com",
-    amount: amount,
-    billing_address:
-      "Ward Number 8/5, Karyappa Badavane, Lingenahalli, Opposite to Govt. School, Near PWD Office, Madhugiri",
-    billing_city: "Madhugiri",
-    billing_pincode: "572132",
-    billing_state: "Karnataka",
-    billing_country: "India",
-    billing_phone: "9876543210",
-    shipping_is_billing: false,
-    shipping_first_name: "Rahul",
-    shipping_last_name: "Sharma",
-    shipping_address: "Lingenahalli Government school., Tumkur",
-    shipping_city: "Tumkur",
-    shipping_pincode: "572132",
-    shipping_state: "Karnataka",
-    shipping_country: "India",
-    shipping_email: "rahul.sharma@example.com",
-    shipping_phone: "9876543210",
-    order_items: [
-      {
-        name: "Wireless Mouse",
-        sku: "MOUSE123",
-        units: 1,
-        selling_price: "499",
-      },
-    ],
-    shipping_charges: 50,
-    sub_total: 499,
-  },
-                
+                  billing_first_name: "Rahul",
+                  billing_last_name: "Sharma",
+                  billing_email: "rahul.sharma@example.com",
+                  amount: amount,
+                  billing_address:
+                    "Ward Number 8/5, Karyappa Badavane, Lingenahalli, Opposite to Govt. School, Near PWD Office, Madhugiri",
+                  billing_city: "Madhugiri",
+                  billing_pincode: "572132",
+                  billing_state: "Karnataka",
+                  billing_country: "India",
+                  billing_phone: "9876543210",
+                  shipping_is_billing: false,
+                  shipping_first_name: "Rahul",
+                  shipping_last_name: "Sharma",
+                  shipping_address: "Lingenahalli Government school., Tumkur",
+                  shipping_city: "Tumkur",
+                  shipping_pincode: "572132",
+                  shipping_state: "Karnataka",
+                  shipping_country: "India",
+                  shipping_email: "rahul.sharma@example.com",
+                  shipping_phone: "9876543210",
+                  order_items: [
+                    {
+                      name: "Wireless Mouse",
+                      sku: "MOUSE123",
+                      units: 1,
+                      selling_price: "499",
+                    },
+                  ],
+                  shipping_charges: 50,
+                  sub_total: 499,
+                },
               })
             );
           },
@@ -452,74 +454,76 @@ function PaymentPage() {
       </div>
       {/* <CustomPayment /> */}
       <div>
-         <div
-      style={{
-        padding: "40px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        fontFamily: "Poppins, sans-serif",
-      }}
-    >
-      <h2 style={{ marginBottom: "20px" }}>Nallakkar Payment</h2>
+        <div
+          style={{
+            padding: "40px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <h2 style={{ marginBottom: "20px" }}>Nallakkar Payment</h2>
 
-      <input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="Enter Amount"
-        style={{
-          padding: "10px",
-          width: "200px",
-          marginBottom: "15px",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-        }}
-      />
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Enter Amount"
+            style={{
+              padding: "10px",
+              width: "200px",
+              marginBottom: "15px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+          />
 
-      <button
-        onClick={handlePayment}
-        disabled={loading}
-        style={{
-          backgroundColor: "#3399cc",
-          color: "#fff",
-          padding: "10px 25px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontWeight: "600",
-        }}
-      >
-        {loading ? "Processing..." : "Pay Now"}
-      </button>
+          <button
+            onClick={handlePayment}
+            disabled={loading}
+            style={{
+              backgroundColor: "#3399cc",
+              color: "#fff",
+              padding: "10px 25px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontWeight: "600",
+            }}
+          >
+            {loading ? "Processing..." : "Pay Now"}
+          </button>
 
-      {/* ✅ Status Section */}
-      <div style={{ marginTop: "25px", width: "70%", textAlign: "center" }}>
-        {error && <p style={{ color: "red" }}>❌ {error}</p>}
+          {/* ✅ Status Section */}
+          <div style={{ marginTop: "25px", width: "70%", textAlign: "center" }}>
+            {error && <p style={{ color: "red" }}>❌ {error}</p>}
 
-        {success && order && !shipment && (
-          <p style={{ color: "green" }}>✅ Order Created — Proceed to Payment...</p>
-        )}
+            {success && order && !shipment && (
+              <p style={{ color: "green" }}>
+                ✅ Order Created — Proceed to Payment...
+              </p>
+            )}
 
-        {shipment && (
-          <div style={{ marginTop: "20px", color: "green" }}>
-            <h3>✅ Payment Successful!</h3>
-            <p>Shipment Created Successfully</p>
-            <p>
-              Tracking URL:{" "}
-              <a
-                href={shipment.tracking_url}
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: "#3399cc" }}
-              >
-                {shipment.tracking_url}
-              </a>
-            </p>
+            {shipment && (
+              <div style={{ marginTop: "20px", color: "green" }}>
+                <h3>✅ Payment Successful!</h3>
+                <p>Shipment Created Successfully</p>
+                <p>
+                  Tracking URL:{" "}
+                  <a
+                    href={shipment.tracking_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#3399cc" }}
+                  >
+                    {shipment.tracking_url}
+                  </a>
+                </p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
       </div>
     </div>
   );

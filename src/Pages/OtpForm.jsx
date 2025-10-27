@@ -1,11 +1,14 @@
- // OtpForm.jsx
+// OtpForm.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import { useNavigate } from "react-router-dom";
+
 const OtpForm = ({ changeNumber }) => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const emailOrMobile = localStorage.getItem("emailOrMobile"); // saved from login screen
+  const emailOrMobile = localStorage.getItem("emailOrMobile"); 
+  const navigate = useNavigate()
 
   const handleSubmit = async () => {
     if (!otp) {
@@ -15,22 +18,23 @@ const OtpForm = ({ changeNumber }) => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        `${BASE_URL}user/verifyOtp`,
-        {
-          emailOrMobile,
-          otp,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}user/verifyOtp`, {
+        emailOrMobile,
+        otp,
+      });
 
       alert("OTP Verified Successfully!");
-      // Example: save token or user data in localStorage
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("userId", response.data.userId);
+      console.log(response);
+      localStorage.setItem("authToken", response.data.data.token);
+      localStorage.setItem("userId", response.data.data.id);
       localStorage.setItem("isLoggedIn", "true");
-      // navigate user to dashboard if needed
+      // window.dispatchEvent(new Event("storage"));
+      navigate("/MainHome");
     } catch (error) {
-      console.error("❌ OTP Verification Failed:", error.response?.data || error.message);
+      console.error(
+        "❌ OTP Verification Failed:",
+        error.response?.data || error.message
+      );
       alert(error.response?.data?.message || "OTP verification failed!");
     } finally {
       setLoading(false);
