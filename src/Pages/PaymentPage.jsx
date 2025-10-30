@@ -269,7 +269,7 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
   );
 };
 
-const OrderSummary = ({ cartSummary }) => (
+const OrderSummary = ({ cartSummary ,handlePayment  }) => (
   <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
     {/* Product Card */}
     {/* <div className="bg-white p-4 border rounded-lg shadow-sm flex space-x-4">
@@ -319,12 +319,12 @@ const OrderSummary = ({ cartSummary }) => (
         <p>Order Total</p>
         <p>₹{cartSummary?.totalPrice}</p>
       </div>
-      <Link
-        to={"/PaymentSuccess"}
-        className="block text-center w-full bg-primary text-white py-3 font-bold text-lg mt-2 hover:bg-rose transition-colors"
-      >
-        Pay Now
-      </Link>
+         <button
+    onClick={handlePayment}
+      className="block text-center w-full bg-primary text-white py-3 font-bold text-lg mt-2 hover:bg-rose transition-colors"
+    >
+      Pay Now
+    </button>
     </div>
   </div>
 );
@@ -445,7 +445,8 @@ function PaymentPage() {
             selectedPayment={selectedPayment}
             setSelectedPayment={setSelectedPayment}
           />
-          <OrderSummary cartSummary={userCart} />
+        <OrderSummary cartSummary={userCart} handlePayment={handlePayment} />
+
         </main>
       </div>
       {/* <CustomPayment /> */}
@@ -475,7 +476,7 @@ function PaymentPage() {
               borderRadius: "5px",
             }}
           />
-
+{/* working */}
           <button
             onClick={handlePayment}
             disabled={loading}

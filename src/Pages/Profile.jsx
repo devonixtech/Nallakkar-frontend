@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link,  useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchUserById } from "../Redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -7,23 +7,36 @@ const Sidebar = ({ activeView, setActiveView }) => {
   const isSettingsActive = ["settings", "languages"].includes(activeView);
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
- const handleLogout = () => {
-  try {
-    localStorage.clear(); // easiest and cleanest
-    navigate("/", { replace: true });
-  } catch (error) {
-    console.error("Logout error:", error);
-  }
-};
-
-  useEffect(() => {
-    if (2) {
-      dispatch(fetchUserById(2));
+  // Single logout implementation
+  const handleLogout = () => {
+    try {
+      localStorage.clear(); // easiest and cleanest
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Logout error:", error);
     }
-  }, [dispatch]);
-  const userData = useSelector((state) => state?.users?.userData?.data);
+  };
+
+  // fetch user from users slice (example; use real ID in production)
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchUserById(userId));
+    }
+  }, [dispatch, userId]);
+
+  // avoid name collision: name redux value reduxUserData
+  const reduxUserData = useSelector((state) => state?.users?.userData?.data);
+  const authUser = useSelector((state) => state?.auth?.user);
+
+  // computed display name — checks multiple sources
+  const displayName =
+    reduxUserData?.name ||
+    authUser?.name ||
+    JSON.parse(localStorage.getItem("user") || "{}")?.name ||
+    "Name not found";
+
   return (
     <div className="w-full md:w-1/4 p-6 md:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-gray-200">
       <img
@@ -32,7 +45,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
         className="w-20 h-20 md:w-24 md:h-24 rounded-full mb-2"
       />
       <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-3">
-        {userData?.name || "Name not found"}
+        {displayName}
       </h2>
 
       <div className="w-full space-y-2 md:space-y-3">
@@ -64,9 +77,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
         <button
           onClick={() => setActiveView("settings")}
           className={`w-full py-2 rounded-lg text-sm md:text-base ${
-            isSettingsActive
-              ? "bg-red-500 text-white"
-              : "bg-gray-200 text-gray-600"
+            isSettingsActive ? "bg-red-500 text-white" : "bg-gray-200 text-gray-600"
           }`}
         >
           Settings
@@ -84,8 +95,21 @@ const Sidebar = ({ activeView, setActiveView }) => {
 };
 
 const ProfileView = ({ onEditClick }) => {
-  const userData = useSelector((state) => state?.users?.userData?.data);
-  console.log(userData)
+  // user data from users slice and auth slice
+  const reduxUserData = useSelector((state) => state?.users?.userData?.data);
+  const authUser = useSelector((state) => state?.auth?.user);
+
+  const userName =
+    authUser?.name ||
+    JSON.parse(localStorage.getItem("user") || "{}")?.name ||
+    reduxUserData?.name ||
+    "Name not found";
+
+  const userNumber =
+    authUser?.mobileNumber ||
+    JSON.parse(localStorage.getItem("user") || "{}")?.emailOrMobile ||
+    reduxUserData?.emailOrMobile ||
+    "+91 **********";
 
   return (
     <div className="flex-1 p-6 md:p-12">
@@ -107,16 +131,14 @@ const ProfileView = ({ onEditClick }) => {
       <div className="flex items-center">
         <img
           src="https://randomuser.me/api/portraits/women/82.jpg"
-          alt={userData?.name || "User"}
+          alt={userName || "User"}
           className="w-14 h-14 md:w-16 md:h-16 rounded-full"
         />
         <div className="ml-4">
           <h3 className="text-base md:text-lg font-bold text-gray-800">
-            {userData?.name || "Name not found"}
+            {userName}
           </h3>
-          <p className="text-gray-500 text-sm md:text-base">
-            {userData?.mobileNumber || "+91 **********"}
-          </p>
+          <p className="text-gray-500 text-sm md:text-base">{userNumber}</p>
         </div>
       </div>
     </div>
@@ -304,15 +326,11 @@ const AccountPage = () => {
       case "profile":
         return <ProfileView onEditClick={() => setActiveView("editProfile")} />;
       case "editProfile":
-        return (
-          <EditProfileView onGoBackClick={() => setActiveView("profile")} />
-        );
+        return <EditProfileView onGoBackClick={() => setActiveView("profile")} />;
       case "settings":
         return <SettingsView onNavigate={setActiveView} />;
       case "languages":
-        return (
-          <LanguagesView onGoBackClick={() => setActiveView("settings")} />
-        );
+        return <LanguagesView onGoBackClick={() => setActiveView("settings")} />;
       default:
         return <ProfileView onEditClick={() => setActiveView("editProfile")} />;
     }
