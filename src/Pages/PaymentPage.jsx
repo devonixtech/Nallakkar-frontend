@@ -7,12 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { fetchCartByUserId } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import CustomPayment from "./CustomPayment";
-import {
-  createPaymentOrder,
-  verifyPaymentAndCreateShipment,
-  resetPaymentState,
-} from "../Redux/slices/paymentSlice";
-
+import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
+import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
     P
@@ -453,6 +449,7 @@ function PaymentPage() {
         </main>
       </div>
       {/* <CustomPayment /> */}
+      <AddressAutocompleteTestUI/>
       <div>
         <div
           style={{
