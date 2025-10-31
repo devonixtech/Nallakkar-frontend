@@ -42,15 +42,15 @@ const buyNowSlice = createSlice({
     },
 
     clearBuyNowItem: () => {
-      localStorage.removeItem("buyNowItem");
-      // ✅ Return new clean state
-      return {
-        product: null,
-        variant: null,
-        quantity: 1,
-        isBuyNowActive: false,
-      };
-    },
+  localStorage.removeItem("buyNowItem");
+  return {
+    product: null,
+    variant: null,
+    quantity: 1,
+    isBuyNowActive: false,
+  };
+},
+
   },
 });
 
