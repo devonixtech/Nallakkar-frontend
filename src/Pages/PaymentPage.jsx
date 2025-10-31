@@ -13,6 +13,7 @@ import {
 import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
 import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
 
+
 // --- Payment Icons ---
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
@@ -146,14 +147,14 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
 };
 
 // --- Order Summary ---
-const OrderSummary = ({ cartSummary, buyNowItem, handlePayment }) => {
-  let totalPrice = cartSummary?.totalPrice || 0;
+const OrderSummary = ({ cartSummary, buyNowItem, handlePayment , totalPrice }) => {
+  // let totalPrice = cartSummary?.totalPrice || 0;
 
-  if (buyNowItem?.product) {
-    const variantPrice =
-      buyNowItem.variant?.price || buyNowItem.product.price || 0;
-    totalPrice = variantPrice * buyNowItem.quantity;
-  }
+  // if (buyNowItem?.product) {
+  //   const variantPrice =
+  //     buyNowItem.variant?.price || buyNowItem.product.price || 0;
+  //   totalPrice = variantPrice * buyNowItem.quantity;
+  // }
 
   return (
     <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
@@ -177,20 +178,45 @@ const OrderSummary = ({ cartSummary, buyNowItem, handlePayment }) => {
 };
 
 // --- Main Page ---
-function PaymentPage() {
-  const [selectedPayment, setSelectedPayment] = useState("googlepay_upi");
+function PaymentPage({  }) {
+  const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
   const [amount, setAmount] = useState(100);
   const dispatch = useDispatch();
+  // Get buyNowItem from localStorage
+const [buyNowItem, setBuyNowItem] = useState(null);
+
+useEffect(() => {
+  const storedItem = localStorage.getItem("buyNowItem");
+  if (storedItem) {
+    setBuyNowItem(JSON.parse(storedItem));
+  }
+}, []);
+
+  
+
+
+
+  //  const userId = localStorage.getItem("userId");
   const userId = 7;
 
-  const userCart = useSelector((state) => state?.cart?.items);
-  const buyNowItem = useSelector((state) => state.buyNow);
-
   useEffect(() => {
+    // Fetch cart data on mount
     dispatch(fetchCartByUserId(userId));
   }, [dispatch]);
+  const userCart = useSelector((state) => state?.cart?.items);
+  const { order, shipment, loading, error, success } = useSelector(
+    (state) => state.payment
+  );
 
-  const handlePayment = async () => {
+  let totalPrice = userCart?.totalPrice || 0;
+
+  if (buyNowItem?.product) {
+    const variantPrice =
+      buyNowItem.variant?.price || buyNowItem.product.price || 0;
+    totalPrice = variantPrice * buyNowItem.quantity;
+  }
+{console.log(totalPrice)}
+const handlePayment = async () => {
     try {
       const order_items = buyNowItem?.product
         ? [
@@ -208,7 +234,7 @@ function PaymentPage() {
 
       const result = await dispatch(
         createPaymentOrder({
-          amount,
+          amount: totalPrice,
           customer_name: "Ankit Verma",
           customer_email: "ankit@example.com",
         })
@@ -278,16 +304,89 @@ function PaymentPage() {
             selectedPayment={selectedPayment}
             setSelectedPayment={setSelectedPayment}
           />
-          <OrderSummary
-            cartSummary={userCart}
-            buyNowItem={buyNowItem}
-            handlePayment={handlePayment}
-          />
+        <OrderSummary cartSummary={userCart} handlePayment={handlePayment} totalPrice={totalPrice}/>
+
         </main>
       </div>
-      <AddressAutocompleteTestUI />
+      {/* <CustomPayment /> */}
+      <AddressAutocompleteTestUI/>
+       <div>
+        <div
+          style={{
+            padding: "40px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <h2 style={{ marginBottom: "20px" }}>Nallakkar Payment</h2>
+
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Enter Amount"
+            style={{
+              padding: "10px",
+              width: "200px",
+              marginBottom: "15px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+          />
+{/* working */}
+          <button
+            onClick={handlePayment}
+            disabled={loading}
+            style={{
+              backgroundColor: "#3399cc",
+              color: "#fff",
+              padding: "10px 25px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontWeight: "600",
+            }}
+          >
+            {loading ? "Processing..." : "Pay Now"}
+          </button>
+
+          {/* ✅ Status Section */}
+          <div style={{ marginTop: "25px", width: "70%", textAlign: "center" }}>
+            {error && <p style={{ color: "red" }}>❌ {error}</p>}
+
+            {success && order && !shipment && (
+              <p style={{ color: "green" }}>
+                ✅ Order Created — Proceed to Payment...
+              </p>
+            )}
+
+            {shipment && (
+              <div style={{ marginTop: "20px", color: "green" }}>
+                <h3>✅ Payment Successful!</h3>
+                <p>Shipment Created Successfully</p>
+                <p>
+                  Tracking URL:{" "}
+                  <a
+                    href={shipment.tracking_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#3399cc" }}
+                  >
+                    {shipment.tracking_url}
+                  </a>
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default PaymentPage;
+
+
+
