@@ -1,30 +1,55 @@
 // src/Redux/slices/buyNowSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  product: null,    // full product object
-  variant: null,    // selected variant object/string
-  quantity: 1,      // selected quantity
+const getInitialState = () => {
+  const saved = localStorage.getItem("buyNowItem");
+  return saved
+    ? { ...JSON.parse(saved), isBuyNowActive: true }
+    : { product: null, variant: null, quantity: 1, isBuyNowActive: false };
 };
 
 const buyNowSlice = createSlice({
   name: "buyNow",
-  initialState,
+  initialState: getInitialState(),
   reducers: {
     setBuyNowItem: (state, action) => {
-      const { product, variant = null, quantity = 1 } = action.payload || {};
-      state.product = product || null;
-      state.variant = variant;
-      state.quantity = quantity;
+      const { product, variant, quantity } = action.payload;
+      const newItem = {
+        product,
+        variant,
+        quantity,
+        isBuyNowActive: true,
+      };
+      localStorage.setItem(
+        "buyNowItem",
+        JSON.stringify({ product, variant, quantity })
+      );
+      return newItem; // ✅ Return new state (not mutate) to reset properly
     },
+
     updateBuyNowQuantity: (state, action) => {
       const q = Number(action.payload) || 1;
-      state.quantity = q > 0 ? q : 1;
+      const quantity = q > 0 ? q : 1;
+      state.quantity = quantity;
+      localStorage.setItem(
+        "buyNowItem",
+        JSON.stringify({
+          product: state.product,
+          variant: state.variant,
+          quantity,
+        })
+      );
     },
-    clearBuyNowItem: (state) => {
-      state.product = null;
-      state.variant = null;
-      state.quantity = 1;
+
+    clearBuyNowItem: () => {
+      localStorage.removeItem("buyNowItem");
+      // ✅ Return new clean state
+      return {
+        product: null,
+        variant: null,
+        quantity: 1,
+        isBuyNowActive: false,
+      };
     },
   },
 });
