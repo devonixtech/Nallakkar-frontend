@@ -59,6 +59,7 @@ import Addinvestor from "../Pages/admin/Addinvestor";
 import InvestoreProductList from "../Pages/admin/InvestoreProductList";
 
 import PublicRoute from "./PublicRoute";
+import AdminLayout from "../layouts/AdminLayout";
 
 export default function AppRoutes() {
   return (
@@ -134,36 +135,43 @@ export default function AppRoutes() {
       </Route>
 
       {/* ✅ Admin Panel routes */}
-      <Route path="/admin" element={<ProtectedRoute />}>
-        <Route path="/admin/dashboard" element={<Dashboard />} />
-        <Route path="products" element={<ProductList />} />
-        <Route path="products/add" element={<AddProduct />} />
-        <Route path="orders" element={<Orders />} />
-        <Route path="users" element={<Users />} />
-        <Route path="addinvestor" element={<Addinvestor />} />
-        <Route path="investoreProductList" element={<InvestoreProductList />} />
-        <Route path="categories" element={<Categories></Categories>}></Route>
-        <Route path="Inquiries" element={<ContactPage></ContactPage>}></Route>
-        <Route
-          path="categories/add"
-          element={<AddCategory></AddCategory>}
-        ></Route>
-        <Route
-          path="productsDetails"
-          element={<ProductDetails></ProductDetails>}
-        ></Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/admin" element={<AdminLayout> </AdminLayout>}>
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="products" element={<ProductList />} />
+          <Route path="products/add" element={<AddProduct />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="users" element={<Users />} />
+          <Route path="addinvestor" element={<Addinvestor />} />
+          <Route
+            path="investoreProductList"
+            element={<InvestoreProductList />}
+          />
+          <Route path="categories" element={<Categories></Categories>}></Route>
+          <Route path="Inquiries" element={<ContactPage></ContactPage>}></Route>
+          <Route
+            path="categories/add"
+            element={<AddCategory></AddCategory>}
+          ></Route>
+          <Route
+            path="productsDetails"
+            element={<ProductDetails></ProductDetails>}
+          ></Route>
+        </Route>
       </Route>
 
       {/* investor Panel routes */}
-      <Route path="/investor" element={<ProtectedRoute />}>
-        <Route
-          path="/investor/investorDashboard"
-          element={<InvestorDashboard />}
-        />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/investor" element={<AdminLayout> </AdminLayout>}>
+          <Route
+            path="/investor/investorDashboard"
+            element={<InvestorDashboard />}
+          />
 
-        <Route path="investorProduct" element={<InvestorProduct />} />
-        <Route path="investorOrder" element={<InvestorOrder />} />
-        <Route path="investorProfile" element={<InvestorProfile />} />
+          <Route path="investorProduct" element={<InvestorProduct />} />
+          <Route path="investorOrder" element={<InvestorOrder />} />
+          <Route path="investorProfile" element={<InvestorProfile />} />
+        </Route>
       </Route>
     </Routes>
   );
