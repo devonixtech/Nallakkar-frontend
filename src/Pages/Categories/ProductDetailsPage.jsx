@@ -32,6 +32,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { setBuyNowItem } from "../../Redux/slices/buyNowSlice";
+import ShareButton from "../../Components/Custom/ShareButton";
 
 
 const productData = {
@@ -110,8 +111,14 @@ export default function ProductDetailsPage() {
 
   const dispatch = useDispatch();
   const productId = useParams();
-  // const userId = localStorage.getItem("userId");
-  const userId = "7";
+  const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+// Access the id
+const userId = user.id;
+console.log(userId);  
+
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
     dispatch(fetchProductById(productId?.id));
@@ -145,7 +152,7 @@ export default function ProductDetailsPage() {
     dispatch(fetchWishlistByUserId(userId));
   };
 
-  const handleAddToCart = () => {
+ const handleAddToCart = () => {
     if (!userId) {
       alert("Please login to add items to cart");
       return;
@@ -178,6 +185,7 @@ export default function ProductDetailsPage() {
         alert("Failed to add to cart");
       });
   };
+
 
 
 const handleBuyNow = (e) => {
@@ -335,6 +343,8 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
     );
   };
 
+  {console.log(product)}
+
   return (
     <div className="bg-white font-sans mb-14">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -345,10 +355,12 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
               <Link to={"/MainHome"}>Home</Link> / Product details
             </span>
           </button>
-          <button className="flex items-center gap-2">
+          {/* <button className="flex items-center gap-2">
             <FiShare2 size={20} />
             <span className="hidden sm:block">Share</span>
-          </button>
+          </button> */}
+
+          <ShareButton product={product}/>
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-x-[2rem] mt-8">

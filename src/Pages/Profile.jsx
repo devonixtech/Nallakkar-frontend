@@ -2,12 +2,32 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchUserById } from "../Redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../Redux/slices/userSlice";
+import { updateUser as updateAuthUser } from "../Redux/slices/userSlice"; // ✅ import your authSlice action
+
+ 
 
 const Sidebar = ({ activeView, setActiveView }) => {
   const isSettingsActive = ["settings", "languages"].includes(activeView);
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
+
+  // -----------------------------------
+
+// Get the user string from localStorage
+// const userString = localStorage.getItem("user");
+
+// // Parse it into an object
+// const user = JSON.parse(userString);
+
+// // Access the id
+// const user_Id = user.id;
+
+// console.log(user_Id); // Output: "9"
+
+  // -----------------------------------
+
 
   // Single logout implementation
   const handleLogout = () => {
@@ -145,65 +165,148 @@ const ProfileView = ({ onEditClick }) => {
   );
 };
 
-const EditProfileView = ({ onGoBackClick }) => (
-  <div className="flex-1 max-w-xl p-6 md:p-12">
-    <h1 className="text-2xl font-bold text-primary inline-block pb-4">
-      Edit Profile
-      <div className="w-20 border-b-2 border-primary mt-1 mx-auto"></div>
-    </h1>
+// Working ----- Edit Form due
+const EditProfileView = ({ onGoBackClick, authUser }) => {
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.users);
 
-    <div className="space-y-4">
-      <input
-        type="text"
-        placeholder="Full Name"
-        className="w-full p-2 border border-gray-300 rounded-lg"
-      />
-      <input
-        type="text"
-        value="+91 63********7"
-        disabled
-        className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
-      />
-      <input
-        type="text"
-        placeholder="Date Of Birth"
-        onFocus={(e) => (e.target.type = "date")}
-        onBlur={(e) => (e.target.type = "text")}
-        className="w-full p-2 border border-gray-300 rounded-lg"
-      />
+const user = useSelector((state) => state.auth.user);
 
-      <div>
-        <p className="text-gray-600 mb-2 text-sm md:text-base">Gender</p>
-        <div className="flex items-center space-x-3 md:space-x-4">
-          <button className="px-4 md:px-5 py-1 border border-gray-300 rounded-lg text-gray-700 text-sm md:text-base">
-            Male
+  const user_Id = user?.id;
+
+  // ✅ Form states
+  const [name, setName] = useState(authUser?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [number, setNumber] = useState(user?.emailOrMobile || "");
+  const [dateOfBirth, setDateOfBirth] = useState(authUser?.dateOfBirth || "");
+  const [gender, setGender] = useState(authUser?.gender || "");
+  const [image, setImage] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("mobileNumber", number);
+    formData.append("dateOfBirth", dateOfBirth);
+    formData.append("gender", gender);
+
+    if (image) formData.append("image", image);
+
+dispatch(updateUser({ id: user_Id, data: formData })).then((res) => {
+  if (res.payload?.data) {
+    const updatedUser = res.payload.data;
+    // ✅ Update both Redux & localStorage immediately
+    dispatch(updateAuthUser(updatedUser)); 
+  }
+});
+
+  };
+
+  return (
+    <div className="flex-1 max-w-xl p-6 md:p-12">
+      <h1 className="text-2xl font-bold text-primary inline-block pb-4">
+        Edit Profile
+        <div className="w-20 border-b-2 border-primary mt-1 mx-auto"></div>
+      </h1>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Full Name */}
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        />
+
+        {/* Mobile Number */}
+        <input
+          type="text"
+          placeholder="Mobile Number"
+          value={number}
+          onChange={(e) => setNumber(e.target.value)}
+          disabled
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        />
+
+        {/* Email */}
+        <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        />
+
+        {/* Date of Birth */}
+        <input
+          type="text"
+          placeholder="Date Of Birth"
+          value={dateOfBirth}
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => (e.target.type = "text")}
+          onChange={(e) => setDateOfBirth(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        />
+
+        {/* Gender */}
+        <div>
+          <p className="text-gray-600 mb-2 text-sm md:text-base">Gender</p>
+          <div className="flex items-center space-x-3 md:space-x-4">
+            {["Male", "Female", "Other"].map((g) => (
+              <button
+                type="button"
+                key={g}
+                onClick={() => setGender(g)}
+                className={`px-4 md:px-5 py-1 rounded-lg text-sm md:text-base ${
+                  gender === g
+                    ? "bg-red-500 text-white"
+                    : "border border-gray-300 text-gray-700"
+                }`}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Profile Image */}
+        <div>
+          <label className="block text-gray-600 mb-2">Profile Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="w-full"
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex flex-col md:flex-row md:space-x-4 pt-4 space-y-3 md:space-y-0">
+          <button
+            type="button"
+            onClick={onGoBackClick}
+            className="flex-1 py-3 border border-gray-300 rounded-full font-semibold text-gray-700"
+          >
+            Go back
           </button>
-          <button className="px-4 md:px-5 py-1 border border-gray-300 rounded-lg text-gray-700 text-sm md:text-base">
-            Female
-          </button>
-          <button className="px-4 md:px-5 py-1 bg-red-500 text-white rounded-lg text-sm md:text-base">
-            Other
+          <button
+            type="submit"
+            className="flex-1 py-3 bg-red-600 text-white rounded-full font-semibold"
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save Changes"}
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-2 underline">
-          To help us customise your experience
-        </p>
-      </div>
-
-      <div className="flex flex-col md:flex-row md:space-x-4 pt-4 space-y-3 md:space-y-0">
-        <button
-          onClick={onGoBackClick}
-          className="flex-1 py-3 border border-gray-300 rounded-full font-semibold text-gray-700"
-        >
-          Go back
-        </button>
-        <button className="flex-1 py-3 bg-red-600 text-white rounded-full font-semibold">
-          Save Changes
-        </button>
-      </div>
+      </form>
     </div>
-  </div>
-);
+  );
+};
+
+
+ 
 
 const SettingsView = ({ onNavigate }) => (
   <div className="flex-1 p-6 md:p-12">

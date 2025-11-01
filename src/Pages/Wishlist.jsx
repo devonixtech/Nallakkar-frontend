@@ -15,10 +15,16 @@ const Wishlist = () => {
   const [activeCard, setActiveCard] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  // Get the user string from localStorage
+const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+// Access the id
+const userId = user.id;
+console.log(userId);  
 
   const dispatch = useDispatch();
-  const userId = 7; // temp userId
-
   const { items = [], loading, toggleLoading, error } = useSelector((state) => state.wishlist);
 
   useEffect(() => {

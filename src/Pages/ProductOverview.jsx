@@ -8,9 +8,20 @@ import { setBuyNowItem } from "../Redux/slices/buyNowSlice";
 import imgFallback from "../assets/details2.png";
 
 export default function ProductOverview() {
+
+  // Get the user string from localStorage
+const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+
+// Access the id
+const user_Id = user.id;
+
+console.log(user_Id); // Output: "9"
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userId = 7; // temp userId
+  const userId = user_Id; // temp userId
 
   const cartItems = useSelector((state) => state.cart?.items?.items || []);
   const { product, variant, quantity, isBuyNowActive } = useSelector(

@@ -47,13 +47,19 @@ export const updateUser = createAsyncThunk(
   "users/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`${BASE_URL}/${id}`, data);
+      const res = await api.patch(`${BASE_URL}/editProfile/${id}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
+
 
 // ✅ Delete User
 export const deleteUser = createAsyncThunk(
@@ -126,11 +132,19 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateUser.fulfilled, (state, action) => {
+         .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = state.users.map((u) =>
-          u._id === action.payload._id ? action.payload : u
-        );
+        state.users = action.payload; // updated user info
+
+        // ✅ Update localStorage user
+        const updatedUser = {
+          id: action.payload.id,
+          name: action.payload.name,
+          email: action.payload.email,
+          emailOrMobile: action.payload.mobileNumber || action.payload.emailOrMobile,
+        };
+
+        localStorage.setItem("user", JSON.stringify(updatedUser));
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;

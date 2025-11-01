@@ -5,7 +5,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     isLoggedIn: localStorage.getItem("isLoggedIn") === "true" || false,
-    user: JSON.parse(localStorage.getItem("user")) || null, // { name, email, mobile }
+    user: JSON.parse(localStorage.getItem("user")) || null,
     token: localStorage.getItem("authToken") || null,
   },
   reducers: {
@@ -15,23 +15,29 @@ const authSlice = createSlice({
       state.user = user;
       state.token = token;
 
-      // Persist data
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("authToken", token);
       localStorage.setItem("user", JSON.stringify(user));
     },
+
     logout: (state) => {
       state.isLoggedIn = false;
       state.user = null;
       state.token = null;
 
-      // Clear persisted data
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("authToken");
       localStorage.removeItem("user");
     },
+
+    // ✅ Merge updated fields and persist automatically
+    updateUser: (state, action) => {
+      const updatedUser = { ...state.user, ...action.payload };
+      state.user = updatedUser;
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateUser } = authSlice.actions;
 export default authSlice.reducer;

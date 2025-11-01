@@ -56,7 +56,13 @@ export default function TopSellingProducts() {
   const [activeTab, setActiveTab] = useState("Latest"); // default is Latest
   const productsPerPage = 10;
   const dispatch = useDispatch();
-  const userId = "7";
+const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+// Access the id
+const userId = user?.id;
+console.log(userId);  
 
   const products = useSelector((state) => state?.products?.products);
   const wishlist = useSelector((state) => state.wishlist.items || []);

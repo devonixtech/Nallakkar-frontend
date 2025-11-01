@@ -194,10 +194,19 @@ useEffect(() => {
 
   
 
+// Get the user string from localStorage
+const userString = localStorage.getItem("user");
 
+// Parse it into an object
+const user = JSON.parse(userString);
+
+// Access the id
+const user_Id = user.id;
+
+console.log(user_Id); // Output: "9"
 
   //  const userId = localStorage.getItem("userId");
-  const userId = 7;
+  const userId = user_Id;
 
   useEffect(() => {
     // Fetch cart data on mount

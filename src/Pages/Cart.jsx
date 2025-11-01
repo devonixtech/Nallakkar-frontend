@@ -10,9 +10,22 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { clearBuyNowItem } from "../Redux/slices/buyNowSlice"; // ✅ import this
 
+// Get the user string from localStorage
+const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+
+// Access the id
+const user_Id = user?.id;
+
+console.log("From the cart" , user_Id); // Output: "9"
+
+
 const ShoppingCart = () => {
-  const userId = 7; // temp userId
+  const userId = user_Id; // temp userId
   const dispatch = useDispatch();
+  
   const items = useSelector((state) => state.cart?.items);
 
   // ✅ Clear BuyNow item if user opens the cart
@@ -112,11 +125,15 @@ const ShoppingCart = () => {
             <p className="text-right">TOTAL</p>
           </div>
 
-          {items?.items?.map((item) => (
+        
+
+          {/* Product Item */}
+          {items?.items?.map((item, index) => (
             <div
               key={item?.id}
               className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
             >
+
               {/* Product Info */}
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <img
