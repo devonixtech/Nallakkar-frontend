@@ -64,7 +64,7 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/* ✅ Home routes */}
-      {/* <Route path="/login" element={<Login />} /> */}
+      <Route path="/login" element={<Login />} />
       <Route element={<PublicRoute />}>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
