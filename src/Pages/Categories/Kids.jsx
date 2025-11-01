@@ -198,7 +198,14 @@ export default function ProductListingPage() {
     });
   };
   // Not dynamic -- for
-  const userId = "7";
+const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+// Access the id
+const userId = user.id;
+console.log(userId);  
+
   const handleWishlist = async (productId) => {
     const isFavourite = !wishlist?.some((w) => w.productId === productId);
     await dispatch(toggleWishlist({ productId, userId, isFavourite })).unwrap();

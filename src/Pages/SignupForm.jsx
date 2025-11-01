@@ -83,16 +83,24 @@ const SignupForm = ({ switchToLogin }) => {
           required
           className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2"
         />
-        <input
-          type="text"
-          placeholder="Mobile number"
-          value={formData.mobileNumber}
-          onChange={(e) =>
-            setFormData({ ...formData, mobileNumber: e.target.value })
-          }
-          required
-          className="w-full rounded-md p-2 shadow-md border-l-2 border-r-2"
-        />
+<div className="flex items-center w-full rounded-md shadow-md border-l-2 border-r-2 overflow-hidden">
+  <span className="px-3 py-2 bg-gray-100 text-gray-600">+91</span>
+  <input
+    type="text"
+    placeholder="Enter mobile number"
+    value={formData.mobileNumber.replace("+91", "")} // show only digits in the box
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        mobileNumber: `+91${e.target.value}`, // store with +91
+      })
+    }
+    required
+    className="flex-1 p-2 outline-none"
+  />
+</div>
+
+
         <input
           type="password"
           placeholder="Create a Password"

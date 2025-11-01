@@ -30,6 +30,11 @@ import {
   toggleWishlist,
 } from "../../Redux/slices/wishlistSlice";
 
+import { useNavigate } from "react-router-dom";
+import { setBuyNowItem } from "../../Redux/slices/buyNowSlice";
+import ShareButton from "../../Components/Custom/ShareButton";
+
+
 const productData = {
   id: 1,
   category: "Girl Fashion",
@@ -101,11 +106,19 @@ export default function ProductDetailsPage() {
   const [activeCard, setActiveCard] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState({});
   const wishlist = useSelector((state) => state.wishlist.items || []);
+    const navigate = useNavigate();
+
 
   const dispatch = useDispatch();
   const productId = useParams();
-  // const userId = localStorage.getItem("userId");
-  const userId = "7";
+  const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+// Access the id
+const userId = user.id;
+console.log(userId);  
+
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
     dispatch(fetchProductById(productId?.id));
@@ -139,7 +152,7 @@ export default function ProductDetailsPage() {
     dispatch(fetchWishlistByUserId(userId));
   };
 
-  const handleAddToCart = () => {
+ const handleAddToCart = () => {
     if (!userId) {
       alert("Please login to add items to cart");
       return;
@@ -172,6 +185,46 @@ export default function ProductDetailsPage() {
         alert("Failed to add to cart");
       });
   };
+
+
+
+const handleBuyNow = (e) => {
+  if (e && e.preventDefault) e.preventDefault();
+
+  if (!product) {
+    alert("Product not loaded yet. Please wait.");
+    return;
+  }
+
+  // ✅ Check if the product actually has variants
+  const hasVariants =
+    product?.variants &&
+    Object.keys(product.variants).length > 0 &&
+    Array.isArray(product.variants.size) &&
+    product.variants.size.length > 0;
+
+  // ✅ If product has variants but user hasn't selected one → alert
+  if (hasVariants && !selectedVariant) {
+    alert("Please select a size before proceeding.");
+    return;
+  }
+
+  // ✅ Build the payload
+  const payload = {
+    product,
+    variant: selectedVariant || "Default", // fallback if no variant system
+    quantity: 1,
+  };
+
+  // inside handleBuyNow before navigate
+localStorage.setItem("buyNowItem", JSON.stringify(payload));
+
+
+  // ✅ Dispatch and navigate
+  dispatch(setBuyNowItem(payload));
+  navigate("/buyNow");
+};
+
 
   // Custom Arrows
   const NextArrow = ({ onClick }) => (
@@ -290,6 +343,8 @@ export default function ProductDetailsPage() {
     );
   };
 
+  {console.log(product)}
+
   return (
     <div className="bg-white font-sans mb-14">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -300,10 +355,12 @@ export default function ProductDetailsPage() {
               <Link to={"/MainHome"}>Home</Link> / Product details
             </span>
           </button>
-          <button className="flex items-center gap-2">
+          {/* <button className="flex items-center gap-2">
             <FiShare2 size={20} />
             <span className="hidden sm:block">Share</span>
-          </button>
+          </button> */}
+
+          <ShareButton product={product}/>
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-x-[2rem] mt-8">
@@ -488,12 +545,14 @@ export default function ProductDetailsPage() {
               >
                 Add to Cart
               </button>
-              <Link
-                to={"/buyNow"}
-                className="py-3 px-8 bg-rose text-white font-bold transition-colors"
-              >
-                Buy Now
-              </Link>
+          <Link
+  to={"/buyNow"}
+  onClick={handleBuyNow}
+  className="py-3 px-8 bg-rose text-white font-bold transition-colors"
+>
+  Buy Now
+</Link>
+
               <button
                 onClick={() => handleWishlist(product?.id)}
                 className="p-3 rounded-md hover:bg-gray-100 transition-colors" style={{background:"#f3f4f6"}}

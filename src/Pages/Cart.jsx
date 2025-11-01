@@ -1,6 +1,5 @@
 import { FaMinus, FaPlus, FaTimes } from "react-icons/fa";
 import shoppingcart from "../assets/ShoppingCart.png";
-import details from "../assets/details2.png";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -9,11 +8,43 @@ import {
   updateCartItem,
 } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { clearBuyNowItem } from "../Redux/slices/buyNowSlice"; // ✅ import this
+
+// Get the user string from localStorage
+const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+
+// Access the id
+const user_Id = user?.id;
+
+console.log("From the cart" , user_Id); // Output: "9"
+
+
 const ShoppingCart = () => {
-  // const userId = localStorage.getItem("userId");
-  const userId = 7; // temp userId
+  const userId = user_Id; // temp userId
   const dispatch = useDispatch();
+  
   const items = useSelector((state) => state.cart?.items);
+
+  // ✅ Clear BuyNow item if user opens the cart
+  useEffect(() => {
+    const buyNowItem = localStorage.getItem("buyNowItem");
+    if (buyNowItem) {
+      console.log("🧹 Removing buyNowItem instantly since user opened Cart");
+
+      // ✅ Remove from localStorage
+      localStorage.removeItem("buyNowItem");
+
+      // ✅ Dispatch to Redux (update state so UI reacts immediately)
+      dispatch(clearBuyNowItem());
+
+      // ✅ Optional: force a tiny re-render to sync UI without reload
+      window.dispatchEvent(new Event("storage"));
+    }
+  }, [dispatch]);
+
 
   useEffect(() => {
     if (userId) {
@@ -47,33 +78,27 @@ const ShoppingCart = () => {
       );
     }
   };
-  
 
-  // Data for the right side 
-
-  // Calculate Price Details
-const totalItems = items?.items?.reduce(
-  (sum, item) => sum + Number(item?.quantity),
-  0
-) || 0;
-
+  // ✅ Calculate price details
+  const totalItems =
+    items?.items?.reduce((sum, item) => sum + Number(item?.quantity), 0) || 0;
 
   const totalPrice =
-    items?.items?.reduce((sum, item) => sum + item.productPrice * item?.quantity, 0) ||
-    0;
+    items?.items?.reduce(
+      (sum, item) => sum + item.productPrice * item?.quantity,
+      0
+    ) || 0;
 
-  // Example discounts / GST
   const discountRate = 0.05; // 5% discount
   const discountAmount = totalPrice * discountRate;
-  const gstRate = 0.18; // 18% GST (example)
+  const gstRate = 0.18; // 18% GST
   const gstAmount = (totalPrice - discountAmount) * gstRate;
 
   const finalAmount = totalPrice - discountAmount + gstAmount;
 
   return (
     <div className="w-full min-h-screen bg-white">
-      {/* Header with background image */}
-
+      {/* Header */}
       <div
         className="w-full h-60 lg:h-80 bg-cover bg-center flex items-center justify-start pl-20"
         style={{
@@ -93,13 +118,14 @@ const totalItems = items?.items?.reduce(
       <div className="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left - Product List */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Table Headings - hidden on mobile */}
           <div className="hidden sm:grid grid-cols-4 font-semibold text-sm border-b pb-2">
             <p>PRODUCT NAME</p>
             <p className="text-center">UNIT PRICE</p>
             <p className="text-center">QUANTITY</p>
             <p className="text-right">TOTAL</p>
           </div>
+
+        
 
           {/* Product Item */}
           {items?.items?.map((item, index) => (
@@ -108,7 +134,6 @@ const totalItems = items?.items?.reduce(
               className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
             >
 
-              
               {/* Product Info */}
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <img
@@ -119,21 +144,21 @@ const totalItems = items?.items?.reduce(
                 <div>
                   <p className="text-sm text-gray-400">Nallakkar</p>
                   <p className="text-xs sm:text-sm font-semibold">
-                    {item?.productName} ({" "}
+                    {item?.productName} (
                     {item?.variant &&
-                      Object?.entries(item?.variant)?.map(
+                      Object.entries(item?.variant)?.map(
                         ([key, value], index) => (
                           <span key={key}>
                             {key}: {value}
-                            {index < Object?.entries(item.variant).length - 1
+                            {index <
+                            Object.entries(item.variant).length - 1
                               ? ", "
                               : ""}
                           </span>
                         )
-                      )}{" "}
+                      )}
                     )
                   </p>
-                  {/* <div className="w-5 h-5 rounded-full bg-yellow-700 border mt-2"></div> */}
                 </div>
               </div>
 
@@ -176,7 +201,6 @@ const totalItems = items?.items?.reduce(
         </div>
 
         {/* Right - Price Details */}
-        {/* I have updated the right side too now everything is in sync */}
         <div className="pb-12 lg:pb-0 font-semibold text-black">
           <div className="border rounded-lg shadow p-6 space-y-4">
             <h2 className="text-lg font-semibold">Price Details</h2>
@@ -204,7 +228,6 @@ const totalItems = items?.items?.reduce(
               You saved ₹ {discountAmount.toFixed(2)} on this order
             </p>
 
-            {/* Buttons */}
             <Link
               to={"/category/kids"}
               className="block text-center w-full border py-2 font-medium hover:bg-gray-100 text-sm sm:text-base"

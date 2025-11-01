@@ -1,30 +1,106 @@
-import { useSelector , useDispatch } from "react-redux";
+// src/pages/ProductOverview.jsx
+import { useSelector, useDispatch } from "react-redux";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { fetchCartByUserId } from "../Redux/slices/cartSlice"; // ✅ import it
+import { fetchCartByUserId } from "../Redux/slices/cartSlice";
+import { setBuyNowItem } from "../Redux/slices/buyNowSlice";
+import imgFallback from "../assets/details2.png";
 
 export default function ProductOverview() {
+
+  // Get the user string from localStorage
+const userString = localStorage.getItem("user");
+
+// Parse it into an object
+const user = JSON.parse(userString);
+
+// Access the id
+const user_Id = user.id;
+
+console.log(user_Id); // Output: "9"
   const navigate = useNavigate();
-  const  items  = useSelector((state) => state.cart?.items); // ✅ Get products from Redux
-  const userId = 7; // temp userId
   const dispatch = useDispatch();
+  const userId = user_Id; // temp userId
 
+  const cartItems = useSelector((state) => state.cart?.items?.items || []);
+  const { product, variant, quantity, isBuyNowActive } = useSelector(
+    (state) => state.buyNow || {}
+  );
+
+  // ✅ Restore BuyNow item from localStorage (no removal)
   useEffect(() => {
-    if (userId) {
-      dispatch(fetchCartByUserId(userId)); // ✅ same as ShoppingCart
+    if (!product) {
+      const saved = localStorage.getItem("buyNowItem");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.product) {
+          dispatch(
+            setBuyNowItem({
+              product: parsed.product,
+              variant: parsed.variant,
+              quantity: parsed.quantity || 1,
+            })
+          );
+        }
+      }
     }
-  }, [dispatch, userId]);
+  }, [dispatch, product]);
 
-  // Calculate totals
+  // ✅ Fetch cart only if BuyNow not active
+  useEffect(() => {
+    if (!isBuyNowActive && userId) {
+      dispatch(fetchCartByUserId(userId));
+    }
+  }, [dispatch, userId, isBuyNowActive]);
+
+  // ✅ Determine what to display
+  const itemsToShow =
+    isBuyNowActive && product
+      ? (() => {
+          const image =
+            product?.image && product.image.length > 0
+              ? product.image
+              : [imgFallback];
+          const basePrice = parseFloat(product?.price ?? 0);
+          const variantPrice = parseFloat(variant?.price ?? basePrice);
+          const finalPrice = parseFloat(product?.final_price ?? variantPrice);
+          const discount = parseFloat(product?.discount ?? 0);
+
+          const productPrice =
+            !isNaN(variantPrice) && variantPrice > 0
+              ? variantPrice
+              : !isNaN(finalPrice) && finalPrice > 0
+              ? finalPrice
+              : basePrice;
+
+          return [
+            {
+              productName: product?.name || "Unnamed Product",
+              productImage: image,
+              productPrice,
+              quantity: quantity || 1,
+              variant: variant || null,
+              productCode: product?.productCode || null,
+              merchant: product?.brand || "Unknown Seller",
+              discount,
+            },
+          ];
+        })()
+      : cartItems;
+
+  // ✅ Calculate totals
   const totalProductPrice =
-    items?.items?.reduce((sum, item) => sum + item.productPrice * item.quantity, 0) ||
-    0;
+    itemsToShow?.reduce(
+      (sum, item) => sum + item.productPrice * (item.quantity || 1),
+      0
+    ) || 0;
+
   const orderTotal = totalProductPrice;
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 pb-24 lg:pb-6">
-      {/* Top Header */}
+      {/* Header */}
       <div
         className="flex items-center gap-2 cursor-pointer"
         onClick={() => navigate(-1)}
@@ -33,30 +109,31 @@ export default function ProductOverview() {
         <h1 className="text-xl sm:text-2xl font-bold">Product Overview</h1>
       </div>
 
-      {/* Product Details Section */}
+      {/* Product Section */}
       <div className="pb-6 pt-3 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="bg-white p-4 sm:p-6 rounded-lg border shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Left Section → Product List */}
+              {/* Left: Product List */}
               <div className="md:col-span-2 flex flex-col gap-4 md:pr-6 md:border-r">
-                {items?.items?.map((item, index) => (
+                {itemsToShow.map((item, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-4 border-b pb-4"
                   >
                     <img
-                      src={item?.productImage[0]}
-                      alt={item?.productName}
+                      src={item.productImage[0]}
+                      alt={item.productName}
                       className="w-28 h-32 sm:w-32 sm:h-36 object-cover rounded-lg shadow"
                     />
                     <div className="flex-1">
                       <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                         {item.productName}
                       </h2>
-                      <p className="text-sm text-gray-500">Nallakkar</p>
+                      <p className="text-sm text-gray-500">
+                        {item.merchant || "Seller"}
+                      </p>
 
-                      {/* Variant if exists */}
                       {item?.variant && (
                         <p className="text-xs text-gray-600 mt-1">
                           {Object.entries(item.variant)
@@ -71,22 +148,34 @@ export default function ProductOverview() {
                       <p className="text-base font-bold text-gray-900 mt-1">
                         ₹{(item.productPrice * item.quantity).toFixed(2)}
                       </p>
+
+                      {item.discount > 0 && (
+                        <p className="text-sm text-green-600 mt-1">
+                          {item.discount}% OFF
+                        </p>
+                      )}
+
+                      {item.productCode && (
+                        <p className="text-sm text-gray-500">
+                          Product Code: {item.productCode}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Right Section → Price Summary */}
+              {/* Right: Price Summary */}
               <div className="md:col-span-1">
                 <div className="bg-gray-50 p-4 sm:p-5 rounded-lg h-full flex flex-col">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
-                    Price Details ({items?.items?.length}{" "}
-                    {items?.items?.length > 1 ? "items" : "item"})
+                    Price Details ({itemsToShow.length}{" "}
+                    {itemsToShow.length > 1 ? "items" : "item"})
                   </h3>
 
                   <div className="flex justify-between text-gray-700 mb-2 text-sm sm:text-base">
                     <span>Total Product Price</span>
-                    <span>+₹{totalProductPrice.toFixed(2)}</span>
+                    <span>₹{totalProductPrice.toFixed(2)}</span>
                   </div>
 
                   <hr className="my-2" />
