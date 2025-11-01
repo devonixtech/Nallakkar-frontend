@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AdminSidebar from "../Components/layout/AdminSidebar";
 import AdminNavbar from "../components/layout/AdminNavbar";
+import { Outlet } from "react-router-dom";
 
 export default function AdminLayout({ children }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +11,9 @@ export default function AdminLayout({ children }) {
       <div className="lg:ml-64">
         {/* <AdminNavbar /> */}
         <AdminNavbar onMenuToggle={() => setIsOpen(true)} title="Dashboard" />
-        <main className="p-6">{children}</main>
+        <main className="p-6">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
