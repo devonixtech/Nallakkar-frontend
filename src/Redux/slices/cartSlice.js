@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/cart";
@@ -89,10 +89,12 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchCartByUserId.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload;
-      })
+.addCase(fetchCartByUserId.fulfilled, (state, action) => {
+  state.loading = false;
+  state.items = action.payload.items || [];
+  state.totalPrice = action.payload.totalPrice || 0; // ✅ store total price
+})
+
       .addCase(fetchCartByUserId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -103,14 +105,15 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateCartItem.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = state.items.map((item) =>
-          item.cartId === action.payload.cartId
-            ? { ...item, quantity: action.payload.newQuantity }
-            : item
-        );
-      })
+  .addCase(updateCartItem.fulfilled, (state, action) => {
+  state.loading = false;
+  state.items = state.items.map((item) =>
+    item.cartId === action.payload.cartId
+      ? { ...item, quantity: action.payload.newQuantity }
+      : item
+  );
+})
+
       .addCase(updateCartItem.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -121,10 +124,13 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(removeFromCart.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = state.items.filter((item) => item.cartId !== action.payload);
-      })
+.addCase(removeFromCart.fulfilled, (state, action) => {
+  state.loading = false;
+  state.items = state.items.filter(
+    (item) => item.cartId !== action.payload
+  );
+})
+
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

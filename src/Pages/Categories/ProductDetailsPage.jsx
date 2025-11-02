@@ -82,7 +82,7 @@ const ProductCard = ({ product }) => (
       <p className="font-bold text-gray-800"> Nallakkar</p>
       <p className="text-gray-500 truncate">{product?.title}</p>
       <div className="flex items-center gap-2 mt-1">
-        <p className="text-darkpink font-semibold text-sm">₹{product?.price}</p>
+        <p className="text-darkpink font-semibold text-sm">₹{product?.final_price}</p>
       </div>
     </div>
   </div>
@@ -152,7 +152,7 @@ console.log(userId);
     dispatch(fetchWishlistByUserId(userId));
   };
 
- const handleAddToCart = () => {
+  const handleAddToCart = () => {
     if (!userId) {
       alert("Please login to add items to cart");
       return;
@@ -185,6 +185,7 @@ console.log(userId);
         alert("Failed to add to cart");
       });
   };
+
 
 
 
@@ -492,7 +493,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
 
             <div>
               <p className="text-3xl font-bold text-gray-900">
-                ₹{product?.price}
+                ₹{product?.final_price}
               </p>
               <p className="text-sm font-medium mt-4">
                 Order in 12h 30m to get next day delivery
@@ -859,7 +860,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
 
                   <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                     <span className="text-darkpink font-semibold text-sm">
-                      {item?.price}
+                      {item?.final_price}
                     </span>
                     <span className="text-gray-500 text-xs">
                       ( {item?.discount}% )
@@ -959,7 +960,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
 
                   <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                     <span className="text-darkpink font-semibold text-sm">
-                      {item.price}
+                      {item.final_price}
                     </span>
                     <span className="text-gray-500 text-xs">
                       ( {item.discount}% )

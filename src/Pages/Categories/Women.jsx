@@ -420,7 +420,7 @@ export default function Women() {
 
                   <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                     <span className="text-darkpink font-semibold text-sm">
-                      {item.price}
+                      {item.final_price}
                     </span>
                     <span className="text-gray-500 text-xs">
                       {item.discount}

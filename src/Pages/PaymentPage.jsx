@@ -6,6 +6,8 @@ import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCartByUserId } from "../Redux/slices/cartSlice";
+import { getAddressesByUserId } from "../Redux/slices/addressSlice";
+
 import {
   createPaymentOrder,
   verifyPaymentAndCreateShipment,
@@ -147,10 +149,17 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
 };
 
 // --- Order Summary ---
-const OrderSummary = ({ cartSummary, buyNowItem, handlePayment , totalPrice }) => {
+const OrderSummary = ({ cartSummary, buyNowItem, handlePayment , totalPrice  }) => {
+const addresses = useSelector((state) => state.address?.addresses || []);
+
+  console.log("Cart Summary" , cartSummary)
+    if (addresses?.length > 0) {
+    console.log("🟩 User Addresses:", addresses);
+  }
   // let totalPrice = cartSummary?.totalPrice || 0;
 
   // if (buyNowItem?.product) {
+
   //   const variantPrice =
   //     buyNowItem.variant?.price || buyNowItem.product.price || 0;
   //   totalPrice = variantPrice * buyNowItem.quantity;
@@ -192,7 +201,15 @@ useEffect(() => {
   }
 }, []);
 
-  
+    // ✅ Get addresses from Redux
+  const addresses = useSelector((state) => state.address?.addresses || []);
+
+  // ✅ Log addresses whenever they update
+  useEffect(() => {
+    if (addresses.length > 0) {
+      console.log("🟢 Updated addresses in Redux:", addresses);
+    }
+  }, [addresses]);
 
 // Get the user string from localStorage
 const userString = localStorage.getItem("user");
@@ -208,14 +225,18 @@ console.log(user_Id); // Output: "9"
   //  const userId = localStorage.getItem("userId");
   const userId = user_Id;
 
-  useEffect(() => {
-    // Fetch cart data on mount
+useEffect(() => {
+  if (userId) {
+    // Fetch both cart and addresses
     dispatch(fetchCartByUserId(userId));
-  }, [dispatch]);
-  const userCart = useSelector((state) => state?.cart?.items);
+    dispatch(getAddressesByUserId(userId)); // ✅ Add this line
+  }
+}, [dispatch, userId]);
+  const userCart = useSelector((state) => state?.cart);
   const { order, shipment, loading, error, success } = useSelector(
     (state) => state.payment
   );
+  
 
   let totalPrice = userCart?.totalPrice || 0;
 
@@ -224,7 +245,7 @@ console.log(user_Id); // Output: "9"
       buyNowItem.variant?.price || buyNowItem.product.price || 0;
     totalPrice = variantPrice * buyNowItem.quantity;
   }
-{console.log(totalPrice)}
+{console.log(userCart)}
 
   const handlePayment = async () => {
     try {
