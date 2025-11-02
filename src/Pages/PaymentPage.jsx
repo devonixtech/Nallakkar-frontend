@@ -225,25 +225,13 @@ console.log(user_Id); // Output: "9"
     totalPrice = variantPrice * buyNowItem.quantity;
   }
 {console.log(totalPrice)}
-const handlePayment = async () => {
+
+  const handlePayment = async () => {
     try {
-      const order_items = buyNowItem?.product
-        ? [
-            {
-              name: buyNowItem.product.name,
-              sku: buyNowItem.product.sku,
-              units: buyNowItem.quantity,
-              selling_price:
-                buyNowItem.variant?.price || buyNowItem.product.price,
-            },
-          ]
-        : userCart || [];
-
-      console.log("🛍️ Order Items Sent to Payment:", order_items);
-
+      // Step 1️⃣: Create Razorpay Order via Redux
       const result = await dispatch(
         createPaymentOrder({
-          amount: totalPrice,
+          amount : totalPrice,
           customer_name: "Ankit Verma",
           customer_email: "ankit@example.com",
         })
@@ -252,6 +240,7 @@ const handlePayment = async () => {
       if (result.meta.requestStatus === "fulfilled") {
         const razorpayOrder = result.payload;
 
+        // Step 2️⃣: Initialize Razorpay Checkout
         const options = {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID,
           amount: razorpayOrder.amount,
@@ -260,43 +249,77 @@ const handlePayment = async () => {
           description: "Order Payment",
           order_id: razorpayOrder.id,
           handler: async (response) => {
-            console.log("✅ Payment Success Response:", response);
-
-            // Verify payment & create shipment
+            // Step 3️⃣: Verify payment & create shipment via Redux
             await dispatch(
               verifyPaymentAndCreateShipment({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
                 orderDetails: {
-                  billing_first_name: "Rahul",
-                  billing_last_name: "Sharma",
-                  billing_email: "rahul.sharma@example.com",
+                  billing_customer_name: "Ankit Verma",
+                  billing_email: "ankit@example.com",
                   amount,
-                  order_items,
                 },
+                orderDetails: {
+    billing_first_name: "Rahul",
+    billing_last_name: "Sharma",
+    billing_email: "rahul.sharma@example.com",
+    amount: amount,
+    billing_address:
+      "Ward Number 8/5, Karyappa Badavane, Lingenahalli, Opposite to Govt. School, Near PWD Office, Madhugiri",
+    billing_city: "Madhugiri",
+    billing_pincode: "572132",
+    billing_state: "Karnataka",
+    billing_country: "India",
+    billing_phone: "9876543210",
+    shipping_is_billing: false,
+    shipping_first_name: "Rahul",
+    shipping_last_name: "Sharma",
+    shipping_address: "Lingenahalli Government school., Tumkur",
+    shipping_city: "Tumkur",
+    shipping_pincode: "572132",
+    shipping_state: "Karnataka",
+    shipping_country: "India",
+    shipping_email: "rahul.sharma@example.com",
+    shipping_phone: "9876543210",
+order_items: buyNowItem?.product
+  ? [
+      {
+        name: buyNowItem.product.name,
+        sku: buyNowItem.product.sku,
+        units: buyNowItem.quantity,
+        selling_price: buyNowItem.variant?.price || buyNowItem.product.price,
+      },
+    ]
+  : userCart?.items?.map(item => ({
+      name: item.product.name,
+      sku: item.product.sku,
+      units: item.quantity,
+      selling_price: item.variant?.price || item.product.price,
+    })) || [],
+        
+    shipping_charges: 50,
+    sub_total: 499,
+  },
+                
               })
             );
-
-            // ✅ Remove BuyNowItem only after successful payment
-            console.log("🧹 Clearing buyNowItem after successful payment...");
-            localStorage.removeItem("buyNowItem");
-            dispatch(clearBuyNowItem());
           },
           prefill: {
             name: "Ankit Verma",
             email: "ankit@example.com",
             contact: "9999999999",
           },
-          theme: { color: "#3399cc" },
+          theme: {
+            color: "#3399cc",
+          },
         };
 
         const razor = new window.Razorpay(options);
         razor.open();
 
         razor.on("payment.failed", function (response) {
-          console.error("❌ Payment failed:", response.error.description);
-          alert("Payment failed. Please try again.");
+          alert("❌ Payment failed: " + response.error.description);
         });
       }
     } catch (err) {
@@ -304,6 +327,7 @@ const handlePayment = async () => {
       alert("Something went wrong during payment.");
     }
   };
+
 
   return (
     <div className="bg-white min-h-screen font-sans">
