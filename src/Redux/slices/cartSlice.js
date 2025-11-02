@@ -89,13 +89,10 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-  .addCase(fetchCartByUserId.fulfilled, (state, action) => {
-  state.loading = false;
-  // Ensure we always store an array
-  state.items = Array.isArray(action.payload)
-    ? action.payload
-    : action.payload?.data || [];
-})
+      .addCase(fetchCartByUserId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
       .addCase(fetchCartByUserId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
