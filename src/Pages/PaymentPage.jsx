@@ -276,11 +276,11 @@ useEffect(() => {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                orderDetails: {
-                  billing_customer_name: "Ankit Verma",
-                  billing_email: "ankit@example.com",
-                  amount,
-                },
+                // orderDetails: {
+                //   billing_customer_name: "Ankit Verma",
+                //   billing_email: "ankit@example.com",
+                //   amount,
+                // },
                 orderDetails: {
     billing_first_name: "Rahul",
     billing_last_name: "Sharma",
