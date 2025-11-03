@@ -23,7 +23,7 @@ console.log(user_Id); // Output: "9"
   const dispatch = useDispatch();
   const userId = user_Id; // temp userId
 
-  const cartItems = useSelector((state) => state.cart?.items?.items || []);
+  const cartItems = useSelector((state) => state.cart?.items || []);
   const { product, variant, quantity, isBuyNowActive } = useSelector(
     (state) => state.buyNow || {}
   );

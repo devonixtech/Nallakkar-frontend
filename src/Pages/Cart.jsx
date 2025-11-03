@@ -1,5 +1,6 @@
 import { FaMinus, FaPlus, FaTimes } from "react-icons/fa";
 import shoppingcart from "../assets/ShoppingCart.png";
+import details from "../assets/details2.png";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -8,25 +9,40 @@ import {
   updateCartItem,
 } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { clearBuyNowItem } from "../Redux/slices/buyNowSlice"; // ✅ import this
+import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
+const ShoppingCart = () => {
 
-// Get the user string from localStorage
+  // Get the user string from localStorage
 const userString = localStorage.getItem("user");
 
 // Parse it into an object
 const user = JSON.parse(userString);
 
 // Access the id
-const user_Id = user?.id;
-
-console.log("From the cart" , user_Id); // Output: "9"
-
-
-const ShoppingCart = () => {
+const user_Id = user.id;
   const userId = user_Id; // temp userId
   const dispatch = useDispatch();
-  
   const items = useSelector((state) => state.cart?.items);
+
+  // useEffect(() => {
+  //   if (userId) {
+  //     dispatch(fetchCartByUserId(userId));
+  //   }
+  // }, [dispatch, userId]);
+
+useEffect(() => {
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+  const userId = user?.id;
+
+  if (userId) {
+    dispatch(fetchCartByUserId(userId))
+      .unwrap()
+      .then((res) => console.log("Fetched cart:", res))
+      .catch((err) => console.error("Fetch error:", err));
+  }
+}, [dispatch]);
+
 
   // ✅ Clear BuyNow item if user opens the cart
   useEffect(() => {
@@ -45,60 +61,58 @@ const ShoppingCart = () => {
     }
   }, [dispatch]);
 
+const handleIncrement = (item) => {
+  dispatch(updateCartItem({ cartId: item.cartId, action: 1 }));
+};
 
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchCartByUserId(userId));
-    }
-  }, [dispatch, userId]);
+const handleDecrement = (item) => {
+  if (item.quantity > 1) {
+    dispatch(updateCartItem({ cartId: item.cartId, action: -1 }));
+  }
+};
 
-  const handleRemove = (cartItemId) => {
-    if (window.confirm("Are you sure you want to remove this item?")) {
-      dispatch(removeFromCart(cartItemId));
-      dispatch(fetchCartByUserId(userId));
-    }
-  };
+const handleRemove = (cartId) => {
+  if (window.confirm("Are you sure you want to remove this item?")) {
+    dispatch(removeFromCart(cartId));
+  }
+};
 
-  const handleIncrement = (item) => {
-    dispatch(
-      updateCartItem({
-        cartId: item.cartId,
-        action: 1,
-      })
-    );
-  };
 
-  const handleDecrement = (item) => {
-    if (item?.quantity > 1) {
-      dispatch(
-        updateCartItem({
-          cartId: item.cartId,
-          action: -1,
-        })
-      );
-    }
-  };
+  // Data for the right side 
 
-  // ✅ Calculate price details
-  const totalItems =
-    items?.items?.reduce((sum, item) => sum + Number(item?.quantity), 0) || 0;
+  // Calculate Price Details
+// ✅ Total Items
+const totalItems = items?.reduce(
+  (sum, item) => sum + Number(item?.quantity),
+  0
+) || 0;
 
-  const totalPrice =
-    items?.items?.reduce(
-      (sum, item) => sum + item.productPrice * item?.quantity,
-      0
-    ) || 0;
+// ✅ Total Price
+const totalPrice =
+items?.reduce((sum, item) => {
+  const price =
+    item?.productPrice ||
+    item?.variant?.price ||
+    item?.product?.price ||
+    0;
 
-  const discountRate = 0.05; // 5% discount
-  const discountAmount = totalPrice * discountRate;
-  const gstRate = 0.18; // 18% GST
-  const gstAmount = (totalPrice - discountAmount) * gstRate;
+  return sum + price * (item?.quantity || 1);
+}, 0) || 0;
+  
 
-  const finalAmount = totalPrice - discountAmount + gstAmount;
+
+// ✅ Discounts & GST
+const discountRate = 0.05; // 5% discount
+const discountAmount = totalPrice * discountRate;
+const gstRate = 0.18; // 18% GST
+const gstAmount = (totalPrice - discountAmount) * gstRate;
+
+const finalAmount = totalPrice - discountAmount + gstAmount;
 
   return (
     <div className="w-full min-h-screen bg-white">
-      {/* Header */}
+      {/* Header with background image */}
+
       <div
         className="w-full h-60 lg:h-80 bg-cover bg-center flex items-center justify-start pl-20"
         style={{
@@ -118,6 +132,7 @@ const ShoppingCart = () => {
       <div className="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left - Product List */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Table Headings - hidden on mobile */}
           <div className="hidden sm:grid grid-cols-4 font-semibold text-sm border-b pb-2">
             <p>PRODUCT NAME</p>
             <p className="text-center">UNIT PRICE</p>
@@ -125,15 +140,14 @@ const ShoppingCart = () => {
             <p className="text-right">TOTAL</p>
           </div>
 
-        
-
           {/* Product Item */}
-          {items?.items?.map((item, index) => (
+          {items?.map((item, index) => (
             <div
               key={item?.id}
               className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
             >
 
+              
               {/* Product Info */}
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <img
@@ -144,21 +158,21 @@ const ShoppingCart = () => {
                 <div>
                   <p className="text-sm text-gray-400">Nallakkar</p>
                   <p className="text-xs sm:text-sm font-semibold">
-                    {item?.productName} (
+                    {item?.productName} ({" "}
                     {item?.variant &&
-                      Object.entries(item?.variant)?.map(
+                      Object?.entries(item?.variant)?.map(
                         ([key, value], index) => (
                           <span key={key}>
                             {key}: {value}
-                            {index <
-                            Object.entries(item.variant).length - 1
+                            {index < Object?.entries(item.variant).length - 1
                               ? ", "
                               : ""}
                           </span>
                         )
-                      )}
+                      )}{" "}
                     )
                   </p>
+                  {/* <div className="w-5 h-5 rounded-full bg-yellow-700 border mt-2"></div> */}
                 </div>
               </div>
 
@@ -187,8 +201,12 @@ const ShoppingCart = () => {
               {/* Total */}
               <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
                 <p className="text-gray-700 text-sm sm:text-base">
-                  {(item?.productPrice * item?.quantity).toFixed(2)}
-                </p>
+{(
+  (item?.productPrice ||
+    item?.variant?.price ||
+    item?.product?.price ||
+    0) * (item?.quantity || 1)
+).toFixed(2)}                </p>
                 <button
                   className="text-gray-500 hover:text-red-500"
                   onClick={() => handleRemove(item?.cartId)}
@@ -201,6 +219,7 @@ const ShoppingCart = () => {
         </div>
 
         {/* Right - Price Details */}
+        {/* I have updated the right side too now everything is in sync */}
         <div className="pb-12 lg:pb-0 font-semibold text-black">
           <div className="border rounded-lg shadow p-6 space-y-4">
             <h2 className="text-lg font-semibold">Price Details</h2>
@@ -228,6 +247,7 @@ const ShoppingCart = () => {
               You saved ₹ {discountAmount.toFixed(2)} on this order
             </p>
 
+            {/* Buttons */}
             <Link
               to={"/category/kids"}
               className="block text-center w-full border py-2 font-medium hover:bg-gray-100 text-sm sm:text-base"
