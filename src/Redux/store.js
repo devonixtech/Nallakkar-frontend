@@ -11,6 +11,7 @@ import authReducer from "./slices/authSlice";
 import filteredProductReducer from "./slices/filteredProductSlice";
 import investorReducer from "./slices/investorSlice";
 import paymentReducer from "./slices/paymentSlice";
+import buyNowReducer from "./slices/buyNowSlice"; 
 export const store = configureStore({
   reducer: {
     ctegory : categoryreducer,
@@ -24,7 +25,9 @@ export const store = configureStore({
     auth: authReducer,
     filteredProducts: filteredProductReducer,
     investors : investorReducer,
-    payment : paymentReducer
+    payment : paymentReducer,
+        buyNow: buyNowReducer, 
+
   },
 });
 

@@ -1,14 +1,17 @@
-// OtpForm.jsx
+// src/components/Auth/OtpForm.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../Redux/slices/authSlice";
 
 const OtpForm = ({ changeNumber }) => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const emailOrMobile = localStorage.getItem("emailOrMobile"); 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
     if (!otp) {
@@ -23,12 +26,17 @@ const OtpForm = ({ changeNumber }) => {
         otp,
       });
 
+      const { token, id, name, email, mobile } = response.data.data;
+
+      // ✅ Store user info in Redux + localStorage
+      dispatch(
+        login({
+          user: { id, name, email, mobile, emailOrMobile },
+          token,
+        })
+      );
+
       alert("OTP Verified Successfully!");
-      console.log(response);
-      localStorage.setItem("authToken", response.data.data.token);
-      localStorage.setItem("userId", response.data.data.id);
-      localStorage.setItem("isLoggedIn", "true");
-      // window.dispatchEvent(new Event("storage"));
       navigate("/MainHome");
     } catch (error) {
       console.error(

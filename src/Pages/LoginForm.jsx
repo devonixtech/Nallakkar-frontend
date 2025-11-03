@@ -1,9 +1,15 @@
  import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+
 import axios from "axios";
 import { BASE_URL } from "../../config";
 
+
+
+ 
 const LoginForm = ({ switchToSignup, goToOtp }) => {
   const [emailOrMobile, setEmailOrMobile] = useState("");
   const [detectedType, setDetectedType] = useState(""); // "email" | "mobile"
@@ -21,6 +27,34 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
       setDetectedType("");
     }
   };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+    const decoded = jwtDecode(credentialResponse.credential); // decode JWT
+      const { email, name } = decoded;
+
+      // Call backend to check if user exists or login
+      const res = await axios.post(`${BASE_URL}/user/checkGoogleDetails`, {
+        email,
+        googleSignIn: true,
+      });
+
+      // Save token + user info
+      localStorage.setItem("authToken", res.data.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.data));
+      localStorage.setItem("isLoggedIn", "true");
+
+      window.location.href = "/"; // redirect
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Google login failed");
+    }
+  };
+
+  const handleGoogleError = () => {
+    alert("Google login failed");
+  };
+
 
   // Request OTP API
   const handleRequestOtp = async () => {
@@ -105,12 +139,25 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
         <hr className="flex-grow border-gray-300" />
       </div>
 
+      
+
       {/* Social Buttons */}
       <div className="flex gap-3">
-        <button className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
-          <FcGoogle size={20} /> Google
-        </button>
-        <button className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
+       <div className="flex gap-3">
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          render={(renderProps) => (
+            <button
+              onClick={renderProps.onClick}
+              disabled={renderProps.disabled}
+              className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
+              <FcGoogle size={20} /> Google
+            </button>
+          )}
+        />
+      </div>
+         <button className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
           <FaFacebook size={20} className="text-[#1877F2]" /> Facebook
         </button>
       </div>
@@ -131,3 +178,6 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
 };
 
 export default LoginForm;
+
+
+// 7693803028
