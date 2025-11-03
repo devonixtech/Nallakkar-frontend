@@ -347,23 +347,29 @@ const user_Id = user.id;
   const handleToggle = (section) => {
     setOpenSection(openSection === section ? null : section);
   };
-   const userdetails =   {
-            "id": 1,
-            "userId": 8,
-            "firstName": "Ankit",
-            "lastName": "Verma",
-            "contactNumber": "7693803028",
-            "address": {
-                "city": "Mumbai",
-                "state": "Maharashtra",
-                "street": "MG Road, Andheri East",
-                "houseNo": "101 A Wing",
-                "pincode": "400069",
-                "landmark": "Near Metro Station"
-            }};
+  const userdetails =
+  useSelector((state) => state?.address?.selectedAddress) ||
+  JSON.parse(localStorage.getItem("selectedAddress")) ||
+  null;
+     console.log("add",userdetails)
+  // console.log("Selected Address", selectedAddress);
+  //  const userdetails =   {
+  //           "id": 1,
+  //           "userId": 8,
+  //           "firstName": "Ankit",
+  //           "lastName": "Verma",
+  //           "contactNumber": "7693803028",
+  //           "address": {
+  //               "city": "Mumbai",
+  //               "state": "Maharashtra",
+  //               "street": "MG Road, Andheri East",
+  //               "houseNo": "101 A Wing",
+  //               "pincode": "400069",
+  //               "landmark": "Near Metro Station"
+  //           }};
             // Assuming `cartData` is your API response (like the one in your screenshot)
  
-console.log((items))
+// console.log((items))
 // Transform to Shiprocket order_items format
 const orderItems = items?.items?.map(item => ({
   name: item.productName.trim(),
@@ -372,7 +378,7 @@ const orderItems = items?.items?.map(item => ({
   selling_price: item.productPrice
 }));
 
-console.log("22",orderItems);
+// console.log("22",orderItems);
 
   const handlePayment = async () => {
     try {
@@ -409,27 +415,26 @@ console.log("22",orderItems);
                 //   amount,
                 // },
                 orderDetails: {
-                  billing_first_name: "Rahul",
-                  billing_last_name: "Sharma",
-                  billing_email: "rahul.sharma@example.com",
+                  billing_first_name: userdetails.firstName,
+                  billing_last_name: userdetails.lastName,
+                  billing_email:  user?.email,
                   amount: amount,
-                  billing_address:
-                    "Ward Number 8/5, Karyappa Badavane, Lingenahalli, Opposite to Govt. School, Near PWD Office, Madhugiri",
-                  billing_city: "Madhugiri",
-                  billing_pincode: "572132",
-                  billing_state: "Karnataka",
+                  billing_address: userdetails?.address?.houseNo + ", " + userdetails?.address?.street + ", " + (userdetails?.address?.landmark || ""),
+                  billing_city: userdetails?.address?.city,
+                  billing_pincode: userdetails?.address?.pincode,
+                  billing_state: userdetails?.address?.state,
                   billing_country: "India",
-                  billing_phone: "9876543210",
+                  billing_phone: userdetails.contactNumber,
                   shipping_is_billing: false,
-                  shipping_first_name: "Rahul",
-                  shipping_last_name: "Sharma",
-                  shipping_address: "Lingenahalli Government school., Tumkur",
-                  shipping_city: "Tumkur",
-                  shipping_pincode: "572132",
-                  shipping_state: "Karnataka",
+                  shipping_first_name:  userdetails.firstName,
+                  shipping_last_name: userdetails.lastName,
+                  shipping_address:  userdetails?.address?.houseNo + ", " + userdetails?.address?.street + ", " + (userdetails?.address?.landmark || ""),
+                  shipping_city: userdetails?.address?.city,
+                  shipping_pincode: userdetails?.address.pincode,
+                  shipping_state: userdetails?.address?.state,
                   shipping_country: "India",
-                  shipping_email: "rahul.sharma@example.com",
-                  shipping_phone: "9876543210",
+                  shipping_email: user?.email,
+                  shipping_phone: userdetails.contactNumber,
                   order_items:  orderItems,
                   shipping_charges: 50,
                   sub_total: 499,
