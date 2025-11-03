@@ -7,6 +7,9 @@ import ShoppingBag from "../../assets/shopping-bags.png";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSubcategoryBycategoryId } from "../../Redux/slices/subcategorySlice";
+
+
+
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
 import { toggleWishlist } from "../../Redux/slices/wishlistSlice";
 import { fetchWishlistByUserId } from "../../Redux/slices/wishlistSlice";
@@ -160,9 +163,7 @@ export default function ProductListingPage() {
     (state) => state?.subcategory?.subcategoryData?.data
   );
   const products = useSelector((state) => state?.products?.products);
-  const filteredProducts = products?.filter(
-    (product) => product.subCategoryName === selectedCategory
-  );
+ 
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -211,6 +212,18 @@ console.log(userId);
     await dispatch(toggleWishlist({ productId, userId, isFavourite })).unwrap();
     dispatch(fetchWishlistByUserId(userId));
   };
+
+const [maxPrice, setMaxPrice] = useState(4000); // default max value
+
+
+
+// default maximum
+const filteredProducts = products
+  ?.filter((product) => product.subCategoryName === selectedCategory)
+  .filter((product) => product.final_price <= maxPrice);
+
+
+
 
   return (
     <div className="bg-[#FCFCFC] font-sans">
@@ -284,21 +297,27 @@ console.log(userId);
                   )
                 )}
 
-                {/* <FilterSection title="Pricing">
-                  <div className="mt-2">
-                    <input
-                      type="range"
-                      min="100"
-                      max="5000"
-                      defaultValue="4000"
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>₹100</span>
-                      <span>₹5,000+</span>
-                    </div>
-                  </div>
-                </FilterSection> */}
+{/* =====================================================
+      FILTER PRICE RANGE WORKING 
+=========================================================*/}
+<FilterSection title="Pricing">
+  <div className="mt-2">
+    <input
+      type="range"
+      min="100"
+      max="5000"
+      value={maxPrice}
+      onChange={(e) => setMaxPrice(Number(e.target.value))}
+      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+    />
+    <div className="flex justify-between text-xs text-gray-500 mt-1">
+      <span>₹100</span> 
+      <span>₹{maxPrice}+</span>
+    </div>
+  </div>
+</FilterSection>
+
+
 
                 {/* <FilterSection title="Color">
                   <div className="flex flex-wrap gap-3 mt-2">

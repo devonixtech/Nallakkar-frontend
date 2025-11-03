@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 import { useNavigate } from "react-router-dom";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
+import { fetchCartByUserId } from "../../Redux/slices/cartSlice";
 export default function MainHome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,6 +26,9 @@ export default function MainHome() {
       dispatch(fetchAllCategories());
       dispatch(fetchAllProducts())
     },[dispatch])
+    
+
+
     const categories  = useSelector((state) => state?.ctegory?.categories);
     const products = useSelector((state) => state?.products?.products);
   return (
