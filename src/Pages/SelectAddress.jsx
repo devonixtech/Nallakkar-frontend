@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { getAddressesByUserId } from "../Redux/slices/addressSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 
 export default function SelectAddress() {
   const [selected, setSelected] = useState(0);
   const navigate = useNavigate();
+const dispatch = useDispatch();
+const userString = localStorage.getItem("user");
 
+// Parse it into an object
+const user = JSON.parse(userString);
+
+// Access the id
+const user_Id = user.id;
+useEffect(() => {
+   
+    dispatch(getAddressesByUserId(user_Id))
+}, [dispatch, user_Id]);
+  const addressesFromStore = useSelector((state) => state?.address?.addresses);
+console.log("Addresses from Store:", addressesFromStore);
   const addresses = [
     {
       name: "Naveena",
