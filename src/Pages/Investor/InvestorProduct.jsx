@@ -1,37 +1,46 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { fetchAllProducts } from "../../Redux/slices/productSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { fetchAllCategories } from "../../Redux/slices/categorySlice";
+import { fetchAllProducts, deleteProduct } from "../../Redux/slices/productSlice";
 
 export default function InvestorProduct() {
+  const dispatch = useDispatch();
+  // const investorId = localStorage.getItem('investorId');
+  const investorId = 5;
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+  const products = useSelector((state) => state?.products?.products);
+const investorProducts = products?.filter(
+  (product) => product?.investorId == investorId
+);console.log("Investor Products:", investorProducts);
 
-  const products = [
-    {
-      id: 1,
-      name: "Wireless Bluetooth Headphones",
-      category: "Electronics",
-      price: "$299.99",
-      stock: 45,
-      productCode: "#PROD123",
-      status: "Active",
-      image:
-        "https://readdy.ai/api/search-image?query=modern%20wireless%20bluetooth%20headphones%20with%20sleek%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20minimalist%20style&width=80&height=80&seq=prod1&orientation=squarish",
-    },
-    {
-      id: 2,
-      name: "Smartphone Case",
-      category: "Accessories",
-      price: "$29.99",
-      stock: 120,
-      productCode: "#PROD123",
-      status: "Active",
-      image:
-        "https://readdy.ai/api/search-image?query=premium%20smartphone%20protective%20case%20transparent%20clear%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting&width=80&height=80&seq=prod2&orientation=squarish",
-    },
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "Wireless Bluetooth Headphones",
+  //     category: "Electronics",
+  //     price: "$299.99",
+  //     stock: 45,
+  //     productCode: "#PROD123",
+  //     status: "Active",
+  //     image:
+  //       "https://readdy.ai/api/search-image?query=modern%20wireless%20bluetooth%20headphones%20with%20sleek%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting%2C%20minimalist%20style&width=80&height=80&seq=prod1&orientation=squarish",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Smartphone Case",
+  //     category: "Accessories",
+  //     price: "$29.99",
+  //     stock: 120,
+  //     productCode: "#PROD123",
+  //     status: "Active",
+  //     image:
+  //       "https://readdy.ai/api/search-image?query=premium%20smartphone%20protective%20case%20transparent%20clear%20design%20on%20white%20background%2C%20product%20photography%2C%20studio%20lighting&width=80&height=80&seq=prod2&orientation=squarish",
+  //   },
 
-  ];
+  // ];
   const categories = useSelector((state) => state?.ctegory?.categories);
   const getStatusColor = (status) => {
     switch (status) {
@@ -82,7 +91,7 @@ export default function InvestorProduct() {
               >
                 Claim
               </button>
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
+              {/* <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
                 <option value="">All Categories</option>
                 {categories?.map((cat) => (
                   <option key={cat._id} value={cat._id}>
@@ -96,7 +105,7 @@ export default function InvestorProduct() {
                 <option value="active">Active</option>
                 <option value="low-stock">Low Stock</option>
                 <option value="out-of-stock">Out of Stock</option>
-              </select>
+              </select> */}
             </div>
           </div>
 
@@ -128,7 +137,7 @@ export default function InvestorProduct() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {products?.map((product) => (
+                {investorProducts?.map((product) => (
                   <tr key={product?.id} className="hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="flex items-center">

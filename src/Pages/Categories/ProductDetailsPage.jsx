@@ -520,9 +520,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
           {/* Product Information */}
           <div className="flex flex-col gap-y-6 lg:mt-0 lg:pl-[2rem] lg:border-l-2">
             <div>
-              <button className="text-xs mb-4 uppercase font-bold border py-1 px-2 rounded-sm text-gray-400 tracking-wider">
-                {productData?.category}
-              </button>
+               
               <h1 className="text-3xl -mb-2 font-extrabold text-gray-900">
                 {product?.name}
               </h1>
