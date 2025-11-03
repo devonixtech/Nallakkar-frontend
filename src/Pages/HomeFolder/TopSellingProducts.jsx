@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchWishlistByUserId, toggleWishlist } from "../../Redux/slices/wishlistSlice";
-
+import { fetchCartByUserId } from "../../Redux/slices/cartSlice";
 // const products = [
 //   {
 //     title: "Men Regular Fit Self Design Light Shirt",
@@ -66,6 +66,7 @@ console.log(userId);
 
   const products = useSelector((state) => state?.products?.products);
   const wishlist = useSelector((state) => state.wishlist.items || []);
+  const cart = useSelector((state) => state.cart.items || []);
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -76,6 +77,19 @@ console.log(userId);
       dispatch(fetchWishlistByUserId(userId));
     }
   }, [dispatch, userId]);
+
+      useEffect(() => {
+      const userString = localStorage.getItem("user");
+      const user = userString ? JSON.parse(userString) : null;
+      const userId = user?.id;
+    
+      if (userId) {
+        dispatch(fetchCartByUserId(userId))
+          .unwrap()
+          .then((res) => console.log("Fetched cart:", res))
+          .catch((err) => console.error("Fetch error:", err));
+      }
+    }, [dispatch]);
 
   const handleWishlist = async (productId) => {
     const isFavourite = !wishlist?.some((w) => w.productId === productId);
@@ -126,8 +140,11 @@ console.log(userId);
 
       {/* Products */}
       <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-10 px-2 md:px-12 scrollbar-hide">
-        {currentProducts?.map((item, index) => (
-          <div
+        {currentProducts?.map((item, index) => {
+                    const isInCart = cart?.some((c) => c.productId === item.id);
+
+                    return (
+                      <div
             key={index}
             className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
               activeCard === index
@@ -152,6 +169,9 @@ console.log(userId);
               {/* Hover Add to Cart Button */}
               <Link to={`/product/${item.id}`}>
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                 {isInCart ? (
+                   
+                
                   <Link
                     to={"/cart"}
                     className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
@@ -170,8 +190,30 @@ console.log(userId);
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
                       />
                     </svg>
-                    ADD TO CART
+                   GO TO CART
                   </Link>
+                   ):(
+                       <Link
+                    to={"/cart"}
+                    className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
+                      />
+                    </svg>
+                  ADD TO CART
+                  </Link>
+                   )}
                 </div>
               </Link>
 
@@ -211,7 +253,11 @@ console.log(userId);
               <span className="text-gray-500 text-xs"> ( {item.discount}% )</span>
             </div>
           </div>
-        ))}
+                  
+          
+                 );
+        })}
+
       </div>
 
       {/* Pagination */}

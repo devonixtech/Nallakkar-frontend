@@ -88,12 +88,19 @@ const addressSlice = createSlice({
   initialState: {
     addresses: [],
     currentAddress: null,
+        selectedAddress: null, // <-- new
+
     loading: false,
     error: null,
   },
   reducers: {
     clearAddressError: (state) => {
       state.error = null;
+    },
+   setSelectedAddress: (state, action) => {
+      state.selectedAddress = action.payload;
+      // Save in localStorage as well
+      localStorage.setItem("selectedAddress", JSON.stringify(action.payload));
     },
   },
   extraReducers: (builder) => {
@@ -158,5 +165,5 @@ const addressSlice = createSlice({
   },
 });
 
-export const { clearAddressError } = addressSlice.actions;
+export const { clearAddressError , setSelectedAddress} = addressSlice.actions;
 export default addressSlice.reducer;

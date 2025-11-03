@@ -33,6 +33,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { setBuyNowItem } from "../../Redux/slices/buyNowSlice";
 import ShareButton from "../../Components/Custom/ShareButton";
+import { fetchCartByUserId } from "../../Redux/slices/cartSlice";
 
 
 const productData = {
@@ -152,6 +153,9 @@ console.log(userId);
     dispatch(fetchWishlistByUserId(userId));
   };
 
+    const cart = useSelector((state) => state.cart.items || []);
+ 
+
   const handleAddToCart = () => {
     if (!userId) {
       alert("Please login to add items to cart");
@@ -168,6 +172,12 @@ console.log(userId);
       return;
     }
 
+       // If already in cart → navigate directly
+    if (Array.isArray(cart) && cart.some((c) => c?.productId === product?.id)) {
+      navigate("/cart");
+      return;
+    }
+
     const payload = {
       userId,
       productId: product?.id,
@@ -179,6 +189,8 @@ console.log(userId);
       .unwrap()
       .then((res) => {
         alert("Product added to cart!");
+              // Fetch updated cart so UI updates without refresh
+        dispatch(fetchCartByUserId(userId));
       })
       .catch((err) => {
         console.error(err);
@@ -187,6 +199,16 @@ console.log(userId);
   };
 
 
+ useEffect(() => {
+    if (userId) {
+      dispatch(fetchCartByUserId(userId))
+        .unwrap()
+        .then((res) => console.log("Fetched cart:", res))
+        .catch((err) => console.error("Fetch error:", err));
+    }
+  }, [dispatch, userId]);
+
+  const isInCart = Array.isArray(cart) && cart.some((c) => c?.productId === product?.id);
 
 
 const handleBuyNow = (e) => {
@@ -305,6 +327,21 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
       setSelectedImage(product?.image[0]);
     }
   }, [product]);
+
+      useEffect(() => {
+      const userString = localStorage.getItem("user");
+      const user = userString ? JSON.parse(userString) : null;
+      const userId = user?.id;
+    
+      if (userId) {
+        dispatch(fetchCartByUserId(userId))
+          .unwrap()
+          .then((res) => console.log("Fetched cart:", res))
+          .catch((err) => console.error("Fetch error:", err));
+      }
+    }, [dispatch]);
+
+
   const getRatingBreakdown = (stats) => {
     const total = Number(stats?.totalReviews) || 1;
 
@@ -538,12 +575,12 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
               >
                 Add to Carts
               </Link> */}
-              <button
-                onClick={handleAddToCart}
-                className="py-3 px-6 bg-primary text-white font-bold transition-colors"
-              >
-                Add to Cart
-              </button>
+      <button
+      onClick={handleAddToCart}
+      className="py-3 px-6 bg-primary text-white font-bold transition-colors"
+    >
+      {isInCart ? "Go to Cart" : "Add to Cart"}
+    </button>
           <Link
   to={"/buyNow"}
   onClick={handleBuyNow}
