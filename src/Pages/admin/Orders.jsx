@@ -1,53 +1,64 @@
 import { Helmet } from "react-helmet-async";
+import React,{useEffect} from "react";
+import { useDispatch,useSelector } from "react-redux";
+import { fetchAllOrders } from "../../Redux/slices/ordersSlice";
 
 export default function Orders() {
-  const orders = [
-    {
-      id: "#1001",
-      customer: "John Doe",
-      email: "john@example.com",
-      date: "2024-01-15",
-      total: "$299.99",
-      status: "Delivered",
-      items: 3,
-    },
-    {
-      id: "#1002",
-      customer: "Jane Smith",
-      email: "jane@example.com",
-      date: "2024-01-14",
-      total: "$89.50",
-      status: "Processing",
-      items: 2,
-    },
-    {
-      id: "#1003",
-      customer: "Mike Johnson",
-      email: "mike@example.com",
-      date: "2024-01-14",
-      total: "$449.99",
-      status: "Shipped",
-      items: 1,
-    },
-    {
-      id: "#1004",
-      customer: "Sarah Wilson",
-      email: "sarah@example.com",
-      date: "2024-01-13",
-      total: "$159.99",
-      status: "Pending",
-      items: 4,
-    },
-    {
-      id: "#1005",
-      customer: "David Brown",
-      email: "david@example.com",
-      date: "2024-01-13",
-      total: "$75.00",
-      status: "Cancelled",
-      items: 2,
-    },
-  ];
+
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(fetchAllOrders());
+  }, [dispatch]);
+    const orders = useSelector((state) => state.orders.orders);
+    console.log("Orders Data from Redux:", orders);
+  // const orders = [
+  //   {
+  //     id: "#1001",
+  //     customer: "John Doe",
+  //     email: "john@example.com",
+  //     date: "2024-01-15",
+  //     total: "$299.99",
+  //     status: "Delivered",
+  //     items: 3,
+  //   },
+  //   {
+  //     id: "#1002",
+  //     customer: "Jane Smith",
+  //     email: "jane@example.com",
+  //     date: "2024-01-14",
+  //     total: "$89.50",
+  //     status: "Processing",
+  //     items: 2,
+  //   },
+  //   {
+  //     id: "#1003",
+  //     customer: "Mike Johnson",
+  //     email: "mike@example.com",
+  //     date: "2024-01-14",
+  //     total: "$449.99",
+  //     status: "Shipped",
+  //     items: 1,
+  //   },
+  //   {
+  //     id: "#1004",
+  //     customer: "Sarah Wilson",
+  //     email: "sarah@example.com",
+  //     date: "2024-01-13",
+  //     total: "$159.99",
+  //     status: "Pending",
+  //     items: 4,
+  //   },
+  //   {
+  //     id: "#1005",
+  //     customer: "David Brown",
+  //     email: "david@example.com",
+  //     date: "2024-01-13",
+  //     total: "$75.00",
+  //     status: "Cancelled",
+  //     items: 2,
+  //   },
+  // ];
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -183,40 +194,46 @@ export default function Orders() {
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
                     Status
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
+                  {/* <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
                     Actions
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {orders.map((order) => (
+                {orders?.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <span className="text-sm font-medium text-blue-600">
-                        {order.id}
+                        {order?.shiprocket_order_id}
+                        
                       </span>
                     </td>
                     <td className="py-4 px-4">
                       <div>
                         <p className="text-sm font-medium text-gray-900">
-                          {order.customer}
+                          {order?.customer_name}
                         </p>
-                        <p className="text-sm text-gray-500">{order.email}</p>
+                        <p className="text-sm text-gray-500">{order?.customer_email}</p>
                       </div>
                     </td>
                     <td className="py-4 px-4 text-sm text-gray-700">
-                      {order.date}
-                    </td>
+  {new Date(order?.created_at).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  })}
+</td>
+
                     <td className="py-4 px-4 text-sm text-gray-700">
-                      {order.items}
+                      {order?.items}
                     </td>
                     <td className="py-4 px-4 text-sm font-medium text-gray-900">
-                      {order.total}
+                      {order?.total_amount}
                     </td>
                     <td className="py-4 px-4">
-                      <select
+                      {order?.tracking_status}
+                      {/* <select
                         className={`text-xs font-medium rounded-full px-2 py-1 border-0 ${getStatusColor(
-                          order.status
+                          order?.status
                         )} pr-8`}
                       >
                         <option value="pending">Pending</option>
@@ -228,25 +245,25 @@ export default function Orders() {
                         </option>
                         <option
                           value="shipped"
-                          selected={order.status === "Shipped"}
+                          selected={order?.status === "Shipped"}
                         >
                           Shipped
                         </option>
                         <option
                           value="delivered"
-                          selected={order.status === "Delivered"}
+                          selected={order?.status === "Delivered"}
                         >
                           Delivered
                         </option>
                         <option
                           value="cancelled"
-                          selected={order.status === "Cancelled"}
+                          selected={order?.status === "Cancelled"}
                         >
                           Cancelled
                         </option>
-                      </select>
+                      </select> */}
                     </td>
-                    <td className="py-4 px-4">
+                    {/* <td className="py-4 px-4">
                       <div className="flex items-center space-x-2">
                         <button className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-blue-600 cursor-pointer">
                           <i className="ri-eye-line"></i>
@@ -258,7 +275,7 @@ export default function Orders() {
                           <i className="ri-printer-line"></i>
                         </button>
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>
