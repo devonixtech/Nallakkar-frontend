@@ -2,7 +2,8 @@
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-// import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode"; // <-- no curly braces
+
 
 import axios from "axios";
 import { BASE_URL } from "../../config";
@@ -28,28 +29,29 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-    const decoded = jwtDecode(credentialResponse.credential); // decode JWT
-      const { email, name } = decoded;
+const handleGoogleSuccess = async (credentialResponse) => {
+  try {
+    if (!credentialResponse?.credential) return alert("Google login failed");
 
-      // Call backend to check if user exists or login
-      const res = await axios.post(`${BASE_URL}/user/checkGoogleDetails`, {
-        email,
-        googleSignIn: true,
-      });
+    const decoded = jwtDecode(credentialResponse.credential); // <-- note .default
+    const { email, name } = decoded;
 
-      // Save token + user info
-      localStorage.setItem("authToken", res.data.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.data));
-      localStorage.setItem("isLoggedIn", "true");
+    const res = await axios.post(`${BASE_URL}user/checkGoogleDetails`, {
+      email,
+      googleSignIn: true,
+    });
 
-      window.location.href = "/"; // redirect
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || "Google login failed");
-    }
-  };
+    localStorage.setItem("authToken", res.data.data.token);
+    localStorage.setItem("user", JSON.stringify(res.data.data));
+    localStorage.setItem("isLoggedIn", "true");
+
+    window.location.href = "/";
+  } catch (err) {
+    console.error(err);
+    alert(err.response?.data?.message || "Google login failed");
+  }
+};
+
 
   const handleGoogleError = () => {
     alert("Google login failed");
