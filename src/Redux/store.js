@@ -14,6 +14,7 @@ import paymentReducer from "./slices/paymentSlice";
 import buyNowReducer from "./slices/buyNowSlice"; 
 import addressSlice from "./slices/addressSlice";
 import AddDeliveryAddress from "./slices/addressSlice";
+import ordersReducer from "./slices/ordersSlice";
 export const store = configureStore({
   reducer: {
     ctegory : categoryreducer,
@@ -31,6 +32,7 @@ export const store = configureStore({
         buyNow: buyNowReducer, 
     address : addressSlice,
     address : AddDeliveryAddress,
+    orders : ordersReducer,
 
   },
 });
