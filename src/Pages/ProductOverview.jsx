@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { fetchCartByUserId } from "../Redux/slices/cartSlice";
 import { setBuyNowItem } from "../Redux/slices/buyNowSlice";
 import imgFallback from "../assets/details2.png";
-
+ import { setSelectedAddress } from "../Redux/slices/addressSlice";
 export default function ProductOverview() {
 
   // Get the user string from localStorage
@@ -97,6 +97,19 @@ console.log(user_Id); // Output: "9"
     ) || 0;
 
   const orderTotal = totalProductPrice;
+
+const selectedAddress =
+  useSelector((state) => state.address.selectedAddress) ||
+  JSON.parse(localStorage.getItem("selectedAddress")) ||
+  null;
+
+  console.log(selectedAddress);
+
+    const formatAddress = (addrObj) => {
+    if (!addrObj) return "";
+    const { house, road, nearby, city, state } = addrObj;
+    return `${house}, ${road}${nearby ? `, ${nearby}` : ""}, ${city}, ${state}`;
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 pb-24 lg:pb-6">
@@ -205,12 +218,11 @@ console.log(user_Id); // Output: "9"
       <div className="bg-white border shadow rounded-md p-4 mb-6 text-sm sm:text-base">
         <div className="flex flex-col sm:flex-row justify-between gap-3">
           <p>
-            <span className="font-semibold">Naveena Reddy</span>
+            <span className="font-semibold"> {`${selectedAddress?.firstName} ${selectedAddress?.lastName}`} </span>
             <br />
-            403, Aashirvad Nilaya 7th main, 1st cross B, Narayanapura,
-            Mahadevapura, Bengaluru, Karnataka - 560048
+            {formatAddress(selectedAddress?.address)}
             <br />
-            6300********
+            {selectedAddress?.contactNumber}
           </p>
           <Link
             to={"/SelectAddress"}

@@ -12,6 +12,7 @@ import filteredProductReducer from "./slices/filteredProductSlice";
 import investorReducer from "./slices/investorSlice";
 import paymentReducer from "./slices/paymentSlice";
 import buyNowReducer from "./slices/buyNowSlice"; 
+import addressSlice from "./slices/addressSlice";
 export const store = configureStore({
   reducer: {
     ctegory : categoryreducer,
@@ -27,6 +28,7 @@ export const store = configureStore({
     investors : investorReducer,
     payment : paymentReducer,
         buyNow: buyNowReducer, 
+    address : addressSlice,
 
   },
 });
