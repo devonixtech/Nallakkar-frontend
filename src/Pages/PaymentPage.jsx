@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import CustomPayment from "./CustomPayment";
 import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
 import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
+import { nav } from "framer-motion/client";
 
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
@@ -266,8 +267,9 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
   );
 };
 
-const OrderSummary = ({ selling_price  , handlePayment}) => (
+const OrderSummary = ({ selling_price  , handlePayment ,address}) => (
   <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
+    
     {/* Product Card */}
     {/* <div className="bg-white p-4 border rounded-lg shadow-sm flex space-x-4">
       <img
@@ -293,14 +295,18 @@ const OrderSummary = ({ selling_price  , handlePayment}) => (
       </div>
       <div className="bg-gray-50 p-3 rounded-md text-sm text-gray-600">
         <div className="flex justify-between items-start">
-          <p className="font-bold text-gray-800">Naveena Reddy</p>
+          <p className="font-bold text-gray-800">{address?.firstName}{}{address?.lastName}</p>
           <button className="text-rose font-semibold">Change</button>
         </div>
         <p>
-          403, Aashirvad nilaya 7th main, 1st cross B Narayanapura, Mahadevapura
-          Bengaluru, Karnataka-560048
+          
+          {address?.address?.house} {} {address?.address?.nearby}{}
+          {address?.address?.landmark}, {address?.address?.city},{" "}
+          {address?.address?.state}-{address?.address?.pincode}
         </p>
-        <p>6300******</p>
+        <p>{address?.contactNumber}</p>
+         
+        
       </div>
     </div>
 
@@ -354,24 +360,7 @@ const user_Id = user.id;
   JSON.parse(localStorage.getItem("selectedAddress")) ||
   null;
      console.log("add",userdetails)
-  // console.log("Selected Address", selectedAddress);
-  //  const userdetails =   {
-  //           "id": 1,
-  //           "userId": 8,
-  //           "firstName": "Ankit",
-  //           "lastName": "Verma",
-  //           "contactNumber": "7693803028",
-  //           "address": {
-  //               "city": "Mumbai",
-  //               "state": "Maharashtra",
-  //               "street": "MG Road, Andheri East",
-  //               "houseNo": "101 A Wing",
-  //               "pincode": "400069",
-  //               "landmark": "Near Metro Station"
-  //           }};
-            // Assuming `cartData` is your API response (like the one in your screenshot)
- 
-// console.log((items))
+   
 // Transform to Shiprocket order_items format
 const orderItems = items?.items?.map(item => ({
   name: item.productName.trim(),
@@ -381,8 +370,7 @@ const orderItems = items?.items?.map(item => ({
 }));
 const selling_price = items?.totalPrice
 console.log("orderItems",items);
-// console.log("22",orderItems);
-  // let totalPrice = userCart?.totalPrice || 0;
+ 
 
   // if (buyNowItem?.product) {
   //   const variantPrice =
@@ -419,11 +407,7 @@ console.log("orderItems",items);
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                // orderDetails: {
-                //   billing_customer_name: "Ankit Verma",
-                //   billing_email: "ankit@example.com",
-                //   amount,
-                // },
+                
                 orderDetails: {
                   billing_first_name: userdetails.firstName,
                   billing_last_name: userdetails.lastName,
@@ -447,15 +431,15 @@ console.log("orderItems",items);
                   shipping_phone: userdetails.contactNumber,
                   order_items:  orderItems,
                   shipping_charges: 50,
-                  sub_total: 499,
+                  sub_total: selling_price,
                 },
               })
             );
           },
           prefill: {
-            name: "Ankit Verma",
-            email: "ankit@example.com",
-            contact: "9999999999",
+            name: userdetails.firstName + " " + userdetails.lastName,
+            email: user?.email,
+            contact: userdetails.contactNumber,
           },
           theme: {
             color: "#3399cc",
@@ -464,7 +448,7 @@ console.log("orderItems",items);
 
         const razor = new window.Razorpay(options);
         razor.open();
-
+      
         razor.on("payment.failed", function (response) {
           alert("❌ Payment failed: " + response.error.description);
         });
@@ -482,83 +466,12 @@ console.log("orderItems",items);
             selectedPayment={selectedPayment}
             setSelectedPayment={setSelectedPayment}
           />
-          <OrderSummary  selling_price={selling_price} handlePayment={handlePayment} />
+          <OrderSummary  selling_price={selling_price} handlePayment={handlePayment} address = {userdetails} />
         </main>
       </div>
-      {/* <CustomPayment /> */}
-      {/* <AddressAutocompleteTestUI/> */}
-      <div>
-        <div
-          style={{
-            padding: "40px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            fontFamily: "Poppins, sans-serif",
-          }}
-        >
-          <h2 style={{ marginBottom: "20px" }}>Nallakkar Payment</h2>
-
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="Enter Amount"
-            style={{
-              padding: "10px",
-              width: "200px",
-              marginBottom: "15px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-            }}
-          />
-
-          <button
-            onClick={handlePayment}
-            disabled={loading}
-            style={{
-              backgroundColor: "#3399cc",
-              color: "#fff",
-              padding: "10px 25px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontWeight: "600",
-            }}
-          >
-            {loading ? "Processing..." : "Pay Now"}
-          </button>
-
-          {/* ✅ Status Section */}
-          <div style={{ marginTop: "25px", width: "70%", textAlign: "center" }}>
-            {error && <p style={{ color: "red" }}>❌ {error}</p>}
-
-            {success && order && !shipment && (
-              <p style={{ color: "green" }}>
-                ✅ Order Created — Proceed to Payment...
-              </p>
-            )}
-
-            {shipment && (
-              <div style={{ marginTop: "20px", color: "green" }}>
-                <h3>✅ Payment Successful!</h3>
-                <p>Shipment Created Successfully</p>
-                <p>
-                  Tracking URL:{" "}
-                  <a
-                    href={shipment.tracking_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ color: "#3399cc" }}
-                  >
-                    {shipment.tracking_url}
-                  </a>
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+       
+     
+       
     </div>
   );
 }
