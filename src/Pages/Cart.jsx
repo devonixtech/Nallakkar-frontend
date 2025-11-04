@@ -22,7 +22,8 @@ const user = JSON.parse(userString);
 const user_Id = user.id;
   const userId = user_Id; // temp userId
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.cart?.items);
+  const items = useSelector((state) => state.cart);
+  console.log("Cart Items:", items);
 
   // useEffect(() => {
   //   if (userId) {
@@ -82,32 +83,32 @@ const handleRemove = (cartId) => {
 
   // Calculate Price Details
 // ✅ Total Items
-const totalItems = items?.reduce(
+const totalItems = items?.items?.reduce(
   (sum, item) => sum + Number(item?.quantity),
   0
 ) || 0;
 
 // ✅ Total Price
-const totalPrice =
-items?.reduce((sum, item) => {
-  const price =
-    item?.productPrice ||
-    item?.variant?.price ||
-    item?.product?.price ||
-    0;
+// const totalPrice =
+// items?.reduce((sum, item) => {
+//   const price =
+//     item?.productPrice ||
+//     item?.variant?.price ||
+//     item?.product?.price ||
+//     0;
 
-  return sum + price * (item?.quantity || 1);
-}, 0) || 0;
+//   return sum + price * (item?.quantity || 1);
+// }, 0) || 0;
   
 
 
-// ✅ Discounts & GST
-const discountRate = 0.05; // 5% discount
-const discountAmount = totalPrice * discountRate;
-const gstRate = 0.18; // 18% GST
-const gstAmount = (totalPrice - discountAmount) * gstRate;
+// // ✅ Discounts & GST
+// const discountRate = 0.05; // 5% discount
+// const discountAmount = totalPrice * discountRate;
+// const gstRate = 0.18; // 18% GST
+// const gstAmount = (totalPrice - discountAmount) * gstRate;
 
-const finalAmount = totalPrice - discountAmount + gstAmount;
+// const finalAmount = totalPrice - discountAmount + gstAmount;
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -141,7 +142,7 @@ const finalAmount = totalPrice - discountAmount + gstAmount;
           </div>
 
           {/* Product Item */}
-          {items?.map((item, index) => (
+          {items?.items?.map((item, index) => (
             <div
               key={item?.id}
               className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
@@ -225,27 +226,27 @@ const finalAmount = totalPrice - discountAmount + gstAmount;
             <h2 className="text-lg font-semibold">Price Details</h2>
             <div className="flex justify-between text-sm sm:text-base">
               <p>Price ({parseInt(totalItems, 10)} items)</p>
-              <p>₹ {totalPrice.toFixed(2)}/-</p>
+              <p>₹ {items?.totalPrice?.toFixed(2)}/-</p>
             </div>
 
-            <div className="flex justify-between text-sm sm:text-base">
+            {/* <div className="flex justify-between text-sm sm:text-base">
               <p>Discount</p>
               <p>- ₹ {discountAmount.toFixed(2)}</p>
-            </div>
-
+            </div> */}
+{/* 
             <div className="flex justify-between text-sm sm:text-base">
               <p>GST (18%)</p>
               <p>₹ {gstAmount.toFixed(2)}</p>
-            </div>
+            </div> */}
 
             <div className="flex justify-between font-semibold border-t pt-3 text-sm sm:text-base">
               <p>Total Amount</p>
-              <p>₹ {finalAmount.toFixed(2)}/-</p>
+              <p>₹ {items?.totalPrice?.toFixed(2)}/-</p>
             </div>
 
-            <p className="text-green-600 text-xs sm:text-sm">
+            {/* <p className="text-green-600 text-xs sm:text-sm">
               You saved ₹ {discountAmount.toFixed(2)} on this order
-            </p>
+            </p> */}
 
             {/* Buttons */}
             <Link
