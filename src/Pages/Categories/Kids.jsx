@@ -218,11 +218,22 @@ const [maxPrice, setMaxPrice] = useState(4000); // default max value
 
 
 // default maximum
-const filteredProducts = products
+ const filteredProducts = products
   ?.filter((product) => product.subCategoryName === selectedCategory)
-  .filter((product) => product.final_price <= maxPrice);
+  .filter((product) => product.final_price <= maxPrice)
+  .filter((product) => {
+    if (!appliedFilters || Object.keys(appliedFilters).length === 0) return true;
 
+    return Object.entries(appliedFilters).every(([filterName, selectedValues]) => {
+      if (!selectedValues || selectedValues.length === 0) return true;
 
+      const productValues = product.variants?.[filterName.toLowerCase()] || [];
+      return selectedValues.some(
+        (value) =>
+          productValues.map((v) => v.toLowerCase().trim()).includes(value.toLowerCase().trim())
+      );
+    });
+  });
 
 
   return (
