@@ -266,7 +266,7 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
   );
 };
 
-const OrderSummary = ({ cartSummary }) => (
+const OrderSummary = ({ selling_price  , handlePayment}) => (
   <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
     {/* Product Card */}
     {/* <div className="bg-white p-4 border rounded-lg shadow-sm flex space-x-4">
@@ -309,15 +309,17 @@ const OrderSummary = ({ cartSummary }) => (
       <h3 className="font-bold text-gray-700">Price Details (1 items)</h3>
       <div className="flex justify-between text-gray-600">
         <p>Total Product Price</p>
-        <p>{cartSummary?.totalPrice}</p>
+        <p>{selling_price}</p>
       </div>
       <hr />
       <div className="flex justify-between font-bold text-lg">
         <p>Order Total</p>
-        <p>₹{cartSummary?.totalPrice}</p>
+        <p>₹{selling_price}</p>
       </div>
       <Link
+         onClick={handlePayment}
         to={"/PaymentSuccess"}
+
         className="block text-center w-full bg-primary text-white py-3 font-bold text-lg mt-2 hover:bg-rose transition-colors"
       >
         Pay Now
@@ -377,15 +379,23 @@ const orderItems = items?.items?.map(item => ({
   units: Number(item.quantity),
   selling_price: item.productPrice
 }));
-
+const selling_price = items?.totalPrice
+console.log("orderItems",items);
 // console.log("22",orderItems);
+  // let totalPrice = userCart?.totalPrice || 0;
 
+  // if (buyNowItem?.product) {
+  //   const variantPrice =
+  //     buyNowItem.variant?.price || buyNowItem.product.price || 0;
+  //   totalPrice = variantPrice * buyNowItem.quantity;
+  // }
+{console.log(userCart)}
   const handlePayment = async () => {
     try {
       // Step 1️⃣: Create Razorpay Order via Redux
       const result = await dispatch(
         createPaymentOrder({
-          amount,
+          amount:selling_price,
           customer_name: userdetails.firstName + " " + userdetails.lastName,
           customer_email: user?.email,
         })
@@ -472,7 +482,7 @@ const orderItems = items?.items?.map(item => ({
             selectedPayment={selectedPayment}
             setSelectedPayment={setSelectedPayment}
           />
-          <OrderSummary cartSummary={userCart} />
+          <OrderSummary  selling_price={selling_price} handlePayment={handlePayment} />
         </main>
       </div>
       {/* <CustomPayment /> */}
