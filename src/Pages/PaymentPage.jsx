@@ -1,4 +1,4 @@
- import React, { useState, useEffect } from "react";
+  import React, { useState, useEffect } from "react";
 import { IoChevronUp, IoChevronDown, IoLocationSharp } from "react-icons/io5";
 import { SiGooglepay } from "react-icons/si";
 import { ArrowLeft } from "lucide-react";
@@ -8,7 +8,7 @@ import { fetchCartByUserId } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import CustomPayment from "./CustomPayment";
 import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
-import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
+// import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
 import { nav } from "framer-motion/client";
 
 const PhonePeIcon = () => (
@@ -432,6 +432,7 @@ console.log("orderItems",items);
                   order_items:  orderItems,
                   shipping_charges: 50,
                   sub_total: selling_price,
+                  user_id: user_Id,
                 },
               })
             );
