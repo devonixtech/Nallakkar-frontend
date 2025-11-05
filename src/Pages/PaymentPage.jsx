@@ -12,7 +12,6 @@ import {
   createPaymentOrder,
   verifyPaymentAndCreateShipment,
 } from "../Redux/slices/paymentSlice";
-import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
 import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
 
 
@@ -361,7 +360,6 @@ order_items: buyNowItem?.product
         </main>
       </div>
       {/* <CustomPayment /> */}
-      <AddressAutocompleteTestUI/>
        <div>
         <div
           style={{
