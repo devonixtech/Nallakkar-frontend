@@ -432,6 +432,7 @@ console.log("orderItems",items);
                   order_items:  orderItems,
                   shipping_charges: 50,
                   sub_total: selling_price,
+                  user_id: user_Id,
                 },
               })
             );
