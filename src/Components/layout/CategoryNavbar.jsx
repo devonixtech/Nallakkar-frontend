@@ -18,7 +18,6 @@ export default function CategoryNavbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
     const authUser = useSelector((state) => state?.auth?.user);
-  console.log(authUser)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

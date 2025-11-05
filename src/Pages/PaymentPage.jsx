@@ -152,9 +152,7 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
 const OrderSummary = ({ cartSummary, buyNowItem, handlePayment , totalPrice  }) => {
 const addresses = useSelector((state) => state.address?.addresses || []);
 
-  console.log("Cart Summary" , cartSummary)
     if (addresses?.length > 0) {
-    console.log("🟩 User Addresses:", addresses);
   }
   // let totalPrice = cartSummary?.totalPrice || 0;
 
@@ -205,11 +203,11 @@ useEffect(() => {
   const addresses = useSelector((state) => state.address?.addresses || []);
 
   // ✅ Log addresses whenever they update
-  useEffect(() => {
-    if (addresses.length > 0) {
-      console.log("🟢 Updated addresses in Redux:", addresses);
-    }
-  }, [addresses]);
+  // useEffect(() => {
+  //   if (addresses.length > 0) {
+  //     console.log("🟢 Updated addresses in Redux:", addresses);
+  //   }
+  // }, [addresses]);
 
 // Get the user string from localStorage
 const userString = localStorage.getItem("user");

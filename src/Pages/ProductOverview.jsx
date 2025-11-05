@@ -103,7 +103,6 @@ const selectedAddress =
   JSON.parse(localStorage.getItem("selectedAddress")) ||
   null;
 
-  console.log(selectedAddress);
 
     const formatAddress = (addrObj) => {
     if (!addrObj) return "";

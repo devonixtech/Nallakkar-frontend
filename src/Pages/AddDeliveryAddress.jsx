@@ -114,12 +114,10 @@ const handleSubmit = async (e) => {
     }),
   };
 
-  console.log("📦 Sending address to backend:", addressData);
 
   try {
     // ✅ Create the address
     const createRes = await api.post("/address/createAddress", addressData);
-    console.log("✅ Backend Response (createAddress):", createRes.data);
 
     // ✅ Since backend GET endpoint is unstable, just log locally
     const newlyAddedAddress = {
@@ -127,7 +125,6 @@ const handleSubmit = async (e) => {
       ...addressData,
       address: JSON.parse(addressData.address),
     };
-    console.log("🆕 Newly added address:", newlyAddedAddress);
 
     alert("Address added successfully!");
   } catch (error) {

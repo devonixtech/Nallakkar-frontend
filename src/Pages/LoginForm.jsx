@@ -2,7 +2,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import jwtDecode from "jwt-decode";
+// import {jwtDecode} from "jwt-decode"; // <-- no curly braces
 
 
 import axios from "axios";
@@ -78,7 +78,6 @@ const handleGoogleSuccess = async (credentialResponse) => {
         payload
       );
 
-      console.log("login",res)
 
       setLoading(false);
 
