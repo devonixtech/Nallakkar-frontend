@@ -8,7 +8,7 @@ import { fetchCartByUserId } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import CustomPayment from "./CustomPayment";
 import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
-import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
+// import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
 import { nav } from "framer-motion/client";
 
 const PhonePeIcon = () => (
