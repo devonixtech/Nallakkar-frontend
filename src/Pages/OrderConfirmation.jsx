@@ -15,9 +15,9 @@ const OrderConfirmation = () => {
         {/* Subtitle */}
         <p className="mt-2 max-w-md mx-auto">
           Your order has been successfully placed. We’ve sent a confirmation
-          email to
-          <span className="font-medium"> customer@example.com </span>
-          with all the details.
+          email to your reistered email id.
+          {/* <span className="font-medium"> customer@example.com </span>
+          with all the details. */}
         </p>
 
         {/* Button */}
