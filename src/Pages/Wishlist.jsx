@@ -22,7 +22,6 @@ const userString = localStorage.getItem("user");
 const user = JSON.parse(userString);
 // Access the id
 const userId = user.id;
-console.log(userId);  
 
   const dispatch = useDispatch();
   const { items = [], loading, toggleLoading, error } = useSelector((state) => state.wishlist);
