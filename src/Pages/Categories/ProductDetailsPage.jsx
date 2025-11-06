@@ -34,7 +34,7 @@ import { useNavigate } from "react-router-dom";
 import { setBuyNowItem } from "../../Redux/slices/buyNowSlice";
 import ShareButton from "../../Components/Custom/ShareButton";
 import { fetchCartByUserId } from "../../Redux/slices/cartSlice";
-
+import { checkPincodeServiceability } from "../../Redux/slices/ordersSlice";
 
 const productData = {
   id: 1,
@@ -106,6 +106,10 @@ export default function ProductDetailsPage() {
   // const [wishlist, setWishlist] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState({});
+  const [pincode, setPincode] = useState("");
+const [pincodeResult, setPincodeResult] = useState(null);
+const [checking, setChecking] = useState(false);
+
   const wishlist = useSelector((state) => state.wishlist.items || []);
     const navigate = useNavigate();
 
@@ -198,6 +202,37 @@ console.log(userId);
       });
   };
 
+const handleCheckPincode = async () => {
+  if (!pincode) {
+    alert("Please enter a valid pincode");
+    return;
+  }
+
+  try {
+    setChecking(true);
+    const response = await dispatch(checkPincodeServiceability(pincode)).unwrap();
+
+    if (response?.success) {
+      setPincodeResult({
+        available: true,
+        message: `✅ Delivery available to ${pincode}`,
+      });
+    } else {
+      setPincodeResult({
+        available: false,
+        message: `❌ Delivery not available to ${pincode}`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    setPincodeResult({
+      available: false,
+      message: "Error checking pincode serviceability.",
+    });
+  } finally {
+    setChecking(false);
+  }
+};
 
  useEffect(() => {
     if (userId) {
@@ -609,15 +644,35 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
             <div>
               <p className="font-bold text-[20px] mb-2">Delivery Options</p>
               <div className="flex border border-gray-300 rounded-md overflow-hidden">
-                <input
-                  type="text"
-                  placeholder="Enter Pincode"
-                  className="flex-grow p-2 outline-none"
-                />
-                <button className="px-4 text-rose font-bold bg-gray-50 hover:bg-gray-100">
-                  Check
-                </button>
-              </div>
+  <input
+    type="text"
+    value={pincode}
+    onChange={(e) => setPincode(e.target.value)}
+    placeholder="Enter Pincode"
+    className="flex-grow p-2 outline-none"
+  />
+  <button
+    onClick={handleCheckPincode}
+    disabled={checking}
+    className={`px-4 font-bold transition ${
+      checking ? "bg-gray-300 text-gray-600" : "text-rose bg-gray-50 hover:bg-gray-100"
+    }`}
+  >
+    {checking ? "Checking..." : "Check"}
+  </button>
+</div>
+
+{/* Show result below */}
+{pincodeResult && (
+  <p
+    className={`text-sm mt-2 ${
+      pincodeResult.available ? "text-green-600" : "text-red-600"
+    }`}
+  >
+    {pincodeResult.message}
+  </p>
+)}
+
               <p className="text-xs text-gray-500 mt-2">
                 Please enter pincode to check delivery time & Pay on Delivery
                 Availability
