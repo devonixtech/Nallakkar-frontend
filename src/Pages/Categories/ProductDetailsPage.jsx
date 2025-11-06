@@ -633,7 +633,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
               <p>Easy 7 days returns and exchanges</p> */}
             </div>
 
-            <div>
+            {/* <div>
               <h3 className="font-bold text-[20px] mb-2">Available offers</h3>
               <p className="text-sm">
                 <span className="text-gray-500 font-bold">Bank Offer</span> 100%
@@ -647,7 +647,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
                 transactions on super.money UPI{" "}
                 <span className="text-[#114bbe]">T&C</span>
               </p>
-            </div>
+            </div> */}
 
             {/* Product Details - Updated Structure */}
             <div className=" text-sm">
