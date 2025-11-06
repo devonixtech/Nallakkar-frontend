@@ -194,15 +194,31 @@ const user = useSelector((state) => state.auth.user);
 
     if (image) formData.append("image", image);
 
-dispatch(updateUser({ id: user_Id, data: formData })).then((res) => {
-  if (res.payload?.data) {
-    const updatedUser = res.payload.data;
-    // ✅ Update both Redux & localStorage immediately
-    dispatch(updateAuthUser(updatedUser)); 
-  }
+ dispatch(updateUser({ id: user_Id, data: formData })).then((res) => {
+  // if (res.payload?.data) {
+      const updatedUser = res.payload.data;
+
+      // ✅ Update both slices first
+      dispatch(updateAuthUser(updatedUser));
+
+      // ✅ Also update localStorage immediately
+
+      // ✅ Then refetch the latest user from backend (for consistency)
+      dispatch(fetchUserById(user_Id));
+
+      // ✅ Finally go back to profile view
+      onGoBackClick();
+    // }
 });
 
   };
+  useEffect(() => {
+  const userId = localStorage.getItem("userId");
+  if (userId) {
+    dispatch(fetchUserById(userId));
+  }
+}, [dispatch]);
+
 
   return (
     <div className="flex-1 max-w-xl p-6 md:p-12">
