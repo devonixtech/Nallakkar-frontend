@@ -13,7 +13,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
-  
+   
   console.log("Sidebar rendered");
   // Single logout implementation
   const handleLogout = () => {
@@ -32,7 +32,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
       dispatch(fetchUserById(userId));
     }
   }, [dispatch, userId]);
-const  userDetails = useSelector((state) => state?.auth?.user);
+const  userDetails = useSelector((state) =>  state?.users?.userData?.data);
  console.log("userDetails in sidebar:", userDetails);
   // avoid name collision: name redux value reduxUserData
   const reduxUserData = useSelector((state) => state?.users?.userData?.data);
@@ -108,15 +108,12 @@ const ProfileView = ({ onEditClick }) => {
   // user data from users slice and auth slice
   const reduxUserData = useSelector((state) => state?.users?.userData?.data);
   const authUser = useSelector((state) => state?.auth?.user);
-   const  userDetails = useSelector((state) => state?.auth?.user);
+   const  userDetails = useSelector((state) => state?.users?.userData?.data);
   const userName = userDetails?.name || "  Name not found";
     
 
-  const userNumber =
-    authUser?.mobileNumber ||
-    JSON.parse(localStorage.getItem("user") || "{}")?.emailOrMobile ||
-    reduxUserData?.emailOrMobile ||
-    "+91 **********";
+  const userNumber = userDetails?.mobileNumber ||" Number not found";
+    
 
   return (
     <div className="flex-1 p-6 md:p-12">
@@ -145,7 +142,7 @@ const ProfileView = ({ onEditClick }) => {
           <h3 className="text-base md:text-lg font-bold text-gray-800">
             {userDetails?.name || "Name not found"}
           </h3>
-          <p className="text-gray-500 text-sm md:text-base">{userNumber}</p>
+          <p className="text-gray-500 text-sm md:text-base">{userDetails?.mobileNumber}</p>
         </div>
       </div>
     </div>
@@ -160,17 +157,31 @@ const EditProfileView = ({ onGoBackClick, authUser }) => {
   const user = useSelector((state) => state.auth.user);
 
   const user_Id = user?.id;
+  console.log("user_Id in EditProfileView:", user_Id);
   useEffect(() => {
     dispatch(fetchUserById(user_Id));
   }, [dispatch, user_Id]);
+   const  userDetails = useSelector((state) => state?.users?.userData?.data);
 
   // ✅ Form states
-  const [name, setName] = useState(authUser?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
-  const [number, setNumber] = useState(user?.emailOrMobile || "");
-  const [dateOfBirth, setDateOfBirth] = useState(authUser?.dateOfBirth || "");
-  const [gender, setGender] = useState(authUser?.gender || "");
+   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [gender, setGender] = useState("");
   const [image, setImage] = useState(null);
+
+  // ✅ Sync form state when userDetails updates
+  useEffect(() => {
+    if (userDetails) {
+      setName(userDetails.name || "");
+      setEmail(userDetails.email || "");
+      setNumber(userDetails.mobileNumber || "");
+      setDateOfBirth(userDetails.dateOfBirth || "");
+      setGender(userDetails.gender || "");
+      setImage(userDetails.image || null);
+    }
+  }, [userDetails]);
 
   //   const handleSubmit = async (e) => {
   //     e.preventDefault();
@@ -231,9 +242,9 @@ const EditProfileView = ({ onGoBackClick, authUser }) => {
       console.error("Update failed:", err);
     }
   };
-
-  useEffect(() => {
     const userId = localStorage.getItem("userId");
+  console.log("userId in EditProfileView local:", userId);
+  useEffect(() => {
     if (userId) {
       dispatch(fetchUserById(userId));
     }

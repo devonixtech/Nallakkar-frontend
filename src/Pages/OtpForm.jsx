@@ -30,13 +30,18 @@ const OtpForm = ({ changeNumber , goToVerified }) => {
       const { token, id, name, email, mobile } = response.data.data;
 
       // ✅ Store user info in Redux + localStorage
-      dispatch(
+    const res =   dispatch(
         login({
           user: { id, name, email, mobile, emailOrMobile },
           token,
         })
       );
+   console.log("OTP verification response:", res);
 
+      localStorage.setItem("authToken", res?.payload.token);
+      localStorage.setItem("user", JSON.stringify( res?.payload.user));
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userId", res?.payload.user.id);
       toast.success("OTP Verified Successfully 🎉");
       if (goToVerified) goToVerified();
     } catch (error) {

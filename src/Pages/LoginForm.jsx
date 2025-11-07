@@ -42,7 +42,7 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
       localStorage.setItem("authToken", res.data.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data));
       localStorage.setItem("isLoggedIn", "true");
-
+      localStorage.setItem("userId", res.data.data.id);
       window.location.href = "/";
     } catch (err) {
       console.error(err);
