@@ -96,7 +96,7 @@ const userId = user.id;
         <h2 className="text-2xl font-bold">Your Wishlist is Empty 💔</h2>
         <p className="mt-2 text-gray-600">Start adding some items you love!</p>
         <Link
-          to={"/products"}
+          to={"/"}
           className="mt-4 inline-block bg-darkpink text-white px-4 py-2 rounded hover:bg-pink transition"
         >
           Go to Shop

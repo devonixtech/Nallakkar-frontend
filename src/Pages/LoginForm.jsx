@@ -134,8 +134,7 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
       </div>
 
       {/* Social Buttons */}
-     
-     <div className="w-full">
+   <div className="w-full">
   <GoogleLogin
     onSuccess={handleGoogleSuccess}
     onError={handleGoogleError}
@@ -144,17 +143,17 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
       <button
         onClick={renderProps.onClick}
         disabled={renderProps.disabled}
-        className="flex items-center justify-center gap-3 w-full py-2 border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition text-primary font-medium"
+        className="relative flex items-center justify-center w-full py-2 border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition text-primary font-medium"
       >
-        <span className="flex items-center justify-center">
-          <FcGoogle size={22} className="mt-[1px]" />
-        </span>
-        <span className="leading-none">Continue with Google</span>
+        {/* Centered content (icon + text) */}
+        <div className="flex items-center justify-center gap-2">
+          <FcGoogle size={22} className="block" />
+          <span>Continue with Google</span>
+        </div>
       </button>
     )}
   />
 </div>
-
 
 
        
