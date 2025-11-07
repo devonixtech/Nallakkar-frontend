@@ -40,7 +40,7 @@ const SignupForm = ({ switchToLogin }) => {
       const res = await axios.post(`${BASE_URL}user/signUp`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+     
       setMessage("Signup successful ✅");
       setFormData({
         email: "",
@@ -70,11 +70,14 @@ const SignupForm = ({ switchToLogin }) => {
       };
 
       // Option 1: Use Redux thunk (recommended)
-      await dispatch(googleSignUp(userData));
-
+    await dispatch(googleSignUp(userData));
       // Option 2: Or direct axios call
       // const res = await axios.post(`${BASE_URL}user/google-signup`, userData);
+          localStorage.setItem("authToken", res.payload.data.token);
+      localStorage.setItem("user", JSON.stringify(res.payload.data));
+      localStorage.setItem("isLoggedIn", "true");
 
+      window.location.href = "/";
       setMessage("Google Signup/Login successful ✅");
       setTimeout(() => switchToLogin(), 2000);
     } catch (err) {
