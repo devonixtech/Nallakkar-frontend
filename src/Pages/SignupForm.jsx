@@ -146,9 +146,9 @@ const SignupForm = ({ switchToLogin }) => {
         <button className="flex items-center justify-center gap-2 rounded-md border py-2 px-4 flex-1 bg-white shadow-md">
           <FcGoogle size={20} /> Google
         </button>
-        <button className="flex items-center justify-center gap-2 rounded-md border py-2 px-4 flex-1 bg-white shadow-md">
+        {/* <button className="flex items-center justify-center gap-2 rounded-md border py-2 px-4 flex-1 bg-white shadow-md">
           <FaFacebook size={20} className="text-[#1877F2]" /> Facebook
-        </button>
+        </button> */}
       </div>
 
       <p className="text-center text-[12px] mt-4">

@@ -134,26 +134,30 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
       </div>
 
       {/* Social Buttons */}
-      <div className="flex gap-3">
-        <div className="flex gap-3">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            render={(renderProps) => (
-              <button
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-                className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5"
-              >
-                <FcGoogle size={20} /> Google
-              </button>
-            )}
-          />
-        </div>
-        <button className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
-          <FaFacebook size={20} className="text-[#1877F2]" /> Facebook
-        </button>
-      </div>
+     
+     <div className="w-full">
+  <GoogleLogin
+    onSuccess={handleGoogleSuccess}
+    onError={handleGoogleError}
+    useOneTap={false}
+    render={(renderProps) => (
+      <button
+        onClick={renderProps.onClick}
+        disabled={renderProps.disabled}
+        className="flex items-center justify-center gap-3 w-full py-2 border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition text-primary font-medium"
+      >
+        <span className="flex items-center justify-center">
+          <FcGoogle size={22} className="mt-[1px]" />
+        </span>
+        <span className="leading-none">Continue with Google</span>
+      </button>
+    )}
+  />
+</div>
+
+
+
+       
 
       {/* Create account */}
       <p className="text-center text-[12px] mt-5">
