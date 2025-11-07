@@ -70,7 +70,7 @@ const SignupForm = ({ switchToLogin }) => {
       };
 
       // Option 1: Use Redux thunk (recommended)
-    await dispatch(googleSignUp(userData));
+   const res = await dispatch(googleSignUp(userData));
       // Option 2: Or direct axios call
       // const res = await axios.post(`${BASE_URL}user/google-signup`, userData);
           localStorage.setItem("authToken", res.payload.data.token);

@@ -6,13 +6,15 @@ import { updateUser } from "../Redux/slices/userSlice";
 import { updateUser as updateAuthUser } from "../Redux/slices/userSlice"; // ✅ import your authSlice action
 import { logout } from "../Redux/slices/authSlice";
 import { toast } from "react-toastify";
+import { use } from "react";
 
 const Sidebar = ({ activeView, setActiveView }) => {
   const isSettingsActive = ["settings", "languages"].includes(activeView);
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
-
+ const  userDetails = useSelector((state) => state?.auth?.user);
+ console.log("userDetails in sidebar:", userDetails);
   // Single logout implementation
   const handleLogout = () => {
     try {
@@ -45,12 +47,12 @@ const Sidebar = ({ activeView, setActiveView }) => {
   return (
     <div className="w-full md:w-1/4 p-6 md:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-gray-200">
       <img
-        src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+        src={userDetails?.image || "https://cdn-icons-png.flaticon.com/512/847/847969.png" }
         alt="guset"
         className="w-20 h-20 md:w-24 md:h-24 rounded-full mb-2"
       />
       <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-3">
-        {displayName}
+        {userDetails?.name || displayName}
       </h2>
 
       <div className="w-full space-y-2 md:space-y-3">
