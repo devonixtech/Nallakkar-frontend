@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
 // import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
 import { nav } from "framer-motion/client";
-
+import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
 
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
@@ -337,6 +337,7 @@ const OrderSummary = ({ selling_price  , handlePayment ,address}) => (
 function PaymentPage() {
   const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
   const [amount, setAmount] = useState(100);
+  const [buyNowItem, setBuyNowItem] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //  const userId = localStorage.getItem("userId");
@@ -351,6 +352,13 @@ const user_Id = user.id;
      useEffect(() => {
       fetchCartByUserId(user_Id);
     }, [dispatch, user_Id]);
+    useEffect(() => {
+  const storedItem = localStorage.getItem("buyNowItem");
+  if (storedItem) {
+    setBuyNowItem(JSON.parse(storedItem));
+  }
+}, []);
+console.log("buyNowItem",buyNowItem);
   const items = useSelector((state) => state.cart);
   console.log("User Cart Items:", items);
   const handleToggle = (section) => {
@@ -363,47 +371,117 @@ const user_Id = user.id;
      console.log("add",userdetails)
    
 // Transform to Shiprocket order_items format
-const orderItems = items?.items?.map(item => ({
-  name: item.productName.trim(),
-  sku: `PROD-${item.productId}`, // Or use your real SKU if available
-  units: Number(item.quantity),
-  selling_price: item.productPrice,
-  length:item?.length,
-  breadth:item?.breadth,
-  height:item?.height,
-  weight:item?.weight,
-}));
-const totalWeight = items?.items?.reduce(
-  (sum, item) => sum + (item.weight || 0.5) * item.quantity,
-  0
-);
+// Determine orderItems based on Buy Now or Cart
+const orderItems =
+  buyNowItem
+    ? [
+        {
+          name: buyNowItem.product?.productName?.trim() || "Unnamed Product",
+          sku: `PROD-${buyNowItem.product?._id}`,
+          units: Number(buyNowItem.quantity || 1),
+          selling_price:
+            buyNowItem.variant?.price ||
+            buyNowItem.product?.price ||
+            buyNowItem.product?.selling_price ||
+            0,
+          length: buyNowItem.product?.length || 10,
+          breadth: buyNowItem.product?.breadth || 10,
+          height: buyNowItem.product?.height || 10,
+          weight: buyNowItem.product?.weight || 0.5,
+        },
+      ]
+    : items?.items?.map((item) => ({
+        name: item.productName?.trim(),
+        sku: `PROD-${item.productId}`,
+        units: Number(item.quantity),
+        selling_price: item.productPrice,
+        length: item?.length || 10,
+        breadth: item?.breadth || 10,
+        height: item?.height || 10,
+        weight: item?.weight || 0.5,
+      }));
+
+// const orderItems = items?.items?.map(item => ({
+//   name: item.productName.trim(),
+//   sku: `PROD-${item.productId}`, // Or use your real SKU if available
+//   units: Number(item.quantity),
+//   selling_price: item.productPrice,
+//   length:item?.length,
+//   breadth:item?.breadth,
+//   height:item?.height,
+//   weight:item?.weight,
+// }));
+ 
 
 // Average dimensions
-const totalItems = items?.items?.reduce(
-  (sum, item) => sum + item.quantity,
-  0
-);
-const avgLength =
-  items?.items?.reduce(
-    (sum, item) => sum + (item.length || 10) * item.quantity,
-    0
-  ) / totalItems;
-const avgBreadth =
-  items?.items?.reduce(
-    (sum, item) => sum + (item.breadth || 10) * item.quantity,
-    0
-  ) / totalItems;
-const avgHeight =
-  items?.items?.reduce(
-    (sum, item) => sum + (item.height || 10) * item.quantity,
-    0
-  ) / totalItems;
-  const totalLength = Math.round(avgLength);
+// const totalItems = items?.items?.reduce(
+//   (sum, item) => sum + item.quantity,
+//   0
+// );
+// const avgLength =
+//   items?.items?.reduce(
+//     (sum, item) => sum + (item.length || 10) * item.quantity,
+//     0
+//   ) / totalItems;
+// const avgBreadth =
+//   items?.items?.reduce(
+//     (sum, item) => sum + (item.breadth || 10) * item.quantity,
+//     0
+//   ) / totalItems;
+// const avgHeight =
+//   items?.items?.reduce(
+//     (sum, item) => sum + (item.height || 10) * item.quantity,
+//     0
+//   ) / totalItems;
+//   const totalLength = Math.round(avgLength);
+// const totalBreadth = Math.round(avgBreadth);
+// const totalHeight = Math.round(avgHeight);
+// const selling_price = items?.totalPrice
+// console.log("orderItems",items);
+ 
+const totalWeight = buyNowItem
+  ? (buyNowItem.product?.weight || 0.5) * buyNowItem.quantity
+  : items?.items?.reduce(
+      (sum, item) => sum + (item.weight || 0.5) * item.quantity,
+      0
+    );
+
+const totalItems = buyNowItem
+  ? buyNowItem.quantity
+  : items?.items?.reduce((sum, item) => sum + item.quantity, 0);
+
+const avgLength = buyNowItem
+  ? buyNowItem.product?.length || 10
+  : items?.items?.reduce(
+      (sum, item) => sum + (item.length || 10) * item.quantity,
+      0
+    ) / totalItems;
+
+const avgBreadth = buyNowItem
+  ? buyNowItem.product?.breadth || 10
+  : items?.items?.reduce(
+      (sum, item) => sum + (item.breadth || 10) * item.quantity,
+      0
+    ) / totalItems;
+
+const avgHeight = buyNowItem
+  ? buyNowItem.product?.height || 10
+  : items?.items?.reduce(
+      (sum, item) => sum + (item.height || 10) * item.quantity,
+      0
+    ) / totalItems;
+
+const totalLength = Math.round(avgLength);
 const totalBreadth = Math.round(avgBreadth);
 const totalHeight = Math.round(avgHeight);
-const selling_price = items?.totalPrice
-console.log("orderItems",items);
- 
+
+// Selling price (from Buy Now or Cart)
+const selling_price = buyNowItem
+  ? (buyNowItem.variant?.price ||
+      buyNowItem.product?.price ||
+      buyNowItem.product?.selling_price ||
+      0) * buyNowItem.quantity
+  : items?.totalPrice;
 
   // if (buyNowItem?.product) {
   //   const variantPrice =
@@ -445,8 +523,8 @@ console.log("orderItems",items);
                   billing_first_name: userdetails.firstName,
                   billing_last_name: userdetails.lastName,
                   billing_email:  user?.email,
-                  amount: amount,
-                  billing_address: userdetails?.address?.houseNo + ", " + userdetails?.address?.street + ", " + (userdetails?.address?.landmark || ""),
+                  amount: razorpayOrder?.amount,
+                  billing_address: userdetails?.address?.house + ", " + userdetails?.address?.road + ", " + (userdetails?.address?.nearby || ""),
                   billing_city: userdetails?.address?.city,
                   billing_pincode: userdetails?.address?.pincode,
                   billing_state: userdetails?.address?.state,
@@ -455,7 +533,7 @@ console.log("orderItems",items);
                   shipping_is_billing: false,
                   shipping_first_name:  userdetails.firstName,
                   shipping_last_name: userdetails.lastName,
-                  shipping_address:  userdetails?.address?.houseNo + ", " + userdetails?.address?.street + ", " + (userdetails?.address?.landmark || ""),
+                  shipping_address:  userdetails?.address?.house + ", " + userdetails?.address?.road + ", " + (userdetails?.address?.nearby || ""),
                   shipping_city: userdetails?.address?.city,
                   shipping_pincode: userdetails?.address.pincode,
                   shipping_state: userdetails?.address?.state,
@@ -467,9 +545,9 @@ console.log("orderItems",items);
                   sub_total: selling_price,
                   user_id: user_Id,
                   length: totalLength,
-  breadth: totalBreadth,
-  height: totalHeight,
-  total_weight: totalWeight,
+                  breadth: totalBreadth,
+                 height: totalHeight,
+                  weight: totalWeight,
                 },
               })
             );
