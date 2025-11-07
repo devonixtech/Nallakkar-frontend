@@ -45,8 +45,8 @@ const Sidebar = ({ activeView, setActiveView }) => {
   return (
     <div className="w-full md:w-1/4 p-6 md:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-gray-200">
       <img
-        src="https://randomuser.me/api/portraits/women/82.jpg"
-        alt="Ankitha"
+        src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+        alt="guset"
         className="w-20 h-20 md:w-24 md:h-24 rounded-full mb-2"
       />
       <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-3">

@@ -1,14 +1,27 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/user";
 
-// ✅ Create User
+// ✅ Create User (Normal Signup)
 export const createUser = createAsyncThunk(
   "users/create",
   async (userData, { rejectWithValue }) => {
     try {
       const res = await api.post(BASE_URL, userData);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// ✅ Signup with Google
+export const googleSignUp = createAsyncThunk(
+  "users/googleSignUp",
+  async (googleData, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`${BASE_URL}/google-signup`, googleData);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -59,8 +72,6 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-
-
 // ✅ Delete User
 export const deleteUser = createAsyncThunk(
   "users/delete",
@@ -85,7 +96,7 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Create
+      // ✅ Create (Normal Signup)
       .addCase(createUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -99,7 +110,25 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch All
+      // ✅ Google Signup
+      .addCase(googleSignUp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(googleSignUp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userData = action.payload.data;
+
+        // ✅ Save to localStorage for persistent session
+        localStorage.setItem("user", JSON.stringify(action.payload.data));
+        localStorage.setItem("token", action.payload.data.token);
+      })
+      .addCase(googleSignUp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // ✅ Fetch All
       .addCase(fetchAllUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -113,7 +142,7 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch by ID
+      // ✅ Fetch by ID
       .addCase(fetchUserById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -127,23 +156,23 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Update
+      // ✅ Update
       .addCase(updateUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-         .addCase(updateUser.fulfilled, (state, action) => {
+      .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = action.payload; // updated user info
+        state.users = action.payload;
 
         // ✅ Update localStorage user
         const updatedUser = {
           id: action.payload.id,
           name: action.payload.name,
           email: action.payload.email,
-          emailOrMobile: action.payload.mobileNumber || action.payload.emailOrMobile,
+          emailOrMobile:
+            action.payload.mobileNumber || action.payload.emailOrMobile,
         };
-
         localStorage.setItem("user", JSON.stringify(updatedUser));
       })
       .addCase(updateUser.rejected, (state, action) => {
@@ -151,7 +180,7 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Delete
+      // ✅ Delete
       .addCase(deleteUser.pending, (state) => {
         state.loading = true;
         state.error = null;
