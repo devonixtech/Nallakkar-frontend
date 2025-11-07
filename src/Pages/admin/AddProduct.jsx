@@ -20,6 +20,10 @@ export default function AddProduct() {
     shortDescription: "",
     reviewCount: "",
     rating: "",
+     length: "",
+    breadth: "",
+    height: "",
+    weight: "",
   });
 
   const [images, setImages] = useState([]);
@@ -82,6 +86,10 @@ const groupedVariants = customVariants.reduce((acc, v) => {
     if (!formData.price) errs.price = "Price is required";
     if (!formData.stock) errs.stock = "Stock is required";
     if (!formData.description.trim()) errs.description = "Description is required";
+      if (!formData.length) errs.length = "Length is required";
+    if (!formData.breadth) errs.breadth = "Breadth is required";
+    if (!formData.height) errs.height = "Height is required";
+    if (!formData.weight) errs.weight = "Weight is required";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -104,6 +112,10 @@ const groupedVariants = customVariants.reduce((acc, v) => {
     form.append("status", formData.status || "active");
     form.append("reviewCount", formData.reviewCount || "");
     form.append("rating", formData.rating || "");
+     form.append("length", formData.length);
+      form.append("breadth", formData.breadth);
+      form.append("height", formData.height);
+      form.append("weight", formData.weight);
 
     // ✅ Correct variants format
     const variantsToSend = customVariants.reduce((acc, v) => {
@@ -217,7 +229,41 @@ const groupedVariants = customVariants.reduce((acc, v) => {
           onChange={handleChange}
           className="w-full border p-2"
         />
-
+ {/* ✅ New Fields */}
+        <div className="grid grid-cols-2 gap-2">
+          <input
+            type="number"
+            name="length"
+            placeholder="Length (cm)"
+            value={formData.length}
+            onChange={handleChange}
+            className="border p-2"
+          />
+          <input
+            type="number"
+            name="breadth"
+            placeholder="Breadth (cm)"
+            value={formData.breadth}
+            onChange={handleChange}
+            className="border p-2"
+          />
+          <input
+            type="number"
+            name="height"
+            placeholder="Height (cm)"
+            value={formData.height}
+            onChange={handleChange}
+            className="border p-2"
+          />
+          <input
+            type="number"
+            name="weight"
+            placeholder="Weight (kg)"
+            value={formData.weight}
+            onChange={handleChange}
+            className="border p-2"
+          />
+        </div>
         {/* Variants */}
         <div>
           <h3 className="font-semibold mb-2">Variants</h3>
@@ -246,6 +292,8 @@ const groupedVariants = customVariants.reduce((acc, v) => {
       className="border p-2 w-full"
     />
   </div>
+  
+  
 ))}
 
           <button

@@ -95,6 +95,8 @@ const handleResultClick = (item, type) => {
   const handleCategoryClick = (id) => {
     localStorage.setItem("selectedCategoryId", id);
     setSelectedCategory(id);
+    setSearchQuery("");
+  setShowSearchDropdown(false);
     window.dispatchEvent(new Event("storage"));
   };
 
@@ -152,7 +154,7 @@ const handleResultClick = (item, type) => {
               {categories?.map((cat) => (
                 <li key={cat.id}>
                   <Link
-                    to={`/category/${cat.name.toLowerCase()}`}
+                    to={`/category/kids`}
                     className="block px-4 py-2 hover:bg-rose-50 hover:text-[#EC3557]"
                     onClick={() => handleCategoryClick(cat.id)}
                   >
@@ -192,7 +194,8 @@ const handleResultClick = (item, type) => {
                     {filteredCategories.map((cat) => (
                       <li
                         key={cat.id}
-                        onClick={() => handleResultClick(cat, "category")}
+                        to={`/category/kids`}
+                        onClick={() => handleCategoryClick(cat.id)}
                         className="px-4 py-2 hover:bg-rose-50 cursor-pointer"
                       >
                         {cat.name}
@@ -209,7 +212,8 @@ const handleResultClick = (item, type) => {
                     {filteredSubcategories.map((sub) => (
                       <li
                         key={sub.id}
-                        onClick={() => handleResultClick(sub, "subcategory")}
+                        to={`/category/kids`}
+                        onClick={() =>  handleCategoryClick(sub?.categoryId)}
                         className="px-4 py-2 hover:bg-rose-50 cursor-pointer"
                       >
                         {sub.name}
@@ -226,7 +230,8 @@ const handleResultClick = (item, type) => {
                     {filteredProducts.map((prod) => (
                       <li
                         key={prod.id}
-                        onClick={() => handleResultClick(prod, "product")}
+                          to={`/category/kids`}
+                        onClick={() =>  handleCategoryClick(prod?.categoryId)}
                         className="px-4 py-2 hover:bg-rose-50 cursor-pointer"
                       >
                         {prod.title}

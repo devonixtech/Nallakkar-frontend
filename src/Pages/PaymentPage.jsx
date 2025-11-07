@@ -11,6 +11,7 @@ import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState }
 // import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
 import { nav } from "framer-motion/client";
 
+
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
     P
@@ -324,7 +325,6 @@ const OrderSummary = ({ selling_price  , handlePayment ,address}) => (
       </div>
       <Link
          onClick={handlePayment}
-        to={"/PaymentSuccess"}
 
         className="block text-center w-full bg-primary text-white py-3 font-bold text-lg mt-2 hover:bg-rose transition-colors"
       >
@@ -338,6 +338,7 @@ function PaymentPage() {
   const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
   const [amount, setAmount] = useState(100);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   //  const userId = localStorage.getItem("userId");
  
   const userCart = useSelector((state) => state?.cart?.items);
@@ -366,8 +367,40 @@ const orderItems = items?.items?.map(item => ({
   name: item.productName.trim(),
   sku: `PROD-${item.productId}`, // Or use your real SKU if available
   units: Number(item.quantity),
-  selling_price: item.productPrice
+  selling_price: item.productPrice,
+  length:item?.length,
+  breadth:item?.breadth,
+  height:item?.height,
+  weight:item?.weight,
 }));
+const totalWeight = items?.items?.reduce(
+  (sum, item) => sum + (item.weight || 0.5) * item.quantity,
+  0
+);
+
+// Average dimensions
+const totalItems = items?.items?.reduce(
+  (sum, item) => sum + item.quantity,
+  0
+);
+const avgLength =
+  items?.items?.reduce(
+    (sum, item) => sum + (item.length || 10) * item.quantity,
+    0
+  ) / totalItems;
+const avgBreadth =
+  items?.items?.reduce(
+    (sum, item) => sum + (item.breadth || 10) * item.quantity,
+    0
+  ) / totalItems;
+const avgHeight =
+  items?.items?.reduce(
+    (sum, item) => sum + (item.height || 10) * item.quantity,
+    0
+  ) / totalItems;
+  const totalLength = Math.round(avgLength);
+const totalBreadth = Math.round(avgBreadth);
+const totalHeight = Math.round(avgHeight);
 const selling_price = items?.totalPrice
 console.log("orderItems",items);
  
@@ -433,10 +466,21 @@ console.log("orderItems",items);
                   shipping_charges: 50,
                   sub_total: selling_price,
                   user_id: user_Id,
+                  length: totalLength,
+  breadth: totalBreadth,
+  height: totalHeight,
+  total_weight: totalWeight,
                 },
               })
             );
-          },
+
+          // ✅ Step 4: Navigate to success page if verified successfully
+             
+              navigate("/PaymentSuccess");
+           
+           
+        },
+          
           prefill: {
             name: userdetails.firstName + " " + userdetails.lastName,
             email: user?.email,
@@ -449,6 +493,7 @@ console.log("orderItems",items);
 
         const razor = new window.Razorpay(options);
         razor.open();
+        
       
         razor.on("payment.failed", function (response) {
           alert("❌ Payment failed: " + response.error.description);

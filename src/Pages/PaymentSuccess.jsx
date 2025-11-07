@@ -18,7 +18,7 @@ const PaymentSuccess = () => {
         <p className="text-gray-500 text-sm">to Nallakkar Payments</p>
 
         {/* Amount */}
-        <p className="mt-2 text-2xl font-bold text-gray-900">1500</p>
+        {/* <p className="mt-2 text-2xl font-bold text-gray-900">1500</p> */}
 
         {/* Button */}
         <Link
