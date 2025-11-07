@@ -13,8 +13,8 @@ const Sidebar = ({ activeView, setActiveView }) => {
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
- const  userDetails = useSelector((state) => state?.auth?.user);
- console.log("userDetails in sidebar:", userDetails);
+  
+  console.log("Sidebar rendered");
   // Single logout implementation
   const handleLogout = () => {
     try {
@@ -32,7 +32,8 @@ const Sidebar = ({ activeView, setActiveView }) => {
       dispatch(fetchUserById(userId));
     }
   }, [dispatch, userId]);
-
+const  userDetails = useSelector((state) => state?.auth?.user);
+ console.log("userDetails in sidebar:", userDetails);
   // avoid name collision: name redux value reduxUserData
   const reduxUserData = useSelector((state) => state?.users?.userData?.data);
   const authUser = useSelector((state) => state?.auth?.user);
@@ -107,12 +108,9 @@ const ProfileView = ({ onEditClick }) => {
   // user data from users slice and auth slice
   const reduxUserData = useSelector((state) => state?.users?.userData?.data);
   const authUser = useSelector((state) => state?.auth?.user);
-
-  const userName =
-    authUser?.name ||
-    JSON.parse(localStorage.getItem("user") || "{}")?.name ||
-    reduxUserData?.name ||
-    "Name not found";
+   const  userDetails = useSelector((state) => state?.auth?.user);
+  const userName = userDetails?.name || "  Name not found";
+    
 
   const userNumber =
     authUser?.mobileNumber ||
@@ -139,13 +137,13 @@ const ProfileView = ({ onEditClick }) => {
 
       <div className="flex items-center">
         <img
-          src="https://randomuser.me/api/portraits/women/82.jpg"
+          src={userDetails?.image || "https://cdn-icons-png.flaticon.com/512/847/847969.png"}
           alt={userName || "User"}
           className="w-14 h-14 md:w-16 md:h-16 rounded-full"
         />
         <div className="ml-4">
           <h3 className="text-base md:text-lg font-bold text-gray-800">
-            {userName}
+            {userDetails?.name || "Name not found"}
           </h3>
           <p className="text-gray-500 text-sm md:text-base">{userNumber}</p>
         </div>
@@ -162,6 +160,9 @@ const EditProfileView = ({ onGoBackClick, authUser }) => {
   const user = useSelector((state) => state.auth.user);
 
   const user_Id = user?.id;
+  useEffect(() => {
+    dispatch(fetchUserById(user_Id));
+  }, [dispatch, user_Id]);
 
   // ✅ Form states
   const [name, setName] = useState(authUser?.name || "");

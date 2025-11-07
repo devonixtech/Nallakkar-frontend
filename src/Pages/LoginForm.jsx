@@ -37,7 +37,8 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
         email,
         googleSignIn: true,
       });
-  
+      console.log("google login")
+      console.log("Google login response:", res);
       localStorage.setItem("authToken", res.data.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data));
       localStorage.setItem("isLoggedIn", "true");
