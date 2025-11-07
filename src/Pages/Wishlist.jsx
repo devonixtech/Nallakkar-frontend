@@ -21,7 +21,7 @@ const userString = localStorage.getItem("user");
 // Parse it into an object
 const user = JSON.parse(userString);
 // Access the id
-const userId = user.id;
+const userId = user?.id;
 
   const dispatch = useDispatch();
   const { items = [], loading, toggleLoading, error } = useSelector((state) => state.wishlist);
@@ -194,7 +194,7 @@ console.log("Wishlist item:", items[0]);
                   }}
                   className="absolute top-2 right-2 p-1 transition hover:scale-110 z-20"
                   aria-label={
-                    items.some((w) => w.productId === item.productId)
+                    items.some((w) => w?.productId === item?.productId)
                       ? "Remove from wishlist"
                       : "Add to wishlist"
                   }
@@ -221,7 +221,7 @@ console.log("Wishlist item:", items[0]);
                   {item?.final_price}
             
                 </span>
-                <span className="text-gray-500 text-xs">( {item.discount}% )</span>
+                <span className="text-gray-500 text-xs">( {item?.discount}% )</span>
               </div>
             </div>
           ))}
@@ -241,7 +241,7 @@ console.log("Wishlist item:", items[0]);
             >
               {"<"}
             </button>
-            {getPageNumbers().map((number) => (
+            {getPageNumbers()?.map((number) => (
               <button
                 key={number}
                 onClick={() => paginate(number)}
