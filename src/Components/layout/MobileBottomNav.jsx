@@ -158,7 +158,7 @@ export default function MobileBottomNav() {
   const [showSearch, setShowSearch] = useState(false);
 
   const navItems = [
-    { to: "/MainHome", icon: <Home size={22} />, label: "Home", type: "link" },
+    { to: "/", icon: <Home size={22} />, label: "Home", type: "link" },
     {
       icon: <List size={22} />,
       label: "Categories",

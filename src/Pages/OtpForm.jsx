@@ -5,11 +5,12 @@ import { BASE_URL } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../Redux/slices/authSlice";
+import { toast } from "react-toastify";
 
-const OtpForm = ({ changeNumber }) => {
+const OtpForm = ({ changeNumber , goToVerified }) => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const emailOrMobile = localStorage.getItem("emailOrMobile"); 
+  const emailOrMobile = localStorage.getItem("emailOrMobile");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -36,14 +37,11 @@ const OtpForm = ({ changeNumber }) => {
         })
       );
 
-      alert("OTP Verified Successfully!");
-      navigate("/");
+      toast.success("OTP Verified Successfully 🎉");
+      if (goToVerified) goToVerified();
     } catch (error) {
-      console.error(
-        "❌ OTP Verification Failed:",
-        error.response?.data || error.message
-      );
-      alert(error.response?.data?.message || "OTP verification failed!");
+        console.error("❌ OTP Verification Failed:", error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "OTP verification failed!"); // ❌ error toast
     } finally {
       setLoading(false);
     }

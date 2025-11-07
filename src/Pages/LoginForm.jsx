@@ -1,16 +1,13 @@
- import React, { useState } from "react";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import {jwtDecode} from "jwt-decode"; // <-- no curly braces
-
+import { jwtDecode } from "jwt-decode"; // <-- no curly braces
 
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import { toast } from "react-toastify";
 
-
-
- 
 const LoginForm = ({ switchToSignup, goToOtp }) => {
   const [emailOrMobile, setEmailOrMobile] = useState("");
   const [detectedType, setDetectedType] = useState(""); // "email" | "mobile"
@@ -29,34 +26,32 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
     }
   };
 
-const handleGoogleSuccess = async (credentialResponse) => {
-  try {
-    if (!credentialResponse?.credential) return alert("Google login failed");
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      if (!credentialResponse?.credential) return alert("Google login failed");
 
-    const decoded = jwtDecode(credentialResponse.credential); // <-- note .default
-    const { email, name } = decoded;
+      const decoded = jwtDecode(credentialResponse.credential); // <-- note .default
+      const { email, name } = decoded;
 
-    const res = await axios.post(`${BASE_URL}user/checkGoogleDetails`, {
-      email,
-      googleSignIn: true,
-    });
+      const res = await axios.post(`${BASE_URL}user/checkGoogleDetails`, {
+        email,
+        googleSignIn: true,
+      });
 
-    localStorage.setItem("authToken", res.data.data.token);
-    localStorage.setItem("user", JSON.stringify(res.data.data));
-    localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("authToken", res.data.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.data));
+      localStorage.setItem("isLoggedIn", "true");
 
-    window.location.href = "/";
-  } catch (err) {
-    console.error(err);
-    alert(err.response?.data?.message || "Google login failed");
-  }
-};
-
+      window.location.href = "/";
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Google login failed");
+    }
+  };
 
   const handleGoogleError = () => {
     alert("Google login failed");
   };
-
 
   // Request OTP API
   const handleRequestOtp = async () => {
@@ -72,23 +67,20 @@ const handleGoogleSuccess = async (credentialResponse) => {
         emailOrMobile:
           detectedType === "mobile" ? `+91${emailOrMobile}` : emailOrMobile,
       };
-        localStorage.setItem("emailOrMobile", payload.emailOrMobile);
-      const res = await axios.post(
-        `${BASE_URL}user/requestOtp`,
-        payload
-      );
+      localStorage.setItem("emailOrMobile", payload.emailOrMobile);
+      const res = await axios.post(`${BASE_URL}user/requestOtp`, payload);
 
-      console.log("login",res)
+      console.log("login", res);
 
       setLoading(false);
 
       if (res.status === 200) {
-        alert("OTP sent successfully!");
-        goToOtp(payload.emailOrMobile); 
+        toast.success("OTP sent successfully!");
+        goToOtp(payload.emailOrMobile);
       }
     } catch (error) {
       setLoading(false);
-      alert(error.response?.data?.message || "Failed to send OTP");
+      toast.error(error.response?.data?.message || "Failed to send OTP");
     }
   };
 
@@ -141,25 +133,24 @@ const handleGoogleSuccess = async (credentialResponse) => {
         <hr className="flex-grow border-gray-300" />
       </div>
 
-      
-
       {/* Social Buttons */}
       <div className="flex gap-3">
-       <div className="flex gap-3">
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={handleGoogleError}
-          render={(renderProps) => (
-            <button
-              onClick={renderProps.onClick}
-              disabled={renderProps.disabled}
-              className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
-              <FcGoogle size={20} /> Google
-            </button>
-          )}
-        />
-      </div>
-         <button className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
+        <div className="flex gap-3">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            render={(renderProps) => (
+              <button
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}
+                className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5"
+              >
+                <FcGoogle size={20} /> Google
+              </button>
+            )}
+          />
+        </div>
+        <button className="flex items-center justify-center gap-2 rounded-md border-l-2 border-r-2 py-2 px-4 flex-1 bg-white shadow-md hover:shadow-md transition-transform duration-200 hover:-translate-y-0.5">
           <FaFacebook size={20} className="text-[#1877F2]" /> Facebook
         </button>
       </div>
@@ -180,6 +171,5 @@ const handleGoogleSuccess = async (credentialResponse) => {
 };
 
 export default LoginForm;
-
 
 // 7693803028

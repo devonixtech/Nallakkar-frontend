@@ -89,7 +89,7 @@
 
 //       <aside
 //         className={`fixed top-0 left-0 z-50 h-screen w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
-//           ${isOpen ? "translate-x-0" : "-translate-x-full"} 
+//           ${isOpen ? "translate-x-0" : "-translate-x-full"}
 //           lg:translate-x-0`}
 //       >
 //         <div className="flex flex-col h-full">
@@ -170,9 +170,6 @@
 //   );
 // }
 
-
-
-
 // Sidebar.jsx
 import { useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -207,8 +204,18 @@ export default function Sidebar({ isOpen, onClose }) {
   const menuItems = useMemo(() => {
     if (role === "admin") {
       return [
-        { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
-        { id: "Inquiries", label: "Inquiries", icon: LayoutDashboard, href: "/admin/Inquiries" },
+        {
+          id: "dashboard",
+          label: "Dashboard",
+          icon: LayoutDashboard,
+          href: "/admin/dashboard",
+        },
+        {
+          id: "Inquiries",
+          label: "Inquiries",
+          icon: LayoutDashboard,
+          href: "/admin/Inquiries",
+        },
         {
           id: "products",
           label: "Products",
@@ -220,9 +227,19 @@ export default function Sidebar({ isOpen, onClose }) {
             { label: "Categories", href: "/admin/categories" },
           ],
         },
-        { id: "orders", label: "Orders", icon: ShoppingCart, href: "/admin/orders" },
+        {
+          id: "orders",
+          label: "Orders",
+          icon: ShoppingCart,
+          href: "/admin/orders",
+        },
         { id: "users", label: "Users", icon: Users, href: "/admin/users" },
-        { id: "addinvestor", label: "Investor", icon: User, href: "/admin/addinvestor" },
+        {
+          id: "addinvestor",
+          label: "Investor",
+          icon: User,
+          href: "/admin/addinvestor",
+        },
         {
           id: "settings",
           label: "Settings",
@@ -231,16 +248,25 @@ export default function Sidebar({ isOpen, onClose }) {
           submenu: [
             { label: "Profile", href: "/admin/settings/profile" },
             { label: "Change Password", href: "/admin/settings/password" },
-            { label: "Logout", href: "/admin/logout", icon: LogOut },
+            { label: "Logout", href: "/login", icon: LogOut },
           ],
         },
       ];
     } else if (role === "investor") {
       return [
-        { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/investor/investorDashboard" },
-        { id: "profile", label: "My Profile", icon: User, href: "/investor/investorProfile" },
+        {
+          id: "dashboard",
+          label: "Dashboard",
+          icon: LayoutDashboard,
+          href: "/investor/investorDashboard",
+        },
+        {
+          id: "profile",
+          label: "My Profile",
+          icon: User,
+          href: "/investor/investorProfile",
+        },
         { id: "logout", label: "Logout", icon: User, href: "/login" },
-       
       ];
     }
     return [];

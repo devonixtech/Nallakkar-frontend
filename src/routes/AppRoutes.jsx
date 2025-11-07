@@ -61,9 +61,9 @@ export default function AppRoutes() {
     <Routes>
       {/* ✅ Home routes */}
       <Route path="/login" element={<Login />} />
-      <Route>
+      <Route element={<PublicRoute />}>
         <Route element={<HomeLayout />}>
-          <Route path="/" element={<Home />} />
+          {/* <Route path="/" element={<Home />} /> */}
           <Route path="/about" element={<AboutUs />} />
           <Route path="/PaymentSecurity" element={<PaymentSecurity />} />
           <Route
@@ -85,47 +85,50 @@ export default function AppRoutes() {
       {/* ✅ Main user routes (with CategoryNavbar) */}
       <Route>
         <Route element={<MainLayout />}>
-          <Route path="/MainHome" element={<MainHome />}></Route>
-          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/" element={<MainHome />}></Route>
           <Route path="/category/kids" element={<KidsWrapper />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
           <Route path="/category/women" element={<WomenWrapper />} />
           <Route path="/category/toys" element={<ToyWrapper />} />
           <Route path="/category/home-decors" element={<HomeDecorWrapper />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/buyNow" element={<BuyNow />} />
-          <Route
-            path="/SelectAddress"
-            element={<SelectAddress></SelectAddress>}
-          ></Route>
-          <Route
-            path="/AddDeliveryAddress"
-            element={<AddDeliveryAddress></AddDeliveryAddress>}
-          ></Route>
-          <Route path="/ProductOverview" element={<ProductOverview />} />
-          <Route
-            path="/PaymentPage"
-            element={<PaymentPage></PaymentPage>}
-          ></Route>
-          <Route path="/profile" element={<Profile></Profile>}></Route>
 
-          <Route
-            path="/orderHistory"
-            element={<OrderHistory></OrderHistory>}
-          ></Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/buyNow" element={<BuyNow />} />
+            <Route
+              path="/SelectAddress"
+              element={<SelectAddress></SelectAddress>}
+            ></Route>
+            <Route
+              path="/AddDeliveryAddress"
+              element={<AddDeliveryAddress></AddDeliveryAddress>}
+            ></Route>
+            <Route path="/ProductOverview" element={<ProductOverview />} />
+            <Route
+              path="/PaymentPage"
+              element={<PaymentPage></PaymentPage>}
+            ></Route>
+            <Route path="/profile" element={<Profile></Profile>}></Route>
 
-          <Route
-            path="/PaymentSuccess"
-            element={<PaymentSuccess></PaymentSuccess>}
-          ></Route>
-          <Route
-            path="/OrderConfirmation"
-            element={<OrderConfirmation></OrderConfirmation>}
-          ></Route>
-          <Route
-            path="WriteReview"
-            element={<WriteReview></WriteReview>}
-          ></Route>
+            <Route
+              path="/orderHistory"
+              element={<OrderHistory></OrderHistory>}
+            ></Route>
+
+            <Route
+              path="/PaymentSuccess"
+              element={<PaymentSuccess></PaymentSuccess>}
+            ></Route>
+            <Route
+              path="/OrderConfirmation"
+              element={<OrderConfirmation></OrderConfirmation>}
+            ></Route>
+            <Route
+              path="WriteReview"
+              element={<WriteReview></WriteReview>}
+            ></Route>
+          </Route>
         </Route>
       </Route>
 

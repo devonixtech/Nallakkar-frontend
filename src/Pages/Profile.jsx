@@ -4,8 +4,8 @@ import { fetchUserById } from "../Redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../Redux/slices/userSlice";
 import { updateUser as updateAuthUser } from "../Redux/slices/userSlice"; // ✅ import your authSlice action
-
- 
+import { logout } from "../Redux/slices/authSlice";
+import { toast } from "react-toastify";
 
 const Sidebar = ({ activeView, setActiveView }) => {
   const isSettingsActive = ["settings", "languages"].includes(activeView);
@@ -13,27 +13,12 @@ const Sidebar = ({ activeView, setActiveView }) => {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
 
-  // -----------------------------------
-
-// Get the user string from localStorage
-// const userString = localStorage.getItem("user");
-
-// // Parse it into an object
-// const user = JSON.parse(userString);
-
-// // Access the id
-// const user_Id = user.id;
-
-// console.log(user_Id); // Output: "9"
-
-  // -----------------------------------
-
-
   // Single logout implementation
   const handleLogout = () => {
     try {
-      localStorage.clear(); // easiest and cleanest
+      dispatch(logout()); // Redux + localStorage clear dono ho jayega
       navigate("/", { replace: true });
+      toast.success("Logged out successfully!");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -97,7 +82,9 @@ const Sidebar = ({ activeView, setActiveView }) => {
         <button
           onClick={() => setActiveView("settings")}
           className={`w-full py-2 rounded-lg text-sm md:text-base ${
-            isSettingsActive ? "bg-red-500 text-white" : "bg-gray-200 text-gray-600"
+            isSettingsActive
+              ? "bg-red-500 text-white"
+              : "bg-gray-200 text-gray-600"
           }`}
         >
           Settings
@@ -170,7 +157,7 @@ const EditProfileView = ({ onGoBackClick, authUser }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.users);
 
-const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
 
   const user_Id = user?.id;
 
@@ -182,6 +169,37 @@ const user = useSelector((state) => state.auth.user);
   const [gender, setGender] = useState(authUser?.gender || "");
   const [image, setImage] = useState(null);
 
+  //   const handleSubmit = async (e) => {
+  //     e.preventDefault();
+
+  //     const formData = new FormData();
+  //     formData.append("name", name);
+  //     formData.append("email", email);
+  //     formData.append("mobileNumber", number);
+  //     formData.append("dateOfBirth", dateOfBirth);
+  //     formData.append("gender", gender);
+
+  //     if (image) formData.append("image", image);
+
+  //  dispatch(updateUser({ id: user_Id, data: formData })).then((res) => {
+  //   // if (res.payload?.data) {
+  //       const updatedUser = res.payload.data;
+
+  //       // ✅ Update both slices first
+  //       dispatch(updateAuthUser(updatedUser));
+
+  //       // ✅ Also update localStorage immediately
+
+  //       // ✅ Then refetch the latest user from backend (for consistency)
+  //       dispatch(fetchUserById(user_Id));
+
+  //       // ✅ Finally go back to profile view
+  //       onGoBackClick();
+  //     // }
+  // });
+
+  //   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -191,34 +209,32 @@ const user = useSelector((state) => state.auth.user);
     formData.append("mobileNumber", number);
     formData.append("dateOfBirth", dateOfBirth);
     formData.append("gender", gender);
-
     if (image) formData.append("image", image);
 
- dispatch(updateUser({ id: user_Id, data: formData })).then((res) => {
-  // if (res.payload?.data) {
-      const updatedUser = res.payload.data;
+    try {
+      const res = await dispatch(
+        updateUser({ id: user_Id, data: formData })
+      ).unwrap();
 
-      // ✅ Update both slices first
-      dispatch(updateAuthUser(updatedUser));
+      // update auth slice
+      dispatch(updateAuthUser(res));
 
-      // ✅ Also update localStorage immediately
+      // fetch latest user
+      await dispatch(fetchUserById(user_Id));
 
-      // ✅ Then refetch the latest user from backend (for consistency)
-      dispatch(fetchUserById(user_Id));
-
-      // ✅ Finally go back to profile view
+      // now go back safely
       onGoBackClick();
-    // }
-});
-
+    } catch (err) {
+      console.error("Update failed:", err);
+    }
   };
-  useEffect(() => {
-  const userId = localStorage.getItem("userId");
-  if (userId) {
-    dispatch(fetchUserById(userId));
-  }
-}, [dispatch]);
 
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      dispatch(fetchUserById(userId));
+    }
+  }, [dispatch]);
 
   return (
     <div className="flex-1 max-w-xl p-6 md:p-12">
@@ -320,9 +336,6 @@ const user = useSelector((state) => state.auth.user);
     </div>
   );
 };
-
-
- 
 
 const SettingsView = ({ onNavigate }) => (
   <div className="flex-1 p-6 md:p-12">
@@ -445,11 +458,15 @@ const AccountPage = () => {
       case "profile":
         return <ProfileView onEditClick={() => setActiveView("editProfile")} />;
       case "editProfile":
-        return <EditProfileView onGoBackClick={() => setActiveView("profile")} />;
+        return (
+          <EditProfileView onGoBackClick={() => setActiveView("profile")} />
+        );
       case "settings":
         return <SettingsView onNavigate={setActiveView} />;
       case "languages":
-        return <LanguagesView onGoBackClick={() => setActiveView("settings")} />;
+        return (
+          <LanguagesView onGoBackClick={() => setActiveView("settings")} />
+        );
       default:
         return <ProfileView onEditClick={() => setActiveView("editProfile")} />;
     }

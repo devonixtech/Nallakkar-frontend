@@ -8,30 +8,9 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSubcategoryBycategoryId } from "../../Redux/slices/subcategorySlice";
 
-
-
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
 import { toggleWishlist } from "../../Redux/slices/wishlistSlice";
 import { fetchWishlistByUserId } from "../../Redux/slices/wishlistSlice";
-
-const appliedFiltersData = [
-  "Girl",
-  "Clothing Set",
-  "Shorts",
-  "Trousers",
-  "2Y - 4Y",
-];
-const colorsData = [
-  "#3B82F6",
-  "#EAB308",
-  "#F3F4F6",
-  "#6B7280",
-  "#22C55E",
-  "#1F2937",
-  "#FBBF24",
-  "#EC4899",
-  "#EF4444",
-];
 
 const CategoryPill = ({ name, img, isSelected, onClick }) => (
   <div
@@ -88,48 +67,6 @@ const Checkbox = ({ label, checked, onChange }) => (
   </div>
 );
 
-//
-
-// const ProductCard = ({ product }) => (
-//   <div className="group">
-//     <div className="relative w-full overflow-hidden">
-//       <img
-//         src={product.img}
-//         alt={product.name}
-//         className="w-full h-auto aspect-[3/4] object-cover rounded-md"
-//       />
-//       <div className="absolute top-2 right-2 p-1.5 bg-white bg-opacity-70 rounded-full cursor-pointer">
-//         <FiHeart className="text-gray-600" />
-//       </div>
-//       {product.rating && (
-//         <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm text-xs font-semibold flex items-center gap-1">
-//           {product.rating} <span className="text-pink-500">|</span>{" "}
-//           {product.reviews}
-//         </div>
-//       )}
-//     </div>
-//     <div className="mt-2 text-sm">
-//       <p className="font-bold text-gray-800">{product.brand}</p>
-//       <p className="text-gray-500 truncate">{product.name}</p>
-//       <div className="flex items-center gap-2 mt-1">
-//         <p className="font-bold text-gray-800">₹{product.price.toFixed(2)}</p>
-//         {product.originalPrice && (
-//           <p className="text-gray-400 line-through">
-//             ₹{product.originalPrice.toFixed(2)}
-//           </p>
-//         )}
-//         {product.discount && (
-//           <p className="text-orange-400 font-semibold">
-//             (off {product.discount}%)
-//           </p>
-//         )}
-//       </div>
-//     </div>
-//   </div>
-// );
-
-// --- MAIN PAGE COMPONENT ---
-
 export default function ProductListingPage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(
@@ -142,8 +79,16 @@ export default function ProductListingPage() {
   const [showSort, setShowSort] = useState(false);
   const wishlist = useSelector((state) => state.wishlist.items || []);
 
- 
   const dispatch = useDispatch();
+
+  const sortOptions = [
+    "Price: Low to High",
+    "Price: High to Low",
+    "Newest",
+    "Popularity",
+  ];
+
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -163,7 +108,6 @@ export default function ProductListingPage() {
     (state) => state?.subcategory?.subcategoryData?.data
   );
   const products = useSelector((state) => state?.products?.products);
- 
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -199,13 +143,13 @@ export default function ProductListingPage() {
     });
   };
   // Not dynamic -- for
-const userString = localStorage.getItem("user");
+  const userString = localStorage.getItem("user") || "{}";
 
-// Parse it into an object
-const user = JSON.parse(userString);
-// Access the id
-const userId = user.id;
-console.log(userId);  
+  // Parse it into an object
+  const user = JSON.parse(userString);
+  // Access the id
+  const userId = user.id;
+  console.log(userId);
 
   const handleWishlist = async (productId) => {
     const isFavourite = !wishlist?.some((w) => w.productId === productId);
@@ -213,28 +157,43 @@ console.log(userId);
     dispatch(fetchWishlistByUserId(userId));
   };
 
-const [maxPrice, setMaxPrice] = useState(4000); // default max value
+  const [maxPrice, setMaxPrice] = useState(4000);
 
+  const filteredProducts = products
+    ?.filter((product) => product.subCategoryName === selectedCategory)
+    .filter((product) => product.final_price <= maxPrice)
+    .filter((product) => {
+      if (!appliedFilters || Object.keys(appliedFilters).length === 0)
+        return true;
 
+      return Object.entries(appliedFilters).every(
+        ([filterName, selectedValues]) => {
+          if (!selectedValues || selectedValues.length === 0) return true;
 
-// default maximum
- const filteredProducts = products
-  ?.filter((product) => product.subCategoryName === selectedCategory)
-  .filter((product) => product.final_price <= maxPrice)
-  .filter((product) => {
-    if (!appliedFilters || Object.keys(appliedFilters).length === 0) return true;
-
-    return Object.entries(appliedFilters).every(([filterName, selectedValues]) => {
-      if (!selectedValues || selectedValues.length === 0) return true;
-
-      const productValues = product.variants?.[filterName.toLowerCase()] || [];
-      return selectedValues.some(
-        (value) =>
-          productValues.map((v) => v.toLowerCase().trim()).includes(value.toLowerCase().trim())
+          const productValues =
+            product.variants?.[filterName.toLowerCase()] || [];
+          return selectedValues.some((value) =>
+            productValues
+              .map((v) => v.toLowerCase().trim())
+              .includes(value.toLowerCase().trim())
+          );
+        }
       );
     });
-  });
 
+  let displayedProducts = [...filteredProducts];
+
+  if (selectedSort === "Price: Low to High") {
+    displayedProducts.sort((a, b) => a.final_price - b.final_price);
+  } else if (selectedSort === "Price: High to Low") {
+    displayedProducts.sort((a, b) => b.final_price - a.final_price);
+  } else if (selectedSort === "Newest") {
+    displayedProducts.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+  } else if (selectedSort === "Popularity") {
+    displayedProducts.sort((a, b) => b.rating - a.rating);
+  }
 
   return (
     <div className="bg-[#FCFCFC] font-sans">
@@ -308,27 +267,25 @@ const [maxPrice, setMaxPrice] = useState(4000); // default max value
                   )
                 )}
 
-{/* =====================================================
+                {/* =====================================================
       FILTER PRICE RANGE WORKING 
 =========================================================*/}
-<FilterSection title="Pricing">
-  <div className="mt-2">
-    <input
-      type="range"
-      min="100"
-      max="5000"
-      value={maxPrice}
-      onChange={(e) => setMaxPrice(Number(e.target.value))}
-      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
-    />
-    <div className="flex justify-between text-xs text-gray-500 mt-1">
-      <span>₹100</span> 
-      <span>₹{maxPrice}+</span>
-    </div>
-  </div>
-</FilterSection>
-
-
+                <FilterSection title="Pricing">
+                  <div className="mt-2">
+                    <input
+                      type="range"
+                      min="100"
+                      max="5000"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>₹100</span>
+                      <span>₹{maxPrice}+</span>
+                    </div>
+                  </div>
+                </FilterSection>
 
                 {/* <FilterSection title="Color">
                   <div className="flex flex-wrap gap-3 mt-2">
@@ -344,9 +301,6 @@ const [maxPrice, setMaxPrice] = useState(4000); // default max value
               </div>
             </div>
           </aside>
-
-          {/* ---------------For Testing----- ONLY NOW --------------- */}
-          {/* Here are the filters and sort options for MOBILE VERSION */}
           <div>
             {/* Sticky Filter/Sort Bar (Mobile) */}
             <div className="lg:hidden sticky top-0 z-20 bg-white py-2 border-y flex justify-between px-2 mb-4">
@@ -372,22 +326,52 @@ const [maxPrice, setMaxPrice] = useState(4000); // default max value
                     <h3 className="font-semibold text-lg">Filters</h3>
                     <button onClick={() => setShowFilters(false)}>✖</button>
                   </div>
+
                   <div className="space-y-6">
-                    {filterGroups.map((group) => (
-                      <div key={group.title}>
-                        <h4 className="font-medium mb-2">{group.title}</h4>
-                        <div className="space-y-2">
-                          {group.options.map((opt) => (
-                            <label
-                              key={opt}
-                              className="flex items-center gap-2 text-sm"
-                            >
-                              <input type="checkbox" /> {opt}
-                            </label>
-                          ))}
+                    {Object.entries(selectedFilters).map(
+                      ([filterName, options]) => (
+                        <div key={filterName}>
+                          <h4 className="font-medium mb-2">{filterName}</h4>
+                          <div className="space-y-2">
+                            {options.map((opt) => (
+                              <label
+                                key={opt}
+                                className="flex items-center gap-2 text-sm"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    appliedFilters[filterName]?.includes(opt) ||
+                                    false
+                                  }
+                                  onChange={() =>
+                                    handleFilterChange(filterName, opt)
+                                  }
+                                />
+                                {opt}
+                              </label>
+                            ))}
+                          </div>
                         </div>
+                      )
+                    )}
+
+                    {/* Price Filter */}
+                    <div>
+                      <h4 className="font-medium mb-2">Pricing</h4>
+                      <input
+                        type="range"
+                        min="100"
+                        max="5000"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(Number(e.target.value))}
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>₹100</span>
+                        <span>₹{maxPrice}+</span>
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -450,7 +434,7 @@ const [maxPrice, setMaxPrice] = useState(4000); // default max value
 
             {/* Mobile → Horizontal scroll | Desktop → Grid */}
             <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 sm:overflow-visible overflow-x-auto flex sm:flex-none flex-nowrap gap-4 pb-9">
-              {filteredProducts?.map((item, index) => (
+              {displayedProducts?.map((item, index) => (
                 <div
                   key={index}
                   className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${

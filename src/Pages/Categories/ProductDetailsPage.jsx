@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FiHeart, FiShare2, FiStar, FiChevronLeft } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import img1 from "../../assets/details1.png";
