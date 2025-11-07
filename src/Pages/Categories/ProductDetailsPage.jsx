@@ -121,7 +121,7 @@ const [checking, setChecking] = useState(false);
 // Parse it into an object
 const user = JSON.parse(userString);
 // Access the id
-const userId = user.id;
+const userId = user?.id;
 console.log(userId);  
 
   useEffect(() => {
