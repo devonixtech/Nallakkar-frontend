@@ -13,11 +13,6 @@ import Login from "../Pages/Login";
 import Home from "../pages/Home";
 import Wishlist from "../pages/Wishlist";
 
-// Categories
-import Kids from "../pages/Categories/Kids";
-import Women from "../pages/Categories/Women";
-import Toys from "../pages/Categories/Toys";
-
 // Admin Pages
 import Dashboard from "../pages/Admin/Dashboard";
 import ProductList from "../pages/Admin/ProductList";
@@ -66,7 +61,7 @@ export default function AppRoutes() {
     <Routes>
       {/* ✅ Home routes */}
       <Route path="/login" element={<Login />} />
-      <Route element={<PublicRoute />}>
+      <Route>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
@@ -88,7 +83,7 @@ export default function AppRoutes() {
       </Route>
 
       {/* ✅ Main user routes (with CategoryNavbar) */}
-      <Route element={<ProtectedRoute />}>
+      <Route>
         <Route element={<MainLayout />}>
           <Route path="/MainHome" element={<MainHome />}></Route>
           <Route path="/wishlist" element={<Wishlist />} />
@@ -135,7 +130,7 @@ export default function AppRoutes() {
       </Route>
 
       {/* ✅ Admin Panel routes */}
-      <Route element={<ProtectedRoute />}>
+      <Route>
         <Route path="/admin" element={<AdminLayout> </AdminLayout>}>
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="products" element={<ProductList />} />
@@ -161,7 +156,7 @@ export default function AppRoutes() {
       </Route>
 
       {/* investor Panel routes */}
-      <Route element={<ProtectedRoute />}>
+      <Route>
         <Route path="/investor" element={<AdminLayout> </AdminLayout>}>
           <Route
             path="/investor/investorDashboard"

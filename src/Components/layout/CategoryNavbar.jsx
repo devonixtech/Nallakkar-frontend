@@ -10,7 +10,6 @@ import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 import { fetchAllSubcategories } from "../../Redux/slices/subcategorySlice";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
 
-
 export default function CategoryNavbar() {
   const [selectedCategory, setSelectedCategory] = useState(
     localStorage.getItem("selectedCategoryId") || null
@@ -29,7 +28,6 @@ useEffect(() => {
   dispatch(fetchAllSubcategories());
   dispatch(fetchAllProducts());
 }, [dispatch]);
-
 
   const categories = useSelector((state) => state?.ctegory?.categories || []);
   const subcategories = useSelector(
@@ -72,8 +70,8 @@ const handleResultClick = (item, type) => {
   if (type === "category") {
     localStorage.setItem("selectedCategoryId", item.id);
     navigate(`/category/${item.name.toLowerCase()}`);
-  } 
-  
+  }
+
   else if (type === "subcategory") {
     // ✅ find the category that owns this subcategory
     const parentCategory = categories.find(
@@ -87,13 +85,12 @@ const handleResultClick = (item, type) => {
       // fallback (if relation missing)
       navigate("/");
     }
-  } 
-  
+  }
+
   else if (type === "product") {
     navigate(`/product/${item.id}`);
   }
 };
-
 
   const handleCategoryClick = (id) => {
     localStorage.setItem("selectedCategoryId", id);
@@ -263,3 +260,4 @@ const handleResultClick = (item, type) => {
     </nav>
   );
 }
+

@@ -37,7 +37,7 @@ const OtpForm = ({ changeNumber }) => {
       );
 
       alert("OTP Verified Successfully!");
-      navigate("/MainHome");
+      navigate("/");
     } catch (error) {
       console.error(
         "❌ OTP Verification Failed:",

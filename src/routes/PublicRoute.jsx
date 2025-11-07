@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 const PublicRoute = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-  return !isLoggedIn ? <Outlet /> : <Navigate to="/MainHome" replace />;
+  return !isLoggedIn ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export default PublicRoute;
