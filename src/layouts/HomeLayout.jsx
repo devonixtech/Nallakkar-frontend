@@ -19,8 +19,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import MainNavbar from "../components/layout/MainNavbar";
 import Footer from "../components/layout/Footer";
-import CategoryNavbar from "../components/layout/CategoryNavbar";
-
+import CategoryNavbar from "../Components/layout/CategoryNavbar";
 export default function HomeLayout() {
   const location = useLocation();
 
@@ -43,7 +42,8 @@ export default function HomeLayout() {
   );
   return (
     <>
-      <CategoryNavbar />
+      {/* <CategoryNavbar /> */}
+      <CategoryNavbar/>
       <main className="min-h-[calc(100vh-200px)] pt-20">
         <Outlet />
       </main>
