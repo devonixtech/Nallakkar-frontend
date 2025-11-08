@@ -107,7 +107,8 @@ console.log(userId);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts?.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(filteredProducts?.length / productsPerPage);
+  const totalPages = Math.ceil((filteredProducts?.length || 0) / productsPerPage) || 1;
+
 
   return (
     <section className="px-4 md:px-6 py-11 font-montserrat">
@@ -270,7 +271,7 @@ console.log(userId);
           &lt;
         </button>
 
-        {[...Array(totalPages)].map((_, idx) => (
+        {[...Array(totalPages)]?.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setCurrentPage(idx + 1)}
