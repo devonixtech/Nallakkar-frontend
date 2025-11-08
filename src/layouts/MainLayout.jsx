@@ -31,9 +31,9 @@
 
 
 import { Outlet, useLocation } from "react-router-dom";
-import MobileBottomNav from "../components/layout/MobileBottomNav";
+import MobileBottomNav from "../Components/layout/MobileBottomNav";
 import CategoryNavbar from "../Components/layout/CategoryNavbar";
-import Footer from "../components/layout/Footer";
+import Footer   from "../Components/layout/Footer";
 
 export default function MainLayout() {
   const location = useLocation();
