@@ -31,9 +31,9 @@
 
 
 import { Outlet, useLocation } from "react-router-dom";
-import CategoryNavbar from "../components/layout/CategoryNavbar";
-import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
+import CategoryNavbar from "../Components/layout/CategoryNavbar";
+import Footer from "../components/layout/Footer";
 
 export default function MainLayout() {
   const location = useLocation();
@@ -60,7 +60,7 @@ export default function MainLayout() {
     <>
       {/* Desktop Navbar */}
       <div className="hidden md:block">
-        <CategoryNavbar />
+        <CategoryNavbar/>
       </div>
 
       {/* Page Content */}
@@ -71,7 +71,7 @@ export default function MainLayout() {
       {/* Desktop Footer (conditionally render) */}
       {!shouldHideFooter && (
         <div className="hidden md:block">
-          <Footer />
+          <Footer/>
         </div>
       )}
 
