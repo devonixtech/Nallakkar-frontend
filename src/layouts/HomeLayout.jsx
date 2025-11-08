@@ -17,7 +17,7 @@
 
 // src/layouts/HomeLayout.jsx
 import { Outlet, useLocation } from "react-router-dom";
-import MainNavbar from "../components/layout/MainNavbar";
+// import MainNavbar from "../components/layout/MainNavbar";
 import Footer from "../components/layout/Footer";
 import CategoryNavbar from "../Components/layout/CategoryNavbar";
 export default function HomeLayout() {
