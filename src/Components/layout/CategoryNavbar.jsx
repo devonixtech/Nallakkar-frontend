@@ -334,22 +334,22 @@ export default function CategoryNavbar() {
     searchQuery.trim() === ""
       ? []
       : categories.filter((cat) =>
-          cat.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
   const filteredSubcategories =
     searchQuery.trim() === ""
       ? []
       : subcategories.filter((sub) =>
-          sub.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        sub.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
   const filteredProducts =
     searchQuery.trim() === ""
       ? []
       : products.filter((prod) =>
-          prod.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        prod.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
   const hasResults =
     filteredCategories.length > 0 ||
