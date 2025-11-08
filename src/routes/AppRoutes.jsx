@@ -10,14 +10,14 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "../Pages/Login";
 
 // Pages
-import Wishlist from "../pages/Wishlist";
+import Wishlist from "../Pages/Wishlist";
 
 // Admin Pages
-import Dashboard from "../pages/Admin/Dashboard";
-import ProductList from "../pages/Admin/ProductList";
-import AddProduct from "../pages/Admin/AddProduct";
-import Orders from "../pages/Admin/Orders";
-import Users from "../pages/Admin/Users";
+import Dashboard from "../Pages/admin/Dashboard";
+import ProductList from "../Pages/admin/ProductList";
+import AddProduct from "../Pages/admin/AddProduct";
+import Orders from "../Pages/admin/Orders";
+import Users from "../Pages/admin/Users";
 import AboutUs from "../Pages/AboutUs";
 import PaymentSecurity from "../Pages/PaymentSecurity";
 import ShippingPolicy from "../Pages/ShippingPolicy";
