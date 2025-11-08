@@ -54,6 +54,7 @@ import InvestoreProductList from "../Pages/admin/InvestoreProductList";
 
 import PublicRoute from "./PublicRoute";
 import AdminLayout from "../layouts/AdminLayout";
+import OrderDetails from "../Pages/OrderDetails";
 
 export default function AppRoutes() {
   return (
@@ -107,6 +108,10 @@ export default function AppRoutes() {
             <Route
               path="/PaymentPage"
               element={<PaymentPage></PaymentPage>}
+            ></Route>
+            <Route
+              path="/OrderDetails/:id"
+              element={<OrderDetails></OrderDetails>}
             ></Route>
             <Route path="/profile" element={<Profile></Profile>}></Route>
 
