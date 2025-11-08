@@ -10,7 +10,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "../Pages/Login";
 
 // Pages
-import Home from "../pages/Home";
 import Wishlist from "../pages/Wishlist";
 
 // Admin Pages
