@@ -1,23 +1,21 @@
-import { useEffect, useState } from "react";
+ import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddressesByUserId } from "../Redux/slices/addressSlice";
-import { setSelectedAddress } from "../Redux/slices/addressSlice";
-
+import { getAddressesByUserId, setSelectedAddress } from "../Redux/slices/addressSlice";
 
 export default function SelectAddress() {
   const [selected, setSelected] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-const userString = localStorage.getItem("user");
+
+  // Get user ID from localStorage
+  const userString = localStorage.getItem("user");
+  const user = JSON.parse(userString);
+  const user_Id = user?.id;
 
   // Get addresses from Redux
   const addresses = useSelector((state) => state.address.addresses || []);
-
-  // Get user ID from localStorage
-  const user = JSON.parse(userString);
-  const user_Id = user?.id;
 
   // Fetch addresses on mount
   useEffect(() => {
@@ -26,9 +24,16 @@ const userString = localStorage.getItem("user");
     }
   }, [dispatch, user_Id]);
 
-  // Function to create formatted address string
-  const formatAddress = (addrObj) => {
-    if (!addrObj) return "";
+  // Function to safely parse and format address
+  const formatAddress = (addrStr) => {
+    if (!addrStr) return "";
+    let addrObj;
+    try {
+      addrObj = typeof addrStr === "string" ? JSON.parse(addrStr) : addrStr;
+    } catch (error) {
+      console.error("Invalid address JSON:", addrStr);
+      return "";
+    }
     const { house, road, nearby, city, state } = addrObj;
     return `${house}, ${road}${nearby ? `, ${nearby}` : ""}, ${city}, ${state}`;
   };
@@ -42,10 +47,7 @@ const userString = localStorage.getItem("user");
   return (
     <div className="max-w-5xl mx-auto px-4 pt-8 lg:pb-8 pb-24">
       {/* Header */}
-      <div
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-3 mb-6"
-      >
+      <div onClick={() => navigate(-1)} className="flex items-center gap-3 mb-6">
         <FaArrowLeft className="text-lg cursor-pointer" />
         <h2 className="text-xl font-bold">SELECT DELIVERY ADDRESS</h2>
       </div>
@@ -66,10 +68,11 @@ const userString = localStorage.getItem("user");
                   <input
                     type="radio"
                     checked={selected === index}
-  onChange={() => {
-    setSelected(index);
-    dispatch(setSelectedAddress(addr)); // Save in Redux + localStorage
-  }}                    className="mt-1 bg-rose"
+                    onChange={() => {
+                      setSelected(index);
+                      dispatch(setSelectedAddress(addr)); // Save in Redux + localStorage
+                    }}
+                    className="mt-1 bg-rose"
                   />
                   <div>
                     <h3 className="font-semibold">
@@ -86,10 +89,7 @@ const userString = localStorage.getItem("user");
 
                 {/* Edit button (only for selected) */}
                 {selected === index && (
-                  <Link
-                    to={"/AddDeliveryAddress"}
-                    className="text-rose font-semibold"
-                  >
+                  <Link to={"/AddDeliveryAddress"} className="text-rose font-semibold">
                     Edit
                   </Link>
                 )}
