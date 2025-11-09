@@ -105,11 +105,20 @@ const selectedAddress =
 
   console.log(selectedAddress);
 
-    const formatAddress = (addrObj) => {
-    if (!addrObj) return "";
-    const { house, road, nearby, city, state } = addrObj;
-    return `${house}, ${road}${nearby ? `, ${nearby}` : ""}, ${city}, ${state}`;
-  };
+    const formatAddress = (addrStr) => {
+  if (!addrStr) return "";
+  let addrObj;
+  try {
+    addrObj = typeof addrStr === "string" ? JSON.parse(addrStr) : addrStr;
+  } catch (error) {
+    console.error("Invalid address JSON:", addrStr);
+    return "";
+  }
+
+  const { house, road, nearby, city, state } = addrObj;
+  return `${house}, ${road}${nearby ? `, ${nearby}` : ""}, ${city}, ${state}`;
+};
+
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 pb-24 lg:pb-6">

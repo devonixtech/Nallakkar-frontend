@@ -268,71 +268,141 @@ const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
   );
 };
 
-const OrderSummary = ({ selling_price  , handlePayment ,address}) => (
-  <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
+// const OrderSummary = ({ selling_price  , handlePayment ,address}) => (
+  
+//   <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
     
-    {/* Product Card */}
-    {/* <div className="bg-white p-4 border rounded-lg shadow-sm flex space-x-4">
-      <img
-        src={img1} // Placeholder image
-        alt="Girl Jacket"
-        className="w-24 h-32 object-cover rounded-md"
-      />
-      <div className="text-sm space-y-1">
-        <h3 className="font-bold">Girl Jacket Jacket</h3>
-        <p className="font-semibold">₹1500.00</p>
-        <p className="text-gray-500">Nallakkar</p>
-        <p className="text-gray-500">Qty: 1</p>
-        <p className="text-gray-500">size: S</p>
-        <p className="font-medium text-green-600">Free Delivery</p>
-      </div>
-    </div> */}
+//     {/* Product Card */}
+//     {/* <div className="bg-white p-4 border rounded-lg shadow-sm flex space-x-4">
+//       <img
+//         src={img1} // Placeholder image
+//         alt="Girl Jacket"
+//         className="w-24 h-32 object-cover rounded-md"
+//       />
+//       <div className="text-sm space-y-1">
+//         <h3 className="font-bold">Girl Jacket Jacket</h3>
+//         <p className="font-semibold">₹1500.00</p>
+//         <p className="text-gray-500">Nallakkar</p>
+//         <p className="text-gray-500">Qty: 1</p>
+//         <p className="text-gray-500">size: S</p>
+//         <p className="font-medium text-green-600">Free Delivery</p>
+//       </div>
+//     </div> */}
 
-    {/* Delivery Address */}
-    <div className="bg-white p-4 border rounded-lg shadow-sm">
-      <div className="flex items-center font-bold text-gray-700 mb-3">
-        <IoLocationSharp className="mr-2" />
-        Delivery Address
-      </div>
-      <div className="bg-gray-50 p-3 rounded-md text-sm text-gray-600">
-        <div className="flex justify-between items-start">
-          <p className="font-bold text-gray-800">{address?.firstName}{}{address?.lastName}</p>
-          <button className="text-rose font-semibold">Change</button>
-        </div>
-        <p>
+//     {/* Delivery Address */}
+//     <div className="bg-white p-4 border rounded-lg shadow-sm">
+//       <div className="flex items-center font-bold text-gray-700 mb-3">
+//         <IoLocationSharp className="mr-2" />
+//         Delivery Address
+//       </div>
+//       <div className="bg-gray-50 p-3 rounded-md text-sm text-gray-600">
+//         <div className="flex justify-between items-start">
+//           <p className="font-bold text-gray-800">{address?.firstName}{}{address?.lastName}</p>
+//           <button className="text-rose font-semibold">Change</button>
+//         </div>
+//         <p>
           
-          {address?.address?.house} {} {address?.address?.nearby}{}
-          {address?.address?.landmark}, {address?.address?.city},{" "}
-          {address?.address?.state}-{address?.address?.pincode}
-        </p>
-        <p>{address?.contactNumber}</p>
+//           {address?.address?.house} {} {address?.address?.nearby}{}
+//           {address?.address?.landmark}, {address?.address?.city},{" "}
+//           {address?.address?.state}-{address?.address?.pincode}
+//         </p>
+//         <p>{address?.contactNumber}</p>
          
         
+//       </div>
+//     </div>
+
+//     {/* Price Details */}
+//     <div className="bg-white p-4 border rounded-lg shadow-sm space-y-3">
+//       <h3 className="font-bold text-gray-700">Price Details (1 items)</h3>
+//       <div className="flex justify-between text-gray-600">
+//         <p>Total Product Price</p>
+//         <p>{selling_price}</p>
+//       </div>
+//       <hr />
+//       <div className="flex justify-between font-bold text-lg">
+//         <p>Order Total</p>
+//         <p>₹{selling_price}</p>
+//       </div>
+//       <Link
+//          onClick={handlePayment}
+
+//         className="block text-center w-full bg-primary text-white py-3 font-bold text-lg mt-2 hover:bg-rose transition-colors"
+//       >
+//         Pay Now
+//       </Link>
+//     </div>
+//   </div>
+// );
+
+const OrderSummary = ({ selling_price, handlePayment, address }) => {
+  const parsedAddress = React.useMemo(() => {
+    if (!address?.address) return null;
+    try {
+      return typeof address.address === "string"
+        ? JSON.parse(address.address)
+        : address.address;
+    } catch (error) {
+      console.error("Invalid address JSON:", address.address);
+      return null;
+    }
+  }, [address]);
+
+  return (
+    <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
+      {/* Delivery Address */}
+      <div className="bg-white p-4 border rounded-lg shadow-sm">
+        <div className="flex items-center font-bold text-gray-700 mb-3">
+          <IoLocationSharp className="mr-2" />
+          Delivery Address
+        </div>
+        <div className="bg-gray-50 p-3 rounded-md text-sm text-gray-600">
+          <div className="flex justify-between items-start">
+            <p className="font-bold text-gray-800">
+              {address?.firstName || ""} {address?.lastName || ""}
+            </p>
+            <button className="text-rose font-semibold hover:underline">
+              Change
+            </button>
+          </div>
+
+          {parsedAddress ? (
+            <>
+              <p className="mt-1">
+                {parsedAddress.house || ""}, {parsedAddress.nearby || ""},{" "}
+                {parsedAddress.landmark || ""}, {parsedAddress.city || ""},{" "}
+                {parsedAddress.state || ""} - {parsedAddress.pincode || ""}
+              </p>
+              <p className="mt-1">{address?.contactNumber || ""}</p>
+            </>
+          ) : (
+            <p className="text-gray-500 mt-1">No address found</p>
+          )}
+        </div>
+      </div>
+
+      {/* Price Details */}
+      <div className="bg-white p-4 border rounded-lg shadow-sm space-y-3">
+        <h3 className="font-bold text-gray-700">Price Details (1 item)</h3>
+        <div className="flex justify-between text-gray-600">
+          <p>Total Product Price</p>
+          <p>₹{selling_price}</p>
+        </div>
+        <hr />
+        <div className="flex justify-between font-bold text-lg">
+          <p>Order Total</p>
+          <p>₹{selling_price}</p>
+        </div>
+        <button
+          onClick={handlePayment}
+          className="w-full bg-primary text-white py-3 font-bold text-lg mt-2 rounded-lg hover:bg-rose transition-colors"
+        >
+          Pay Now
+        </button>
       </div>
     </div>
-
-    {/* Price Details */}
-    <div className="bg-white p-4 border rounded-lg shadow-sm space-y-3">
-      <h3 className="font-bold text-gray-700">Price Details (1 items)</h3>
-      <div className="flex justify-between text-gray-600">
-        <p>Total Product Price</p>
-        <p>{selling_price}</p>
-      </div>
-      <hr />
-      <div className="flex justify-between font-bold text-lg">
-        <p>Order Total</p>
-        <p>₹{selling_price}</p>
-      </div>
-      <Link
-         onClick={handlePayment}
-
-        className="block text-center w-full bg-primary text-white py-3 font-bold text-lg mt-2 hover:bg-rose transition-colors"
-      >
-        Pay Now
-      </Link>
-    </div>
-  </div>
-);
+  );
+};
 
 function PaymentPage() {
   const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
