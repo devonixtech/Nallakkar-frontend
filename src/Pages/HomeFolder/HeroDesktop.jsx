@@ -53,7 +53,8 @@ const HeroDesktop = () => {
               next signature look.
             </p>
             <Link
-              to="/login"
+              // to="/login"
+              to={"/category/kids"}
               className="mt-6 inline-block px-7 py-3 bg-[#1a214c] text-white font-semibold text-sm hover:bg-[#EC3557] transition"
             >
               SHOP NOW
