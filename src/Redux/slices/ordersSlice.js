@@ -22,7 +22,7 @@ export const fetchOrdersByUserId = createAsyncThunk(
   "orders/fetchByUserId",
   async (userId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`${BASE_URL}/getOrdersByUser/${userId}`);
+      const res = await api.get(`${BASE_URL}/getOrderById/${userId}`);
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
