@@ -133,7 +133,7 @@ const groupedVariants = customVariants.reduce((acc, v) => {
 
     await dispatch(createProduct(form)).unwrap();
     showToast("Product created successfully");
-    // navigate("/admin/products");
+    navigate("/admin/products");
   } catch (err) {
     console.error("Error creating product:", err);
     showToast("Failed to create product", "error");
