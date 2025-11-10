@@ -15,7 +15,7 @@ import buyNowReducer from "./slices/buyNowSlice";
 import AddDeliveryAddress from "./slices/addressSlice";
 import ordersReducer from "./slices/ordersSlice";
 import addressSlice from "./slices/addressSlice";
-import OrderHistoryReducer from "../Pages/OrderHistroy";
+import OrderHistoryReducer from "./slices/orderHistorySlice";
 export const store = configureStore({
   reducer: {
     ctegory : categoryreducer,
