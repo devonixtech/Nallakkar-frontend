@@ -85,6 +85,7 @@ import NallakkarSVG from "../../assets/NALLAKKAR.png";
 // Redux slices
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 import { fetchAllSubcategories } from "../../Redux/slices/subcategorySlice";
+import Header from "../../Components/layout/MainNavbar";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
 
 const HeroMobile = () => {
@@ -158,13 +159,14 @@ const HeroMobile = () => {
 
   return (
     <div className="bg-white font-sans max-w-full mx-auto border relative">
+      {/* <Header/> */}
       <main>
         {/* Location Bar */}
         <div className="p-4">
-          <div className="flex items-center text-gray-800 text-xs mb-3">
+          {/* <div className="flex items-center text-gray-800 text-xs mb-3">
             <FiMapPin className="text-black mr-2" size={16} />
             <span>Lingenahlli., Madhugiri,Tumakuru, Karnataka-572132.</span>
-          </div>
+          </div> */}
 
           {/* Search Bar */}
           <div className="relative mb-4">
