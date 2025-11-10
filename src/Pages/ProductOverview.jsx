@@ -23,11 +23,11 @@ console.log(user_Id); // Output: "9"
   const dispatch = useDispatch();
   const userId = user_Id; // temp userId
 
-  const cartItems = useSelector((state) => state.cart?.items || []);
+  const cartItems = useSelector((state) => state.cart || []);
   const { product, variant, quantity, isBuyNowActive } = useSelector(
     (state) => state.buyNow || {}
   );
-
+   console.log("cartItems:", cartItems);
   // ✅ Restore BuyNow item from localStorage (no removal)
   useEffect(() => {
     if (!product) {
@@ -87,7 +87,7 @@ console.log(user_Id); // Output: "9"
             },
           ];
         })()
-      : cartItems;
+      : cartItems?.items;
 
   // ✅ Calculate totals
   const totalProductPrice =
@@ -96,7 +96,8 @@ console.log(user_Id); // Output: "9"
       0
     ) || 0;
 
-  const orderTotal = totalProductPrice;
+  const orderTotal = cartItems?.totalPrice
+;
 
 const selectedAddress =
   useSelector((state) => state.address.selectedAddress) ||
@@ -168,7 +169,7 @@ const selectedAddress =
                         Qty: {item.quantity}
                       </p>
                       <p className="text-base font-bold text-gray-900 mt-1">
-                        ₹{(item.productPrice * item.quantity).toFixed(2)}
+                        ₹{(item.discountedPrice * item.quantity).toFixed(2)}
                       </p>
 
                       {item.discount > 0 && (
@@ -197,14 +198,14 @@ const selectedAddress =
 
                   <div className="flex justify-between text-gray-700 mb-2 text-sm sm:text-base">
                     <span>Total Product Price</span>
-                    <span>₹{totalProductPrice.toFixed(2)}</span>
+                    <span>₹{orderTotal}</span>
                   </div>
 
                   <hr className="my-2" />
 
                   <div className="flex justify-between font-bold text-base sm:text-lg text-gray-900">
                     <span>Order Total</span>
-                    <span>₹{orderTotal.toFixed(2)}</span>
+                    <span>₹{orderTotal}</span>
                   </div>
 
                   <Link

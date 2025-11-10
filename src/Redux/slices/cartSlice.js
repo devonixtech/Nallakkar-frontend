@@ -22,7 +22,7 @@ export const fetchCartByUserId = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.get(`${BASE_URL}/getUserCart/${userId}`);
-      return res.data; // make sure it returns the items array
+      return res.data; // backend returns { items, totalPrice }
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -30,7 +30,7 @@ export const fetchCartByUserId = createAsyncThunk(
 );
 
 // ✅ Update cart item quantity
- export const updateCartItem = createAsyncThunk(
+export const updateCartItem = createAsyncThunk(
   "cart/update",
   async ({ cartId, action }, { rejectWithValue }) => {
     try {
@@ -45,7 +45,6 @@ export const fetchCartByUserId = createAsyncThunk(
   }
 );
 
-
 // ✅ Remove from cart
 export const removeFromCart = createAsyncThunk(
   "cart/remove",
@@ -59,18 +58,27 @@ export const removeFromCart = createAsyncThunk(
   }
 );
 
+// 🔽 Helper to recalc total price
+const recalcTotal = (items) =>
+  items.reduce(
+    (sum, item) =>
+      sum + (Number(item.discountedPrice) || 0) * (Number(item.quantity) || 1),
+    0
+  );
+
 // 🔽 Slice
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
     items: [],
+    totalPrice: 0,
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Add to cart
+      // ✅ Add to cart
       .addCase(addToCart.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -78,59 +86,61 @@ const cartSlice = createSlice({
       .addCase(addToCart.fulfilled, (state, action) => {
         state.loading = false;
         state.items.push(action.payload);
+        state.totalPrice = recalcTotal(state.items);
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Fetch cart
+      // ✅ Fetch cart
       .addCase(fetchCartByUserId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-.addCase(fetchCartByUserId.fulfilled, (state, action) => {
-  state.loading = false;
-  state.items = action.payload.items || [];
-  state.totalPrice = action.payload.totalPrice || 0; // ✅ store total price
-})
-
+      .addCase(fetchCartByUserId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload.items || [];
+        state.totalPrice = action.payload.totalPrice || recalcTotal(state.items);
+      })
       .addCase(fetchCartByUserId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Update cart item
+      // ✅ Update cart item
       .addCase(updateCartItem.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-  .addCase(updateCartItem.fulfilled, (state, action) => {
-  state.loading = false;
-  state.items = state.items.map((item) =>
-    item.cartId === action.payload.cartId
-      ? { ...item, quantity: action.payload.newQuantity }
-      : item
-  );
-})
-
+      .addCase(updateCartItem.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = state.items.map((item) =>
+          item.cartId === action.payload.cartId
+            ? { ...item, quantity: action.payload.newQuantity }
+            : item
+        );
+        // ✅ Recalculate total immediately
+        state.totalPrice = recalcTotal(state.items);
+      })
       .addCase(updateCartItem.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Remove cart item
+      // ✅ Remove cart item
       .addCase(removeFromCart.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-.addCase(removeFromCart.fulfilled, (state, action) => {
-  state.loading = false;
-  state.items = state.items.filter(
-    (item) => item.cartId !== action.payload
-  );
-})
-
+      .addCase(removeFromCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = state.items.filter(
+          (item) => item.cartId !== action.payload
+        );
+        // ✅ Update total after removal
+        state.totalPrice = recalcTotal(state.items);
+      })
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

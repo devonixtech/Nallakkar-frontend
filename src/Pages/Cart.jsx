@@ -179,7 +179,7 @@ const totalItems = items?.items?.reduce(
 
               {/* Unit Price */}
               <p className="text-gray-700 sm:text-center text-sm sm:text-base">
-                {item?.productPrice}
+                {item?.discountedPrice}
               </p>
 
               {/* Quantity */}
@@ -203,10 +203,7 @@ const totalItems = items?.items?.reduce(
               <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
                 <p className="text-gray-700 text-sm sm:text-base">
 {(
-  (item?.productPrice ||
-    item?.variant?.price ||
-    item?.product?.price ||
-    0) * (item?.quantity || 1)
+  (item?.discountedPrice || 0) * (item?.quantity || 1)
 ).toFixed(2)}                </p>
                 <button
                   className="text-gray-500 hover:text-red-500"
