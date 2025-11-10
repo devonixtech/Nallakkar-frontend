@@ -274,7 +274,7 @@ const HeroMobile = () => {
             </p>
 
             <Link
-              to="/login"
+              to={"/category/kids"}
               className="bg-primary text-white text-[9px] font-bold py-1 px-3 w-max hover:bg-rose mt-2 transition-colors"
             >
               SHOP NOW
