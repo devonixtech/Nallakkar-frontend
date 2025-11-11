@@ -62,7 +62,7 @@ console.log(user_Id); // Output: "9"
             product?.image && product.image.length > 0
               ? product.image
               : [imgFallback];
-          const basePrice = parseFloat(product?.price ?? 0);
+          const basePrice = parseFloat(product?.final_price ?? 0);
           const variantPrice = parseFloat(variant?.price ?? basePrice);
           const finalPrice = parseFloat(product?.final_price ?? variantPrice);
           const discount = parseFloat(product?.discount ?? 0);
@@ -198,14 +198,14 @@ const selectedAddress =
 
                   <div className="flex justify-between text-gray-700 mb-2 text-sm sm:text-base">
                     <span>Total Product Price</span>
-                    <span>₹{orderTotal}</span>
+                    <span>₹{totalProductPrice}</span>
                   </div>
 
                   <hr className="my-2" />
 
                   <div className="flex justify-between font-bold text-base sm:text-lg text-gray-900">
                     <span>Order Total</span>
-                    <span>₹{orderTotal}</span>
+                    <span>₹{totalProductPrice}</span>
                   </div>
 
                   <Link

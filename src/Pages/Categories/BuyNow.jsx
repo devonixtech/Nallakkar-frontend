@@ -57,14 +57,15 @@ const BuyNowPage = () => {
     dispatch(clearBuyNowItem());
     navigate("/");
   };
-
+  console.log("Buy Now Product:", product);
   const image =
     product?.image && product.image.length > 0 ? product.image[0] : imgFallback;
   const title = product?.name || "Unnamed Product";
   const merchant = product?.brand || "Unknown Seller";
   const productCode = product?.productCode || null;
 
-  const basePrice = parseFloat(product?.price ?? 0);
+  const basePrice = parseFloat(product?.final_price
+ ?? 0);
   const variantPrice = parseFloat(variant?.price ?? basePrice);
   const finalPrice = parseFloat(product?.final_price ?? variantPrice);
   const discount = product?.discount ?? 0;
@@ -103,7 +104,7 @@ const BuyNowPage = () => {
 
                 {discount > 0 && (
                   <p className="text-sm text-green-600">
-                    {discount}% OFF (₹{basePrice.toFixed(2)})
+                    {discount}% OFF 
                   </p>
                 )}
 
