@@ -4,44 +4,44 @@ import { Link } from "react-router-dom";
 import order from "../assets/order.png";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrdersByUserId } from "../Redux/slices/ordersSlice";
-const orders = [
-  {
-    id: 1001,
-    brand: "Nallakkar",
-    productName: "Boy Regular Fit Self Design Light T Shirt (S)",
-    image: "https://via.placeholder.com/150/0000FF/808080?text=Product+1",
-    unitPrice: "1500.00",
-    orderDate: "2025-05-01",
-    status: "Delivered",
-    statusColor: "text-green-600",
-    dotColor: "bg-green-600",
-    description: "Your item has been delivered",
-  },
-  {
-    id: 1002,
-    brand: "Nallakkar",
-    productName: "Women Casual Solid Straight Kurta (M)",
-    image: "https://via.placeholder.com/150/FF0000/FFFFFF?text=Product+2",
-    unitPrice: "2499.00",
-    orderDate: "2025-10-25",
-    status: "On the way",
-    statusColor: "text-blue-600",
-    dotColor: "bg-blue-600",
-    description: "Estimated delivery: Nov 10",
-  },
-  {
-    id: 1003,
-    brand: "Nallakkar",
-    productName: "Home Decor Geometric Pattern Cushion Cover",
-    image: "https://via.placeholder.com/150/808080/FFFFFF?text=Product+3",
-    unitPrice: "899.00",
-    orderDate: "2025-05-01",
-    status: "Cancelled",
-    statusColor: "text-red-600",
-    dotColor: "bg-red-600",
-    description: "This order has been cancelled",
-  },
-];
+// const orders = [
+//   {
+//     id: 1001,
+//     brand: "Nallakkar",
+//     productName: "Boy Regular Fit Self Design Light T Shirt (S)",
+//     image: "https://via.placeholder.com/150/0000FF/808080?text=Product+1",
+//     unitPrice: "1500.00",
+//     orderDate: "2025-05-01",
+//     status: "Delivered",
+//     statusColor: "text-green-600",
+//     dotColor: "bg-green-600",
+//     description: "Your item has been delivered",
+//   },
+//   {
+//     id: 1002,
+//     brand: "Nallakkar",
+//     productName: "Women Casual Solid Straight Kurta (M)",
+//     image: "https://via.placeholder.com/150/FF0000/FFFFFF?text=Product+2",
+//     unitPrice: "2499.00",
+//     orderDate: "2025-10-25",
+//     status: "On the way",
+//     statusColor: "text-blue-600",
+//     dotColor: "bg-blue-600",
+//     description: "Estimated delivery: Nov 10",
+//   },
+//   {
+//     id: 1003,
+//     brand: "Nallakkar",
+//     productName: "Home Decor Geometric Pattern Cushion Cover",
+//     image: "https://via.placeholder.com/150/808080/FFFFFF?text=Product+3",
+//     unitPrice: "899.00",
+//     orderDate: "2025-05-01",
+//     status: "Cancelled",
+//     statusColor: "text-red-600",
+//     dotColor: "bg-red-600",
+//     description: "This order has been cancelled",
+//   },
+// ];
 
 // ✅ Extracted out component to avoid hook issues
 const OrderFilters = () => (
@@ -96,8 +96,8 @@ const OrderHistory = () => {
     }
   }, [dispatch, userId]);
 
-  const ordersFromStore = useSelector((state) => state.orders);
-  console.log("Orders from Redux Store:", ordersFromStore);
+  const orders = useSelector((state) => state?.orders?.orders || []);
+  console.log("Orders from Redux Store:", orders);
 
   return (
     <>
@@ -149,29 +149,30 @@ const OrderHistory = () => {
               </div>
 
               {/* Orders */}
-              {orders.map((order) => (
+              {orders?.map((order) => (
                 <Link
                   key={order.id}
-                  to={`/OrderDetails/${order.id}`}
+                  to={`/OrderDetails/${order?.id}`}
                   className="block bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition duration-200 p-4"
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-5 gap-4 sm:gap-6 items-center">
                     {/* Product Info */}
                     <div className="sm:col-span-2 flex items-center gap-4">
                       <img
-                        src={order.image}
-                        alt={order.productName}
+                        src={order?.image}
+                        alt={order?.productName}
                         className="w-16 h-16 object-cover rounded-md border border-gray-100"
                       />
                       <div>
                         <p className="font-bold text-[#141A44] text-sm">
-                          {order.brand}
+                          {order?.brand}
                         </p>
                         <p className="text-sm text-gray-700">
-                          {order.productName}
+                          {order?.productName}
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          Ordered on: {new Date(order.orderDate).toDateString()}
+                          Ordered on: {new Date(order?.created_at
+).toDateString()}
                         </p>
                       </div>
                     </div>
@@ -179,7 +180,7 @@ const OrderHistory = () => {
                     {/* Price */}
                     <div className="sm:col-span-1 text-left sm:text-center pt-2 sm:pt-0">
                       <p className="text-lg font-semibold text-gray-800">
-                        ₹{order.unitPrice}
+                        ₹{order?.order_details?.amount}
                       </p>
                     </div>
 
@@ -187,18 +188,18 @@ const OrderHistory = () => {
                     <div className="sm:col-span-2 text-left sm:text-center mt-2 sm:mt-0">
                       <div className="flex items-center sm:justify-center">
                         <span
-                          className={`w-2.5 h-2.5 rounded-full ${order.dotColor} mr-2`}
+                          className={`w-2.5 h-2.5 rounded-full ${order?.dotColor} mr-2`}
                         ></span>
                         <p
-                          className={`font-bold text-base ${order.statusColor}`}
+                          className={`font-bold text-base ${order?.statusColor}`}
                         >
-                          {order.status}
+                          {order?.tracking_status}
                         </p>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
-                        {order.description}
+                        {order?.description}
                       </p>
-                      {order.status === "Delivered" && (
+                      {order?.status === "Delivered" && (
                         <span className="text-sm text-yellow-600 font-bold mt-1 inline-block hover:text-yellow-700">
                           ⭐ Rate & Review Product
                         </span>

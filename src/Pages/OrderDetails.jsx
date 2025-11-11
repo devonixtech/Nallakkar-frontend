@@ -1,132 +1,100 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useParams } from "react-router-dom"; // Use useParams for the ID
-
-// Placeholder data - Single order for details page
-const orderDetails = {
-  id: 1001,
-  orderId: "NAL-2025-500123",
-  brand: "Nallakkar",
-  productName: "Boy Regular Fit Self Design Light T Shirt (S)",
-  image: "https://via.placeholder.com/150/0000FF/808080?text=Product+1", // Placeholder Image
-  size: "S",
-  quantity: 1,
-  unitPrice: 1500.00,
-  orderDate: "May 01, 2025",
-  currentStatus: "Delivered", // Delivered, In Transit, Cancelled
-  statusColor: "text-green-600",
-  trackingTimeline: [
-    { status: "Ordered", date: "May 01", isCompleted: true },
-    { status: "Shipped", date: "May 02", isCompleted: true },
-    { status: "Out for Delivery", date: "May 04", isCompleted: true },
-    { status: "Delivered", date: "May 04", isCompleted: true },
-  ],
-  shippingAddress: {
-    name: "User Name",
-    address: "123, Main Street, Near City Park",
-    city: "New Delhi",
-    state: "Delhi",
-    pin: "110001",
-    phone: "+91 9876543210",
-  },
-  payment: {
-    mode: "Online Payment (UPI)",
-    subtotal: 1500.00,
-    deliveryCharge: 50.00,
-    totalAmount: 1550.00,
-  },
-};
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrderByOrderId } from "../Redux/slices/ordersSlice";
 
 const OrderDetails = () => {
-  const { id } = useParams(); // Get ID from URL - for static page, just use the sample data
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const orderDetails = useSelector((state) => state?.orders?.orderData || null);
+  console.log("Order Details from Redux Store:", orderDetails);
 
-  // Helper for Order Timeline component
-  const OrderTimeline = ({ timeline }) => (
-    <div className="flex justify-between items-start my-8 relative">
-      <div className="absolute top-2 left-0 right-0 h-0.5 bg-gray-200 mx-6 sm:mx-12 lg:mx-16"></div>
-      {timeline.map((step, index) => (
-        <div key={index} className="flex flex-col items-center text-center w-1/4 z-10">
-          <div 
-            className={`w-6 h-6 rounded-full flex items-center justify-center ${step.isCompleted ? 'bg-green-500' : 'bg-gray-400'}`}
-          >
-            {step.isCompleted && <span className="text-white text-xs">✓</span>}
-          </div>
-          <p className="text-xs sm:text-sm font-semibold mt-2 text-gray-800">
-            {step.status}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">{step.date}</p>
-        </div>
-      ))}
-    </div>
-  );
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchOrderByOrderId(id));
+    }
+  }, [dispatch, id]);
+
+  if (!orderDetails) {
+    return (
+      <div className="text-center py-20 text-gray-600">
+        Loading order details...
+      </div>
+    );
+  }
+
+  const orderInfo = orderDetails.order_details;
+  const items = orderInfo?.order_items || [];
 
   return (
     <>
       <Helmet>
-        <title>Order Details - {orderDetails.orderId} | Nallakkar</title>
+        <title>Order Details - {orderDetails?.order_id} | Nallakkar</title>
       </Helmet>
 
       <div>
-        {/* Banner Section - Similar style to Order History */}
-        <div
-          className="relative h-40 sm:h-52 bg-[#EDBB81] overflow-hidden"
-        >
+        {/* Banner Section */}
+        <div className="relative h-40 sm:h-52 bg-[#EDBB81] overflow-hidden">
           <div className="absolute inset-0 bg-black opacity-10"></div>
           <div className="relative h-full flex flex-col justify-center items-start p-6 sm:p-12">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-[#141A44]">
               Order Details
             </h1>
             <p className="mt-2 text-sm text-[#141A44]">
-              <Link to="/" className="hover:underline">Home</Link> | <Link to="/orderHistory" className="hover:underline">Orders</Link> | #{orderDetails.orderId}
+              <Link to="/" className="hover:underline">Home</Link> |{" "}
+              <Link to="/orderHistory" className="hover:underline">Orders</Link> | #{orderDetails?.order_id}
             </p>
           </div>
         </div>
 
         {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 bg-gray-50">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50">
           <div className="space-y-8">
-            {/* Order Tracking & Main Info */}
+            {/* Order Info */}
             <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md border border-gray-200">
               <div className="flex justify-between items-center border-b pb-4 mb-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-[#141A44]">
-                  Order #{orderDetails.orderId}
+                  Order #{orderDetails?.order_id}
                 </h2>
-                <span className={`text-lg font-bold ${orderDetails.statusColor}`}>
-                  {orderDetails.currentStatus}
+                <span className="text-lg font-semibold text-gray-600">
+                  {orderDetails?.tracking_status}
                 </span>
               </div>
 
-              {/* Product Info Card */}
-              <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center border-b pb-6 mb-6">
-                <img
-                  src={orderDetails.image}
-                  alt={orderDetails.productName}
-                  className="w-24 h-24 object-cover rounded-md border border-gray-100 flex-shrink-0"
-                />
-                <div className="flex-grow">
-                  <p className="text-sm text-gray-500">{orderDetails.brand}</p>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {orderDetails.productName}
-                  </h3>
-                  <div className="text-sm text-gray-600 mt-1 space-y-0.5">
-                    <p>
-                      **Size:** {orderDetails.size} | **Quantity:** {orderDetails.quantity}
-                    </p>
-                    <p>
-                      **Price:** ₹{orderDetails.unitPrice.toFixed(2)} | **Order Date:** {orderDetails.orderDate}
-                    </p>
+              {/* 🛍️ Multiple Products Section */}
+              <div className="space-y-6">
+                {items.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col sm:flex-row gap-6 items-start sm:items-center border-b pb-6"
+                  >
+                    {/* Placeholder product image */}
+                    <img
+                      src={`https://via.placeholder.com/150?text=${encodeURIComponent(item.name)}`}
+                      alt={item.name}
+                      className="w-24 h-24 object-cover rounded-md border border-gray-100"
+                    />
+                    <div className="flex-grow">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {item.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1">
+                        SKU: {item.sku}
+                      </p>
+                      <p className="text-sm text-gray-700 mt-1">
+                        Units: {item.units}
+                      </p>
+                      <p className="text-sm text-gray-700 mt-1">
+                        Price: ₹{item.selling_price}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-
-              {/* Order Tracking Timeline */}
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Order Tracking
-              </h3>
-              <OrderTimeline timeline={orderDetails.trackingTimeline} />
             </div>
 
-            {/* Shipping & Payment Details Section */}
+            {/* 📦 Shipping & Payment Details */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Shipping Address */}
               <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
@@ -134,16 +102,16 @@ const OrderDetails = () => {
                   Shipping Address
                 </h3>
                 <p className="font-semibold text-gray-800">
-                  {orderDetails.shippingAddress.name}
+                  {orderInfo?.shipping_first_name} {orderInfo?.shipping_last_name}
                 </p>
                 <p className="text-gray-600 text-sm mt-1">
-                  {orderDetails.shippingAddress.address}
+                  {orderInfo?.shipping_address}
                 </p>
                 <p className="text-gray-600 text-sm">
-                  {orderDetails.shippingAddress.city}, {orderDetails.shippingAddress.state} - {orderDetails.shippingAddress.pin}
+                  {orderInfo?.shipping_city}, {orderInfo?.shipping_state} - {orderInfo?.shipping_pincode}
                 </p>
                 <p className="text-gray-600 text-sm mt-2">
-                  **Phone:** {orderDetails.shippingAddress.phone}
+                  <strong>Phone:</strong> {orderInfo?.shipping_phone}
                 </p>
               </div>
 
@@ -153,45 +121,46 @@ const OrderDetails = () => {
                   Payment Details
                 </h3>
                 <div className="space-y-2 text-sm text-gray-700">
-                  <div className="flex justify-between">
-                    <span>Payment Mode:</span>
-                    <span className="font-medium">{orderDetails.payment.mode}</span>
-                  </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span>Subtotal:</span>
-                    <span>₹{orderDetails.payment.subtotal.toFixed(2)}</span>
-                  </div>
+                    <span>₹{orderInfo?.sub_total?.toFixed(2)}</span>
+                  </div> */}
                   <div className="flex justify-between">
-                    <span>Delivery Charge:</span>
-                    <span>₹{orderDetails.payment.deliveryCharge.toFixed(2)}</span>
+                    <span>Shipping Charge:</span>
+                    <span>0.00</span>
+                    {/* <span>₹{orderInfo?.shipping_charges?.toFixed(2)}</span> */}
                   </div>
                   <div className="flex justify-between pt-2 border-t font-bold text-base text-gray-800">
                     <span>Total Amount:</span>
-                    <span>₹{orderDetails.payment.totalAmount.toFixed(2)}</span>
+                    <span>₹{orderDetails?.total_amount}</span>
                   </div>
                 </div>
               </div>
             </div>
-            
-            {/* Action Buttons and Support Note */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200">
-                {/* Cancel Order Button */}
-                {orderDetails.currentStatus !== 'Delivered' && orderDetails.currentStatus !== 'Cancelled' && (
-                    <button className="w-full sm:w-auto px-6 py-2 border border-red-500 text-red-500 font-semibold rounded-lg hover:bg-red-50 transition duration-150">
-                        Cancel Order
-                    </button>
-                )}
-                
-                {/* Rate Product Button */}
-                {orderDetails.currentStatus === 'Delivered' && (
-                    <Link to={`/writeReview`} className="w-full sm:w-auto px-6 py-2 bg-[#141A44] text-white font-semibold rounded-lg text-center hover:bg-opacity-90 transition duration-150">
-                        ⭐ Rate Product
-                    </Link>
-                )}
 
-                <p className="text-sm text-gray-500 sm:ml-auto flex items-center">
-                    Need help? <Link to="/support" className="text-blue-600 ml-1 hover:underline">Contact Support.</Link>
-                </p>
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200">
+              {orderDetails?.tracking_status !== "Delivered" && orderDetails?.tracking_status !== "Cancelled" && (
+                <button className="w-full sm:w-auto px-6 py-2 border border-red-500 text-red-500 font-semibold rounded-lg hover:bg-red-50 transition duration-150">
+                  Cancel Order
+                </button>
+              )}
+
+              {orderDetails?.tracking_status === "Delivered" && (
+                <Link
+                  to={`/writeReview`}
+                  className="w-full sm:w-auto px-6 py-2 bg-[#141A44] text-white font-semibold rounded-lg text-center hover:bg-opacity-90 transition duration-150"
+                >
+                  ⭐ Rate Products
+                </Link>
+              )}
+
+              <p className="text-sm text-gray-500 sm:ml-auto flex items-center">
+                Need help?{" "}
+                <Link to="/support" className="text-blue-600 ml-1 hover:underline">
+                  Contact Support
+                </Link>
+              </p>
             </div>
           </div>
         </main>
