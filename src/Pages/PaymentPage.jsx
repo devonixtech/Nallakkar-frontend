@@ -420,7 +420,7 @@ function PaymentPage() {
 const user = JSON.parse(userString);
 const user_Id = user.id;
      useEffect(() => {
-      fetchCartByUserId(user_Id);
+      dispatch(fetchCartByUserId(user_Id));
     }, [dispatch, user_Id]);
     useEffect(() => {
   const storedItem = localStorage.getItem("buyNowItem");
