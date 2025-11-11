@@ -494,7 +494,7 @@ export default function ProductDetailsPage() {
                 <div className="order-1 md:order-2 flex-1 relative">
                   <div
                     ref={mainImageRef}
-                    className="w-full h-[400px] md:h-[680px] rounded-lg aspect-[4/5] relative overflow-hidden cursor-crosshair" // Added overflow-hidden for safety & cursor-crosshair
+                    className="w-full h-[400px] md:h-[680px] rounded-lg  relative overflow-hidden cursor-crosshair" // Added overflow-hidden for safety & cursor-crosshair
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                     onMouseMove={handleMouseMove}

@@ -349,9 +349,12 @@ const OrderSummary = ({ selling_price, handlePayment, address }) => {
   }, [address]);
 
   return (
-    <div className="lg:w-1/3 w-full p-6 space-y-6 pb-16 lg:pb-6">
+    <div className="lg:flex-row w-full p-6 space-y-6 pb-16 lg:pb-6 addrsss" style={{display: "flex"}}>
       {/* Delivery Address */}
-      <div className="bg-white p-4 border rounded-lg shadow-sm">
+      <div className="bg-white p-4 border rounded-lg shadow-sm lg:w-2/3">
+    
+
+    
         <div className="flex items-center font-bold text-gray-700 mb-3">
           <IoLocationSharp className="mr-2" />
           Delivery Address
@@ -379,10 +382,15 @@ const OrderSummary = ({ selling_price, handlePayment, address }) => {
             <p className="text-gray-500 mt-1">No address found</p>
           )}
         </div>
-      </div>
+          </div>
+    
 
       {/* Price Details */}
-      <div className="bg-white p-4 border rounded-lg shadow-sm space-y-3">
+      <div className="bg-white paymt p-4 border rounded-lg shadow-sm space-y-3 ms-4 lg:w-1/4
+" style={{marginTop: "0px"}}>
+
+
+ 
         <h3 className="font-bold text-gray-700">Price Details (1 item)</h3>
         <div className="flex justify-between text-gray-600">
           <p>Total Product Price</p>
@@ -399,7 +407,8 @@ const OrderSummary = ({ selling_price, handlePayment, address }) => {
         >
           Pay Now
         </button>
-      </div>
+         </div>
+     
     </div>
   );
 };
@@ -654,8 +663,8 @@ const selling_price = buyNowItem
   };
   return (
     <div className="bg-white min-h-screen font-sans">
-      <div className="container mx-auto max-w-6xl py-4">
-        <main className="flex flex-col lg:flex-row lg:space-x-4">
+      <div className="container mx-auto max-w-7xl py-4">
+        <main className="flex   lg:space-x-4">
           {/* <PaymentOptions
             selectedPayment={selectedPayment}
             setSelectedPayment={setSelectedPayment}
