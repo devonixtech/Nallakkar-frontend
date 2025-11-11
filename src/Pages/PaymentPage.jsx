@@ -108,165 +108,165 @@ const RadioInput = ({ id, value, checked, onChange, label, icon }) => (
 
 // --- Main Page Sections ---
 
-const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
-  const [openSection, setOpenSection] = useState("upi");
-  const navigate = useNavigate();
+// const PaymentOptions = ({ selectedPayment, setSelectedPayment }) => {
+//   const [openSection, setOpenSection] = useState("upi");
+//   const navigate = useNavigate();
 
-  return (
-    <div className="lg:w-2/3 w-full bg-white p-6">
-      <div
-        onClick={() => navigate(-1)}
-        className="flex items-center mb-4 -ml-6"
-      >
-        <ArrowLeft className="text-2xl" />
-        <h1 className="text-xl font-bold">Select Payment method</h1>
-      </div>
-      <h2 className="font-semibold mb-2 text-[18px]">Payment Options</h2>
-      <div className="shadow-md rounded-md p-4">
-        {/* Last Used */}
-        <div className="border-b pb-2">
-          <p className="text-sm font-semibold text-gray-600 mb-2">Last Used</p>
-          <RadioInput
-            id="phonepe_last_used"
-            value="phonepe_last_used"
-            checked={selectedPayment === "phonepe_last_used"}
-            onChange={(e) => setSelectedPayment(e.target.value)}
-            icon={<PhonePeIcon />}
-            label="Phonepe"
-          />
-        </div>
+//   return (
+//     <div className="lg:w-2/3 w-full bg-white p-6">
+//       <div
+//         onClick={() => navigate(-1)}
+//         className="flex items-center mb-4 -ml-6"
+//       >
+//         <ArrowLeft className="text-2xl" />
+//         <h1 className="text-xl font-bold">Select Payment method</h1>
+//       </div>
+//       <h2 className="font-semibold mb-2 text-[18px]">Payment Options</h2>
+//       <div className="shadow-md rounded-md p-4">
+//         {/* Last Used */}
+//         <div className="border-b pb-2">
+//           <p className="text-sm font-semibold text-gray-600 mb-2">Last Used</p>
+//           <RadioInput
+//             id="phonepe_last_used"
+//             value="phonepe_last_used"
+//             checked={selectedPayment === "phonepe_last_used"}
+//             onChange={(e) => setSelectedPayment(e.target.value)}
+//             icon={<PhonePeIcon />}
+//             label="Phonepe"
+//           />
+//         </div>
 
-        {/* Pay by any UPI App */}
-        <AccordionItem
-          title="Pay by any UPI App"
-          isOpen={openSection === "upi"}
-          onToggle={() => handleToggle("upi")}
-        >
-          <div className="space-y-2">
-            <RadioInput
-              id="phonepe_upi"
-              value="phonepe_upi"
-              checked={selectedPayment === "phonepe_upi"}
-              onChange={(e) => setSelectedPayment(e.target.value)}
-              icon={<PhonePeIcon />}
-              label="Phonepe"
-            />
-            <RadioInput
-              id="googlepay_upi"
-              value="googlepay_upi"
-              checked={selectedPayment === "googlepay_upi"}
-              onChange={(e) => setSelectedPayment(e.target.value)}
-              icon={<SiGooglepay className="text-2xl" />}
-              label="GooglePay"
-            />
-            <div className="flex items-center space-x-4 py-3">
-              <input
-                type="radio"
-                id="credpay_upi"
-                name="paymentMethod"
-                value="credpay_upi"
-                checked={selectedPayment === "credpay_upi"}
-                onChange={(e) => setSelectedPayment(e.target.value)}
-                className="h-4 w-4"
-              />
-              <div className="flex items-center space-x-3">
-                <CredPayIcon />
-                <div>
-                  <span className="font-medium text-gray-800">CredPay</span>
-                  <p className="text-xs text-green-600">
-                    Upto ₹50 cashback on orders above 500* T&C
-                  </p>
-                </div>
-              </div>
-            </div>
-            <button className="font-semibold text-pink-600 text-sm ml-8 mt-2">
-              ADD UPI ID +
-            </button>
-          </div>
-        </AccordionItem>
+//         {/* Pay by any UPI App */}
+//         <AccordionItem
+//           title="Pay by any UPI App"
+//           isOpen={openSection === "upi"}
+//           onToggle={() => handleToggle("upi")}
+//         >
+//           <div className="space-y-2">
+//             <RadioInput
+//               id="phonepe_upi"
+//               value="phonepe_upi"
+//               checked={selectedPayment === "phonepe_upi"}
+//               onChange={(e) => setSelectedPayment(e.target.value)}
+//               icon={<PhonePeIcon />}
+//               label="Phonepe"
+//             />
+//             <RadioInput
+//               id="googlepay_upi"
+//               value="googlepay_upi"
+//               checked={selectedPayment === "googlepay_upi"}
+//               onChange={(e) => setSelectedPayment(e.target.value)}
+//               icon={<SiGooglepay className="text-2xl" />}
+//               label="GooglePay"
+//             />
+//             <div className="flex items-center space-x-4 py-3">
+//               <input
+//                 type="radio"
+//                 id="credpay_upi"
+//                 name="paymentMethod"
+//                 value="credpay_upi"
+//                 checked={selectedPayment === "credpay_upi"}
+//                 onChange={(e) => setSelectedPayment(e.target.value)}
+//                 className="h-4 w-4"
+//               />
+//               <div className="flex items-center space-x-3">
+//                 <CredPayIcon />
+//                 <div>
+//                   <span className="font-medium text-gray-800">CredPay</span>
+//                   <p className="text-xs text-green-600">
+//                     Upto ₹50 cashback on orders above 500* T&C
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+//             <button className="font-semibold text-pink-600 text-sm ml-8 mt-2">
+//               ADD UPI ID +
+//             </button>
+//           </div>
+//         </AccordionItem>
 
-        {/* Wallets */}
-        <AccordionItem
-          title="Wallets"
-          isOpen={openSection === "wallets"}
-          onToggle={() => handleToggle("wallets")}
-        >
-          <RadioInput
-            id="simpl_wallet"
-            value="simpl_wallet"
-            checked={selectedPayment === "simpl_wallet"}
-            onChange={(e) => setSelectedPayment(e.target.value)}
-            icon={<SimplIcon />}
-            label="SIMPL"
-          />
-        </AccordionItem>
+//         {/* Wallets */}
+//         <AccordionItem
+//           title="Wallets"
+//           isOpen={openSection === "wallets"}
+//           onToggle={() => handleToggle("wallets")}
+//         >
+//           <RadioInput
+//             id="simpl_wallet"
+//             value="simpl_wallet"
+//             checked={selectedPayment === "simpl_wallet"}
+//             onChange={(e) => setSelectedPayment(e.target.value)}
+//             icon={<SimplIcon />}
+//             label="SIMPL"
+//           />
+//         </AccordionItem>
 
-        {/* Debit/Credit Cards */}
-        <AccordionItem
-          title="Debit/Credit Cards"
-          isOpen={openSection === "cards"}
-          onToggle={() => handleToggle("cards")}
-        >
-          <p className="text-gray-500 ml-8">Card options would be here.</p>
-        </AccordionItem>
+//         {/* Debit/Credit Cards */}
+//         <AccordionItem
+//           title="Debit/Credit Cards"
+//           isOpen={openSection === "cards"}
+//           onToggle={() => handleToggle("cards")}
+//         >
+//           <p className="text-gray-500 ml-8">Card options would be here.</p>
+//         </AccordionItem>
 
-        {/* Net Banking */}
-        <AccordionItem
-          title="Net Banking"
-          isOpen={openSection === "netbanking"}
-          onToggle={() => handleToggle("netbanking")}
-        >
-          <div className="space-y-2">
-            <RadioInput
-              id="sbi"
-              value="sbi"
-              checked={selectedPayment === "sbi"}
-              onChange={(e) => setSelectedPayment(e.target.value)}
-              label="State Bank of India"
-            />
-            <RadioInput
-              id="hdfc"
-              value="hdfc"
-              checked={selectedPayment === "hdfc"}
-              onChange={(e) => setSelectedPayment(e.target.value)}
-              icon={<HdfcIcon />}
-              label="HDFC Bank"
-            />
-            <RadioInput
-              id="icici"
-              value="icici"
-              checked={selectedPayment === "icici"}
-              onChange={(e) => setSelectedPayment(e.target.value)}
-              icon={<IciciIcon />}
-              label="ICICI BANK"
-            />
-            <RadioInput
-              id="axis"
-              value="axis"
-              checked={selectedPayment === "axis"}
-              onChange={(e) => setSelectedPayment(e.target.value)}
-              icon={<AxisBankIcon />}
-              label="AXIS BANK"
-            />
-            <button className="font-semibold text-pink-600 text-sm ml-8 mt-2">
-              VIEW ALL BANK
-            </button>
-          </div>
-        </AccordionItem>
-      </div>
-      {/* Cash on Delivery */}
-      <div className="p-2 mt-3 rounded-md shadow-md">
-        <RadioInput
-          id="cod"
-          value="cod"
-          checked={selectedPayment === "cod"}
-          onChange={(e) => setSelectedPayment(e.target.value)}
-          label="Cash on Delivery"
-        />
-      </div>
-    </div>
-  );
-};
+//         {/* Net Banking */}
+//         <AccordionItem
+//           title="Net Banking"
+//           isOpen={openSection === "netbanking"}
+//           onToggle={() => handleToggle("netbanking")}
+//         >
+//           <div className="space-y-2">
+//             <RadioInput
+//               id="sbi"
+//               value="sbi"
+//               checked={selectedPayment === "sbi"}
+//               onChange={(e) => setSelectedPayment(e.target.value)}
+//               label="State Bank of India"
+//             />
+//             <RadioInput
+//               id="hdfc"
+//               value="hdfc"
+//               checked={selectedPayment === "hdfc"}
+//               onChange={(e) => setSelectedPayment(e.target.value)}
+//               icon={<HdfcIcon />}
+//               label="HDFC Bank"
+//             />
+//             <RadioInput
+//               id="icici"
+//               value="icici"
+//               checked={selectedPayment === "icici"}
+//               onChange={(e) => setSelectedPayment(e.target.value)}
+//               icon={<IciciIcon />}
+//               label="ICICI BANK"
+//             />
+//             <RadioInput
+//               id="axis"
+//               value="axis"
+//               checked={selectedPayment === "axis"}
+//               onChange={(e) => setSelectedPayment(e.target.value)}
+//               icon={<AxisBankIcon />}
+//               label="AXIS BANK"
+//             />
+//             <button className="font-semibold text-pink-600 text-sm ml-8 mt-2">
+//               VIEW ALL BANK
+//             </button>
+//           </div>
+//         </AccordionItem>
+//       </div>
+//       {/* Cash on Delivery */}
+//       <div className="p-2 mt-3 rounded-md shadow-md">
+//         <RadioInput
+//           id="cod"
+//           value="cod"
+//           checked={selectedPayment === "cod"}
+//           onChange={(e) => setSelectedPayment(e.target.value)}
+//           label="Cash on Delivery"
+//         />
+//       </div>
+//     </div>
+//   );
+// };
 
 // const OrderSummary = ({ selling_price  , handlePayment ,address}) => (
   
@@ -656,10 +656,10 @@ const selling_price = buyNowItem
     <div className="bg-white min-h-screen font-sans">
       <div className="container mx-auto max-w-6xl py-4">
         <main className="flex flex-col lg:flex-row lg:space-x-4">
-          <PaymentOptions
+          {/* <PaymentOptions
             selectedPayment={selectedPayment}
             setSelectedPayment={setSelectedPayment}
-          />
+          /> */}
           <OrderSummary  selling_price={selling_price} handlePayment={handlePayment} address = {userdetails} />
         </main>
       </div>
