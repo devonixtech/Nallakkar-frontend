@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FiHeart, FiShare2, FiStar, FiChevronLeft } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import img1 from "../../assets/details1.png";
@@ -107,22 +107,46 @@ export default function ProductDetailsPage() {
   const [activeCard, setActiveCard] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState({});
   const [pincode, setPincode] = useState("");
-const [pincodeResult, setPincodeResult] = useState(null);
-const [checking, setChecking] = useState(false);
-
+  const [pincodeResult, setPincodeResult] = useState(null);
+  const [checking, setChecking] = useState(false);
+  // ProductDetailsPage function ke andar
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const mainImageRef = useRef(null); // Main image container ko reference karne ke liye
   const wishlist = useSelector((state) => state.wishlist.items || []);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
+  // Mouse ko image par move karne par position calculate karta hai
+  const handleMouseMove = (e) => {
+    if (!mainImageRef.current) return;
+
+    // Get the bounding rectangle of the image container
+    const rect = mainImageRef.current.getBoundingClientRect();
+
+    // Mouse position relative to the element (0 to width/height)
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Calculate percentage position (0 to 100)
+    const xPercent = (x / rect.width) * 100;
+    const yPercent = (y / rect.height) * 100;
+
+    setZoomPosition({ x: xPercent, y: yPercent });
+  };
+
+  // Zoom state ko on/off karta hai
+  const handleMouseEnter = () => setIsZoomed(true);
+  const handleMouseLeave = () => setIsZoomed(false);
 
   const dispatch = useDispatch();
   const productId = useParams();
   const userString = localStorage.getItem("user");
 
-// Parse it into an object
-const user = JSON.parse(userString);
-// Access the id
-const userId = user?.id;
-console.log(userId);  
+  // Parse it into an object
+  const user = JSON.parse(userString);
+  // Access the id
+  const userId = user?.id;
+  console.log(userId);
 
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
@@ -157,14 +181,18 @@ console.log(userId);
     dispatch(fetchWishlistByUserId(userId));
   };
 
-    const cart = useSelector((state) => state.cart.items || []);
- 
+  const cart = useSelector((state) => state.cart.items || []);
+
 
   const handleAddToCart = () => {
     if (!userId) {
       alert("Please login to add items to cart");
       return;
     }
+
+
+    // ProductDetailsPage function ke andar
+
 
     // Ensure all variant selections are made
     const requiredVariants = product?.variants
@@ -176,7 +204,7 @@ console.log(userId);
       return;
     }
 
-       // If already in cart → navigate directly
+    // If already in cart → navigate directly
     if (Array.isArray(cart) && cart.some((c) => c?.productId === product?.id)) {
       navigate("/cart");
       return;
@@ -193,7 +221,7 @@ console.log(userId);
       .unwrap()
       .then((res) => {
         alert("Product added to cart!");
-              // Fetch updated cart so UI updates without refresh
+        // Fetch updated cart so UI updates without refresh
         dispatch(fetchCartByUserId(userId));
       })
       .catch((err) => {
@@ -202,39 +230,39 @@ console.log(userId);
       });
   };
 
-const handleCheckPincode = async () => {
-  if (!pincode) {
-    alert("Please enter a valid pincode");
-    return;
-  }
+  const handleCheckPincode = async () => {
+    if (!pincode) {
+      alert("Please enter a valid pincode");
+      return;
+    }
 
-  try {
-    setChecking(true);
-    const response = await dispatch(checkPincodeServiceability(pincode)).unwrap();
+    try {
+      setChecking(true);
+      const response = await dispatch(checkPincodeServiceability(pincode)).unwrap();
 
-    if (response?.success) {
-      setPincodeResult({
-        available: true,
-        message: `✅ Delivery available to ${pincode}`,
-      });
-    } else {
+      if (response?.success) {
+        setPincodeResult({
+          available: true,
+          message: `✅ Delivery available to ${pincode}`,
+        });
+      } else {
+        setPincodeResult({
+          available: false,
+          message: `❌ Delivery not available to ${pincode}`,
+        });
+      }
+    } catch (error) {
+      console.error(error);
       setPincodeResult({
         available: false,
-        message: `❌ Delivery not available to ${pincode}`,
+        message: "Error checking pincode serviceability.",
       });
+    } finally {
+      setChecking(false);
     }
-  } catch (error) {
-    console.error(error);
-    setPincodeResult({
-      available: false,
-      message: "Error checking pincode serviceability.",
-    });
-  } finally {
-    setChecking(false);
-  }
-};
+  };
 
- useEffect(() => {
+  useEffect(() => {
     if (userId) {
       dispatch(fetchCartByUserId(userId))
         .unwrap()
@@ -246,42 +274,42 @@ const handleCheckPincode = async () => {
   const isInCart = Array.isArray(cart) && cart.some((c) => c?.productId === product?.id);
 
 
-const handleBuyNow = (e) => {
-  if (e && e.preventDefault) e.preventDefault();
+  const handleBuyNow = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
 
-  if (!product) {
-    alert("Product not loaded yet. Please wait.");
-    return;
-  }
+    if (!product) {
+      alert("Product not loaded yet. Please wait.");
+      return;
+    }
 
-  // ✅ Check if the product actually has variants
-  const hasVariants =
-    product?.variants &&
-    Object.keys(product.variants).length > 0 &&
-    Array.isArray(product.variants.size) &&
-    product.variants.size.length > 0;
+    // ✅ Check if the product actually has variants
+    const hasVariants =
+      product?.variants &&
+      Object.keys(product.variants).length > 0 &&
+      Array.isArray(product.variants.size) &&
+      product.variants.size.length > 0;
 
-  // ✅ If product has variants but user hasn't selected one → alert
-  if (hasVariants && !selectedVariant) {
-    alert("Please select a size before proceeding.");
-    return;
-  }
+    // ✅ If product has variants but user hasn't selected one → alert
+    if (hasVariants && !selectedVariant) {
+      alert("Please select a size before proceeding.");
+      return;
+    }
 
-  // ✅ Build the payload
-  const payload = {
-    product,
-    variant: selectedVariant || "Default", // fallback if no variant system
-    quantity: 1,
+    // ✅ Build the payload
+    const payload = {
+      product,
+      variant: selectedVariant || "Default", // fallback if no variant system
+      quantity: 1,
+    };
+
+    // inside handleBuyNow before navigate
+    localStorage.setItem("buyNowItem", JSON.stringify(payload));
+
+
+    // ✅ Dispatch and navigate
+    dispatch(setBuyNowItem(payload));
+    navigate("/buyNow");
   };
-
-  // inside handleBuyNow before navigate
-localStorage.setItem("buyNowItem", JSON.stringify(payload));
-
-
-  // ✅ Dispatch and navigate
-  dispatch(setBuyNowItem(payload));
-  navigate("/buyNow");
-};
 
 
   // Custom Arrows
@@ -363,18 +391,18 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
     }
   }, [product]);
 
-      useEffect(() => {
-      const userString = localStorage.getItem("user");
-      const user = userString ? JSON.parse(userString) : null;
-      const userId = user?.id;
-    
-      if (userId) {
-        dispatch(fetchCartByUserId(userId))
-          .unwrap()
-          .then((res) => console.log("Fetched cart:", res))
-          .catch((err) => console.error("Fetch error:", err));
-      }
-    }, [dispatch]);
+  useEffect(() => {
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : null;
+    const userId = user?.id;
+
+    if (userId) {
+      dispatch(fetchCartByUserId(userId))
+        .unwrap()
+        .then((res) => console.log("Fetched cart:", res))
+        .catch((err) => console.error("Fetch error:", err));
+    }
+  }, [dispatch]);
 
 
   const getRatingBreakdown = (stats) => {
@@ -416,7 +444,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
     );
   };
 
-  {console.log(product)}
+  { console.log(product) }
 
   return (
     <div className="bg-white font-sans mb-14">
@@ -425,7 +453,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
           <button className="flex items-center gap-2">
             <FiChevronLeft size={20} />
             <span className="font-medium text-xl">
-              <Link to={"/MainHome"}>Home</Link> / Product details
+              <Link to={"/"}>Home</Link> / Product details
             </span>
           </button>
           {/* <button className="flex items-center gap-2">
@@ -433,40 +461,67 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
             <span className="hidden sm:block">Share</span>
           </button> */}
 
-          <ShareButton product={product}/>
+          <ShareButton product={product} />
         </header>
 
-        <main className="grid grid-cols-1 lg:grid-cols-2 gap-x-[2rem] mt-8">
-          <div>
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Thumbnail Section */}
-              <div className="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-visible">
-                {product?.image?.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(img)}
-                    className={`w-20 h-28 md:w-28 md:h-40 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
-                      selectedImage === img
+        <main className="grid grid-cols-1 lg:grid-cols-2 gap-x-[2rem] mt-8 **relative**">
+          <div className="**relative**">
+            <div>
+              <div className="flex flex-col md:flex-row gap-4">
+                {/* Thumbnail Section */}
+                <div className="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-visible">
+                  {product?.image?.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(img)}
+                      className={`w-20 h-28 md:w-28 md:h-40 rounded-lg overflow-hidden border-2 flex-shrink-0 ${selectedImage === img
                         ? "border-gray-800"
                         : "border-transparent"
-                    }`}
-                  >
-                    <img
-                      src={img}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
+                        }`}
+                    >
+                      <img
+                        src={img}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
 
-              {/* Main Image Section */}
-              <div className="order-1 md:order-2 flex-1">
-                <img
-                  src={selectedImage}
-                  alt="Selected Product"
-                  className="w-full h-[400px] md:h-[680px] object-cover rounded-lg aspect-[4/5]"
-                />
+                {/* Main Image Section */}
+
+
+                <div className="order-1 md:order-2 flex-1 relative">
+                  <div
+                    ref={mainImageRef}
+                    className="w-full h-[400px] md:h-[680px] rounded-lg aspect-[4/5] relative overflow-hidden cursor-crosshair" // Added overflow-hidden for safety & cursor-crosshair
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseMove={handleMouseMove}
+                  >
+                    {/* Main image jisko hum zoom kar rahe hain */}
+                    <img
+                      src={selectedImage}
+                      alt={product?.name || "Product image"}
+                      className="w-full h-full object-cover" // Image fill karega container ko
+                    />
+                    {/* Wishlist button ko image ke upar rakhte hain */}
+                   
+                  </div>
+                </div>
+
+                {/* HERE IS THE MAIN CHANGE: Position changed to absolute and left adjusted */}
+               {isZoomed && (
+  <div
+    className="hidden lg:block w-[100%] max-w-[500px] h-[500px] border-2 border-gray-300 rounded-lg shadow-xl absolute left-[52%] top-30 "
+    style={{
+      backgroundImage: `url(${selectedImage})`,
+      backgroundSize: '250%',
+      backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+    }}
+  />
+)}
+
               </div>
             </div>
 
@@ -555,7 +610,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
           {/* Product Information */}
           <div className="flex flex-col gap-y-6 lg:mt-0 lg:pl-[2rem] lg:border-l-2">
             <div>
-               
+
               <h1 className="text-3xl -mb-2 font-extrabold text-gray-900">
                 {product?.name}
               </h1>
@@ -569,7 +624,7 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
                 Order in 12h 30m to get next day delivery
               </p>
               <p className="text-sm font-medium mt-4 text-primary">
-               {product?.productCode}
+                {product?.productCode}
               </p>
             </div>
             {/* Variants Section */}
@@ -589,11 +644,10 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
                             }))
                           }
                           className={`px-4 py-2 rounded-[3px] font-bold text-sm transition-colors
-                ${
-                  selectedVariant[variantKey] === option
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-primary border border-gray-300 hover:bg-gray-200"
-                }`}
+                ${selectedVariant[variantKey] === option
+                              ? "bg-primary text-white"
+                              : "bg-gray-100 text-primary border border-gray-300 hover:bg-gray-200"
+                            }`}
                         >
                           {option}
                         </button>
@@ -610,33 +664,32 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
               >
                 Add to Carts
               </Link> */}
-      <button
-      onClick={handleAddToCart}
-      className="py-3 px-6 bg-primary text-white font-bold transition-colors"
-    >
-      {isInCart ? "Go to Cart" : "Add to Cart"}
-    </button>
-          <Link
-  to={"/buyNow"}
-  onClick={handleBuyNow}
-  className="py-3 px-8 bg-rose text-white font-bold transition-colors"
->
-  Buy Now
-</Link>
+              <button
+                onClick={handleAddToCart}
+                className="py-3 px-6 bg-primary text-white font-bold transition-colors"
+              >
+                {isInCart ? "Go to Cart" : "Add to Cart"}
+              </button>
+              <Link
+                to={"/buyNow"}
+                onClick={handleBuyNow}
+                className="py-3 px-8 bg-rose text-white font-bold transition-colors"
+              >
+                Buy Now
+              </Link>
 
               <button
                 onClick={() => handleWishlist(product?.id)}
-                className="p-3 rounded-md hover:bg-gray-100 transition-colors" style={{background:"#f3f4f6"}}
+                className="p-3 rounded-md hover:bg-gray-100 transition-colors" style={{ background: "#f3f4f6" }}
               >
                 <FiHeart
                   size={24}
-                  className={`w-5 h-5 transition-colors ${
-                    wishlist.some(
-                      (w) => w.productId == (product?.id || product?.id)
-                    )
-                      ? "fill-rose text-rose"
-                      : "text-white"
-                  }`}
+                  className={`w-5 h-5 transition-colors ${wishlist.some(
+                    (w) => w.productId == (product?.id || product?.id)
+                  )
+                    ? "fill-rose text-rose"
+                    : "text-white"
+                    }`}
                 />
               </button>
             </div>
@@ -644,34 +697,32 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
             <div>
               <p className="font-bold text-[20px] mb-2">Delivery Options</p>
               <div className="flex border border-gray-300 rounded-md overflow-hidden">
-  <input
-    type="text"
-    value={pincode}
-    onChange={(e) => setPincode(e.target.value)}
-    placeholder="Enter Pincode"
-    className="flex-grow p-2 outline-none"
-  />
-  <button
-    onClick={handleCheckPincode}
-    disabled={checking}
-    className={`px-4 font-bold transition ${
-      checking ? "bg-gray-300 text-gray-600" : "text-rose bg-gray-50 hover:bg-gray-100"
-    }`}
-  >
-    {checking ? "Checking..." : "Check"}
-  </button>
-</div>
+                <input
+                  type="text"
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value)}
+                  placeholder="Enter Pincode"
+                  className="flex-grow p-2 outline-none"
+                />
+                <button
+                  onClick={handleCheckPincode}
+                  disabled={checking}
+                  className={`px-4 font-bold transition ${checking ? "bg-gray-300 text-gray-600" : "text-rose bg-gray-50 hover:bg-gray-100"
+                    }`}
+                >
+                  {checking ? "Checking..." : "Check"}
+                </button>
+              </div>
 
-{/* Show result below */}
-{pincodeResult && (
-  <p
-    className={`text-sm mt-2 ${
-      pincodeResult.available ? "text-green-600" : "text-red-600"
-    }`}
-  >
-    {pincodeResult.message}
-  </p>
-)}
+              {/* Show result below */}
+              {pincodeResult && (
+                <p
+                  className={`text-sm mt-2 ${pincodeResult.available ? "text-green-600" : "text-red-600"
+                    }`}
+                >
+                  {pincodeResult.message}
+                </p>
+              )}
 
               <p className="text-xs text-gray-500 mt-2">
                 Please enter pincode to check delivery time & Pay on Delivery
@@ -865,200 +916,197 @@ localStorage.setItem("buyNowItem", JSON.stringify(payload));
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Similar Products
           </h2>
-          <div className="slider-container">
-            <Slider {...sliderSettings}>
-              {similarProducts?.map((item, index) => (
-                <div
-                  key={index}
-                  className={`group text-center bg-white p-2 transition-all duration-300 transform ${
-                    activeCard === index
-                      ? "shadow-xl scale-[1.02]"
-                      : "hover:shadow-lg hover:-translate-y-1"
+
+
+
+          <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-10 px-2 md:px-12 scrollbar-hide">
+            {similarProducts?.map((item, index) => (
+              <div
+                key={index}
+                className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
+                  ? "shadow-xl scale-[1.02]"
+                  : "hover:shadow-lg hover:-translate-y-1 "
                   }`}
-                  onMouseDown={() => setActiveCard(index)}
-                  onMouseUp={() => setActiveCard(null)}
-                  onMouseLeave={() => setActiveCard(null)}
-                >
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <Link to={`/product/${item.id}`}>
-                      <img
-                        src={item?.image[0]}
-                        alt={item?.title}
-                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                          activeCard === index
-                            ? "scale-105"
-                            : "group-hover:scale-105"
-                        }`}
-                      />
-                    </Link>
 
-                    <Link to={`/product/${item?.id}`}>
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <Link
-                          to={"/cart"}
-                          className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
+
+                onMouseDown={() => setActiveCard(index)}
+                onMouseUp={() => setActiveCard(null)}
+                onMouseLeave={() => setActiveCard(null)}
+              >
+                <div className="relative overflow-hidden rounded-t-lg ">
+                  <Link to={`/product/${item.id}`}>
+                    <img
+                      src={item?.image[0]}
+                      alt={item?.title}
+                      className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                        ? "scale-105"
+                        : "group-hover:scale-105"
+                        }`}
+                    />
+                  </Link>
+
+                  <Link to={`/product/${item?.id}`}>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <Link
+                        to={"/cart"}
+                        className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
-                            />
-                          </svg>
-                          ADD TO CART
-                        </Link>
-                      </div>
-                    </Link>
-
-                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                      <span>{item?.rating}</span> •{" "}
-                      <span>{item?.reviewCount}</span>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
+                          />
+                        </svg>
+                        ADD TO CART
+                      </Link>
                     </div>
+                  </Link>
 
-                    {/* --------------------------------------- WORKING ----------------------------------- */}
-                    <button
-                      onClick={() => handleWishlist(item.id)}
-                      className="absolute top-2 right-2 p-1 transition hover:scale-110"
-                    >
-                      <Heart
-                        className={`w-5 h-5 transition-colors ${
-                          wishlist.some(
-                            (w) => w.productId == (item.id || item.productId)
-                          )
-                            ? "fill-rose text-rose"
-                            : "text-white"
+                  <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
+                    <span>{item?.rating}</span> •{" "}
+                    <span>{item?.reviewCount}</span>
+                  </div>
+
+                  {/* --------------------------------------- WORKING ----------------------------------- */}
+                  <button
+                    onClick={() => handleWishlist(item.id)}
+                    className="absolute top-2 right-2 p-1 transition hover:scale-110"
+                  >
+                    <Heart
+                      className={`w-5 h-5 transition-colors ${wishlist.some(
+                        (w) => w.productId == (item.id || item.productId)
+                      )
+                        ? "fill-rose text-rose"
+                        : "text-white"
                         }`}
-                        strokeWidth={2}
-                      />
-                    </button>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
-                    Nallakkar
-                  </p>
-
-                  <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                    {item?.name}
-                  </p>
-
-                  <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
-                    <span className="text-darkpink font-semibold text-sm">
-                      {item?.final_price}
-                    </span>
-                    <span className="text-gray-500 text-xs">
-                      ( {item?.discount}% )
-                    </span>
-                  </div>
+                      strokeWidth={2}
+                    />
+                  </button>
                 </div>
-              ))}
-            </Slider>
+
+                <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
+                  Nallakkar
+                </p>
+
+                <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
+                  {item?.name}
+                </p>
+
+                <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
+                  <span className="text-darkpink font-semibold text-sm">
+                    {item?.final_price}
+                  </span>
+                  <span className="text-gray-500 text-xs">
+                    ( {item?.discount}% )
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+
 
         <div className="pb-14 pt-14">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-5">
             Recently Viewed
           </h2>
-          <div className="slider-container">
-            <Slider {...sliderSettings}>
-              {recentlyViewed?.map((item, index) => (
-                <div
-                  key={index}
-                  className={`group text-center bg-white p-2 transition-all duration-300 transform ${
-                    activeCard === index
-                      ? "shadow-xl scale-[1.02]"
-                      : "hover:shadow-lg hover:-translate-y-1"
+          <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-10 px-2 md:px-12 scrollbar-hide">
+
+            {recentlyViewed?.map((item, index) => (
+              <div
+                key={index}
+                className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
+                  ? "shadow-xl scale-[1.02]"
+                  : "hover:shadow-lg hover:-translate-y-1"
                   }`}
-                  onMouseDown={() => setActiveCard(index)}
-                  onMouseUp={() => setActiveCard(null)}
-                  onMouseLeave={() => setActiveCard(null)}
-                >
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <Link to={`/product/${item.id}`}>
-                      <img
-                        src={item.image[0]}
-                        alt={item.title}
-                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                          activeCard === index
-                            ? "scale-105"
-                            : "group-hover:scale-105"
+                onMouseDown={() => setActiveCard(index)}
+                onMouseUp={() => setActiveCard(null)}
+                onMouseLeave={() => setActiveCard(null)}
+              >
+                <div className="relative overflow-hidden rounded-t-lg">
+                  <Link to={`/product/${item.id}`}>
+                    <img
+                      src={item.image[0]}
+                      alt={item.title}
+                      className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                        ? "scale-105"
+                        : "group-hover:scale-105"
                         }`}
-                      />
-                    </Link>
+                    />
+                  </Link>
 
-                    <Link to={`/product/${item.id}`}>
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <Link
-                          to={"/cart"}
-                          className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
+                  <Link to={`/product/${item.id}`}>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <Link
+                        to={"/cart"}
+                        className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
-                            />
-                          </svg>
-                          ADD TO CART
-                        </Link>
-                      </div>
-                    </Link>
-
-                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                      <span>{item.rating}</span> •{" "}
-                      <span>{item?.reviewCount}</span>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13l-1.5-6M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z"
+                          />
+                        </svg>
+                        ADD TO CART
+                      </Link>
                     </div>
+                  </Link>
 
-                    <button
-                      onClick={() => handleWishlist(item.id)}
-                      className="absolute top-2 right-2 p-1 transition hover:scale-110"
-                    >
-                      <Heart
-                        className={`w-5 h-5 transition-colors ${
-                          wishlist.some(
-                            (w) => w.productId == (item.id || item.productId)
-                          )
-                            ? "fill-rose text-rose"
-                            : "text-white"
+                  <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
+                    <span>{item.rating}</span> •{" "}
+                    <span>{item?.reviewCount}</span>
+                  </div>
+
+                  <button
+                    onClick={() => handleWishlist(item.id)}
+                    className="absolute top-2 right-2 p-1 transition hover:scale-110"
+                  >
+                    <Heart
+                      className={`w-5 h-5 transition-colors ${wishlist.some(
+                        (w) => w.productId == (item.id || item.productId)
+                      )
+                        ? "fill-rose text-rose"
+                        : "text-white"
                         }`}
-                        strokeWidth={2}
-                      />
-                    </button>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
-                    Nallakkar
-                  </p>
-
-                  <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                    {item?.name}
-                  </p>
-
-                  <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
-                    <span className="text-darkpink font-semibold text-sm">
-                      {item.final_price}
-                    </span>
-                    <span className="text-gray-500 text-xs">
-                      ( {item.discount}% )
-                    </span>
-                  </div>
+                      strokeWidth={2}
+                    />
+                  </button>
                 </div>
-              ))}
-            </Slider>
+
+                <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
+                  Nallakkar
+                </p>
+
+                <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
+                  {item?.name}
+                </p>
+
+                <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
+                  <span className="text-darkpink font-semibold text-sm">
+                    {item.final_price}
+                  </span>
+                  <span className="text-gray-500 text-xs">
+                    ( {item.discount}% )
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
