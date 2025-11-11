@@ -104,14 +104,14 @@ const handleSubmit = async (e) => {
     firstName: formData.firstName,
     lastName: formData.lastName,
     contactNumber: formData.contactNumber,
-    address: JSON.stringify({
+    address: {
       house: formData.house,
       road: formData.road,
       pincode: formData.pincode,
       city: formData.city,
       state: formData.state,
       nearby: formData.nearby,
-    }),
+    },
   };
 
   console.log("📦 Sending address to backend:", addressData);
@@ -125,11 +125,12 @@ const handleSubmit = async (e) => {
     const newlyAddedAddress = {
       id: createRes.data.id,
       ...addressData,
-      address: JSON.parse(addressData.address),
+      address: addressData.address,
     };
     console.log("🆕 Newly added address:", newlyAddedAddress);
 
     alert("Address added successfully!");
+    navigate(-1);
   } catch (error) {
     console.error(
       "❌ Error creating address:",
