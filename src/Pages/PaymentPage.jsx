@@ -336,17 +336,18 @@ const RadioInput = ({ id, value, checked, onChange, label, icon }) => (
 // );
 
 const OrderSummary = ({ selling_price, handlePayment, address }) => {
-  const parsedAddress = React.useMemo(() => {
-    if (!address?.address) return null;
-    try {
-      return typeof address.address === "string"
-        ? JSON.parse(address.address)
-        : address.address;
-    } catch (error) {
-      console.error("Invalid address JSON:", address.address);
-      return null;
-    }
-  }, [address]);
+  // const parsedAddress = React.useMemo(() => {
+  //   if (!address?.address) return null;
+  //   try {
+  //     return typeof address.address === "string"
+  //       ? JSON.parse(address.address)
+  //       : address.address;
+  //   } catch (error) {
+  //     console.error("Invalid address JSON:", address.address);
+  //     return null;
+  //   }
+  // }, [address]);
+const parsedAddress = address?.address || null;
 
   return (
     <div className="lg:flex-row w-full p-6 space-y-6 pb-16 lg:pb-6 addrsss" style={{display: "flex"}}>
