@@ -94,10 +94,10 @@ export default function SelectAddress() {
                     </p>
                   </div>
                 </div>
-
-                {/* Edit button (only for selected) */}
+<div className="">
+ {/* Edit button (only for selected) */}
                 {selected === index && (
-                  <Link to={"/AddDeliveryAddress"} className="text-rose font-semibold">
+                  <Link to={"/AddDeliveryAddress"} className="text-rose font-semibold me-3">
                     Edit
                   </Link>
                 )}
@@ -108,6 +108,8 @@ export default function SelectAddress() {
                   >
                     <FaTrashAlt />
                   </button>
+</div>
+               
               </div>
 
               {/* Deliver Here Button (only for selected address) */}

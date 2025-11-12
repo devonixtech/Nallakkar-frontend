@@ -502,22 +502,22 @@ export default function ProductDetailsPage() {
                       alt={product?.name || "Product image"}
                       className="w-full h-full object-cover" // Image fill karega container ko
                     />
-                    {/* Wishlist button ko image ke upar rakhte hain */}
-                   
+
+
                   </div>
                 </div>
 
                 {/* HERE IS THE MAIN CHANGE: Position changed to absolute and left adjusted */}
-               {isZoomed && (
-  <div
-    className="hidden lg:block w-[100%] max-w-[500px] h-[500px] border-2 border-gray-300 rounded-lg shadow-xl absolute left-[52%] top-30 "
-    style={{
-      backgroundImage: `url(${selectedImage})`,
-      backgroundSize: '250%',
-      backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-    }}
-  />
-)}
+                {isZoomed && (
+                  <div
+                    className="hidden lg:block w-[100%] max-w-[500px] h-[500px] border-2 border-gray-300 rounded-lg shadow-xl absolute left-[52%] top-30 "
+                    style={{
+                      backgroundImage: `url(${selectedImage})`,
+                      backgroundSize: '250%',
+                      backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                    }}
+                  />
+                )}
 
               </div>
             </div>
@@ -909,7 +909,7 @@ export default function ProductDetailsPage() {
           </section>
         </main>
 
-        <div className="py-8">
+        <div className="py-4">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Similar Products
           </h2>
@@ -1011,7 +1011,7 @@ export default function ProductDetailsPage() {
         </div>
 
 
-        <div className="pb-14 pt-14">
+        <div className="pb-4">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-5">
             Recently Viewed
           </h2>
