@@ -80,7 +80,7 @@ const user_Id = user.id;
               quantity: quantity || 1,
               variant: variant || null,
               productCode: product?.productCode || null,
-              merchant: product?.brand || "Unknown Seller",
+              merchant: product?.brand || "Nallakkar",
               discount,
             },
           ];

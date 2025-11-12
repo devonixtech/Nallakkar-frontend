@@ -60,7 +60,7 @@ const BuyNowPage = () => {
   const image =
     product?.image && product.image.length > 0 ? product.image[0] : imgFallback;
   const title = product?.name || "Unnamed Product";
-  const merchant = product?.brand || "Unknown Seller";
+  const merchant = product?.brand || "Nallakkar";
   const productCode = product?.productCode || null;
 
   const basePrice = parseFloat(product?.final_price

@@ -6,9 +6,7 @@ import img1 from "../assets/details2.png";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchCartByUserId } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
-// import CustomPayment from "./CustomPayment";
 import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
-// import AddressAutocompleteTestUI from "./AddressAutocompleteTestUI";
 import { nav } from "framer-motion/client";
 import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
 
@@ -417,6 +415,8 @@ const parsedAddress = address?.address || null;
 function PaymentPage() {
   const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
   const [amount, setAmount] = useState(100);
+ const [userdetails, setUserdetails] = useState(null);
+
   const [buyNowItem, setBuyNowItem] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -442,13 +442,28 @@ const user_Id = user.id;
   const handleToggle = (section) => {
     setOpenSection(openSection === section ? null : section);
   };
-  const userdetails =
-  // useSelector((state) => state?.address?.selectedAddress) ||
-  JSON.parse(localStorage.getItem("selectedAddress")) ||
-  null;
+
+useEffect(() => {
+  try {
+    const stored = localStorage.getItem("selectedAddress");
+    if (!stored) return;
+
+    let parsed = JSON.parse(stored);
+
+    // Handle Safari/double-string issue
+    if (parsed && typeof parsed.address === "string") {
+      parsed.address = JSON.parse(parsed.address);
+    }
+
+    setUserdetails(parsed);
+  } catch (err) {
+    console.error("Error parsing selectedAddress:", err);
+    setUserdetails(null);
+  }
+}, []);
+
    
 // Transform to Shiprocket order_items format
-// Determine orderItems based on Buy Now or Cart
 const orderItems =
   buyNowItem
     ? [
@@ -477,44 +492,9 @@ const orderItems =
         height: item?.height || 10,
         weight: item?.weight || 0.5,
       }));
-
-// const orderItems = items?.items?.map(item => ({
-//   name: item.productName.trim(),
-//   sku: `PROD-${item.productId}`, // Or use your real SKU if available
-//   units: Number(item.quantity),
-//   selling_price: item.productPrice,
-//   length:item?.length,
-//   breadth:item?.breadth,
-//   height:item?.height,
-//   weight:item?.weight,
-// }));
+ 
  
 
-// Average dimensions
-// const totalItems = items?.items?.reduce(
-//   (sum, item) => sum + item.quantity,
-//   0
-// );
-// const avgLength =
-//   items?.items?.reduce(
-//     (sum, item) => sum + (item.length || 10) * item.quantity,
-//     0
-//   ) / totalItems;
-// const avgBreadth =
-//   items?.items?.reduce(
-//     (sum, item) => sum + (item.breadth || 10) * item.quantity,
-//     0
-//   ) / totalItems;
-// const avgHeight =
-//   items?.items?.reduce(
-//     (sum, item) => sum + (item.height || 10) * item.quantity,
-//     0
-//   ) / totalItems;
-//   const totalLength = Math.round(avgLength);
-// const totalBreadth = Math.round(avgBreadth);
-// const totalHeight = Math.round(avgHeight);
-// const selling_price = items?.totalPrice
-// console.log("orderItems",items);
  
 const totalWeight = buyNowItem
   ? (buyNowItem.product?.weight || 0.5) * buyNowItem.quantity
