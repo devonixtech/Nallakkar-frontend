@@ -176,7 +176,7 @@ const selectedAddress = getSelectedAddress();
                         Qty: {item.quantity}
                       </p>
                       <p className="text-base font-bold text-gray-900 mt-1">
-                        ₹{item.productPrice.toFixed(2) }
+                        ₹{item.productPrice }
                       </p>
 
                       {item.discount > 0 && (

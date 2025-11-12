@@ -1,152 +1,8 @@
-// import { useState } from "react";
-// import {
-//   FaUser,
-//   FaHeart,
-//   FaShoppingCart,
-//   FaHome,
-//   FaSearch,
-//   FaList,
-// } from "react-icons/fa";
-// import { Link, useLocation } from "react-router-dom";
-
-// export default function MobileBottomNav() {
-//   const location = useLocation();
-//   const [active, setActive] = useState(location.pathname);
-
-//   // Modal & sheet state
-//   const [showCategories, setShowCategories] = useState(false);
-//   const [showSearch, setShowSearch] = useState(false);
-
-//   const navItems = [
-//     { to: "/MainHome", icon: <FaHome />, label: "Home", type: "link" },
-//     {
-//       icon: <FaList />,
-//       label: "Categories",
-//       onClick: () => setShowCategories(true),
-//       type: "button",
-//     },
-//     {
-//       icon: <FaSearch />,
-//       label: "Search",
-//       onClick: () => setShowSearch(true),
-//       type: "button",
-//     },
-//     { to: "/wishlist", icon: <FaHeart />, label: "Wishlist", type: "link" },
-//     { to: "/cart", icon: <FaShoppingCart />, label: "Cart", type: "link" },
-//     { to: "/profile", icon: <FaUser />, label: "Profile", type: "link" },
-//   ];
-
-//   return (
-//     <>
-//       {/* Bottom Nav */}
-//       <div className="fixed bottom-0 left-0 w-full bg-white shadow-t z-50 flex justify-around py-2 border-t border-gray-200 md:hidden">
-//         {navItems.map((item) => {
-//           const isActive = active === item.to;
-
-//           const content = (
-//             <div className="flex flex-col items-center group focus:outline-none">
-//               <div
-//                 className={`text-xl transition-transform duration-200 group-hover:scale-125 ${
-//                   isActive ? "text-rose-500" : "text-gray-500"
-//                 }`}
-//               >
-//                 {item.icon}
-//               </div>
-//               <span
-//                 className={`text-[10px] mt-1 ${
-//                   isActive ? "text-rose-500 font-semibold" : "text-gray-500"
-//                 }`}
-//               >
-//                 {item.label}
-//               </span>
-//             </div>
-//           );
-
-//           return item.type === "link" ? (
-//             <Link
-//               key={item.label}
-//               to={item.to}
-//               onClick={() => setActive(item.to)}
-//               className="flex flex-col items-center"
-//             >
-//               {content}
-//             </Link>
-//           ) : (
-//             <button
-//               key={item.label}
-//               onClick={item.onClick}
-//               className="flex flex-col items-center"
-//             >
-//               {content}
-//             </button>
-//           );
-//         })}
-//       </div>
-
-//       {/* Categories Bottom Sheet */}
-//       {showCategories && (
-//         <div className="fixed inset-0 z-50 bg-black/50 flex flex-col justify-end">
-//           <div className="bg-white rounded-t-2xl p-4">
-//             <div className="flex justify-between items-center border-b pb-2 mb-4">
-//               <h2 className="text-lg font-semibold">Categories</h2>
-//               <button
-//                 className="text-gray-500"
-//                 onClick={() => setShowCategories(false)}
-//               >
-//                 ✕
-//               </button>
-//             </div>
-//             <div className="grid grid-cols-2 gap-4 text-center">
-//               {["Kids", "Women", "Toys", "Home Decors"].map((cat) => (
-//                 <Link
-//                   key={cat}
-//                   to={`/category/${cat.toLowerCase().replace(" ", "-")}`}
-//                   className="p-3 rounded-lg border hover:bg-gray-100"
-//                   onClick={() => setShowCategories(false)}
-//                 >
-//                   {cat}
-//                 </Link>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Search Full-Screen Modal */}
-//       {showSearch && (
-//         <div className="fixed inset-0 z-50 bg-white flex flex-col">
-//           <div className="p-4 border-b flex items-center">
-//             <input
-//               type="text"
-//               placeholder="Search products..."
-//               className="flex-1 px-3 py-2 border rounded-lg focus:outline-none"
-//               autoFocus
-//             />
-//             <button
-//               className="ml-2 text-gray-500"
-//               onClick={() => setShowSearch(false)}
-//             >
-//               ✕
-//             </button>
-//           </div>
-//           <div className="flex-1 p-4 overflow-y-auto">
-//             <p className="text-gray-500 text-center mt-10">
-//               Start typing to search products...
-//             </p>
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// }
-
 
 import { useState, useEffect } from "react";
 import { Home, Heart, ShoppingCart, List, User } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-
-// Auth modals import
+import { Link, useLocation,useNavigate } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
 import AuthModal from "../Custom/AuthModal";
 import SuccessModal from "../Custom/SuccessModal";
 import LoginForm from "../../Pages/LoginForm";
@@ -155,6 +11,7 @@ import OtpForm from "../../Pages/OtpForm";
 import ChangeNumberForm from "../../Pages/ChangeNumberForm";
 import NumberOtp from "../../Pages/NumberOtp";
 import NumberVerifiedModal from "../Custom/NumberVerifiedModal";
+import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 
 export default function MobileBottomNav() {
   const location = useLocation();
@@ -166,7 +23,12 @@ export default function MobileBottomNav() {
   // ✅ Auth Modal States (same as CategoryNavbar)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("login");
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+      dispatch(fetchAllCategories());
+    }, [dispatch]);
+  const categories = useSelector((state) => state?.ctegory?.categories || []);
   const openModal = (type) => {
     setModalType(type);
     setIsModalOpen(true);
@@ -226,6 +88,16 @@ export default function MobileBottomNav() {
           type: "button",
         },
       ];
+        const handleCategoryClick = (id) => {
+    localStorage.setItem("selectedCategoryId", id);
+    console.log("Selected Category ID set to:", id);
+    setShowCategories(false)
+    // setSelectedCategory(id);
+    // setSearchQuery("");
+    // setShowSearchDropdown(false);
+    navigate("/category/kids" );
+    window.dispatchEvent(new Event("storage"));
+  };
 
   return (
     <>
@@ -297,14 +169,16 @@ export default function MobileBottomNav() {
               </button>
             </div>
             <div className="grid grid-cols-2 gap-4 text-center">
-              {["Kids", "Women", "Toys", "Home Decors"].map((cat) => (
+              {categories?.map((cat) => (
                 <Link
-                  key={cat}
-                  to={`/category/${cat.toLowerCase().replace(" ", "-")}`}
+                  key={cat?.id}
+                  to={`/category/kids`}
                   className="p-3 rounded-lg border hover:bg-gray-100"
-                  onClick={() => setShowCategories(false)}
+                  onClick={() =>  
+                    handleCategoryClick(cat?.id)
+                  }
                 >
-                  {cat}
+                  {cat?.name}
                 </Link>
               ))}
             </div>
