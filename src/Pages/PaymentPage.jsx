@@ -557,7 +557,7 @@ const totalHeight = Math.round(avgHeight);
 
 // Selling price (from Buy Now or Cart)
 const selling_price = buyNowItem
-  ? (buyNowItem.variant?.price ||
+  ? (buyNowItem.product?.final_price ||
       buyNowItem.product?.price ||
       buyNowItem.product?.selling_price ||
       0) * buyNowItem.quantity
