@@ -12,7 +12,7 @@ const ShareButton = ({ product }) => {
   const [copySuccess, setCopySuccess] = useState("");
   const wrapperRef = useRef(null); // ✅ ref for the wrapper
 
-  const productUrl = product?.id 
+  const productUrl = product?.id
     ? `${window.location.origin}/product/${product.id}`
     : window.location.href;
 
@@ -22,7 +22,7 @@ const ShareButton = ({ product }) => {
     navigator.clipboard.writeText(productUrl);
     setCopySuccess("Link copied!");
     setTimeout(() => setCopySuccess(""), 2000);
-    setIsOpen(false); // optional: close after copy
+    setIsOpen(false); // close after copy
   };
 
   // ✅ Close menu if clicked outside
@@ -46,26 +46,29 @@ const ShareButton = ({ product }) => {
         <span className="hidden sm:block">Share</span>
       </button>
 
-      {/* Share Menu */}
+      {/* ✅ Fixed Dropdown Menu (mobile-friendly) */}
       {isOpen && (
-        <div className="absolute top-full mt-2 bg-white border rounded shadow-lg p-3 flex flex-col gap-2 z-10">
-          <FacebookShareButton url={productUrl} quote={product.name}>
+        <div
+          className="absolute top-full right-0 mt-2 bg-white border rounded shadow-lg p-3 
+          flex flex-col gap-2 z-10 w-48 sm:w-56"
+        >
+          <FacebookShareButton url={productUrl} quote={product?.name}>
             <div className="flex items-center gap-2 cursor-pointer">
               <FacebookIcon size={32} round />
-              Facebook
+              <span>Facebook</span>
             </div>
           </FacebookShareButton>
 
-          <WhatsappShareButton url={productUrl} title={product.name}>
+          <WhatsappShareButton url={productUrl} title={product?.name}>
             <div className="flex items-center gap-2 cursor-pointer">
               <WhatsappIcon size={32} round />
-              WhatsApp
+              <span>WhatsApp</span>
             </div>
           </WhatsappShareButton>
 
           <button
             onClick={copyToClipboard}
-            className="border px-2 py-1 rounded text-sm flex items-center gap-2"
+            className="border px-2 py-1 rounded text-sm flex items-center gap-2 hover:bg-gray-100"
           >
             Copy Link
           </button>
