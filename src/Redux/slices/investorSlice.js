@@ -46,7 +46,6 @@ export const fetchInvestorById = createAsyncThunk(
 export const updateInvestor = createAsyncThunk(
   "investors/update",
   async ({ id, data }, { rejectWithValue }) => {
-    console.log("Updating investor with ID:", id, "and data:", data);
     try {
       const res = await api.patch(`${BASE_URL}/updateInvestor/${id}`, data);
       return res.data.data;

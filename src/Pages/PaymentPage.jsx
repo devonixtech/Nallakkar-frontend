@@ -438,17 +438,14 @@ const user_Id = user.id;
     setBuyNowItem(JSON.parse(storedItem));
   }
 }, []);
-console.log("buyNowItem",buyNowItem);
   const items = useSelector((state) => state.cart);
-  console.log("User Cart Items:", items);
   const handleToggle = (section) => {
     setOpenSection(openSection === section ? null : section);
   };
   const userdetails =
-  useSelector((state) => state?.address?.selectedAddress) ||
+  // useSelector((state) => state?.address?.selectedAddress) ||
   JSON.parse(localStorage.getItem("selectedAddress")) ||
   null;
-     console.log("add",userdetails)
    
 // Transform to Shiprocket order_items format
 // Determine orderItems based on Buy Now or Cart

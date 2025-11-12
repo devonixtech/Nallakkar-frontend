@@ -37,8 +37,6 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
         email,
         googleSignIn: true,
       });
-      console.log("google login")
-      console.log("Google login response:", res);
       localStorage.setItem("authToken", res.data.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data));
       localStorage.setItem("isLoggedIn", "true");
@@ -71,7 +69,6 @@ const LoginForm = ({ switchToSignup, goToOtp }) => {
       localStorage.setItem("emailOrMobile", payload.emailOrMobile);
       const res = await axios.post(`${BASE_URL}user/requestOtp`, payload);
 
-      console.log("login", res);
 
       setLoading(false);
 

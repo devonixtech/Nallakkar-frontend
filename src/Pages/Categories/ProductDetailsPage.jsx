@@ -146,7 +146,6 @@ export default function ProductDetailsPage() {
   const user = JSON.parse(userString);
   // Access the id
   const userId = user?.id;
-  console.log(userId);
 
   useEffect(() => {
     dispatch(fetchReviewsByProduct(2));
@@ -164,7 +163,6 @@ export default function ProductDetailsPage() {
   const recentlyViewed = useSelector(
     (state) => state?.filteredProducts?.recentlyViewed
   );
-  // console.log("recently",recentlyViewed)
 
   // ---------------- SOME USEFFECTS
 
@@ -444,7 +442,6 @@ export default function ProductDetailsPage() {
     );
   };
 
-  { console.log(product) }
 
   return (
     <div className="bg-white font-sans mb-14">

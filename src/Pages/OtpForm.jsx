@@ -36,7 +36,6 @@ const OtpForm = ({ changeNumber , goToVerified }) => {
           token,
         })
       );
-   console.log("OTP verification response:", res);
 
       localStorage.setItem("authToken", res?.payload.token);
       localStorage.setItem("user", JSON.stringify( res?.payload.user));

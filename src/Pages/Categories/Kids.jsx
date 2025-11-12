@@ -149,7 +149,6 @@ export default function ProductListingPage() {
   const user = JSON.parse(userString);
   // Access the id
   const userId = user.id;
-  console.log(userId);
 
   const handleWishlist = async (productId) => {
     const isFavourite = !wishlist?.some((w) => w.productId === productId);

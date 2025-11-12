@@ -18,7 +18,6 @@ const user = JSON.parse(userString);
 // Access the id
 const user_Id = user.id;
 
-console.log(user_Id); // Output: "9"
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userId = user_Id; // temp userId
@@ -27,7 +26,6 @@ console.log(user_Id); // Output: "9"
   const { product, variant, quantity, isBuyNowActive } = useSelector(
     (state) => state.buyNow || {}
   );
-   console.log("cartItems:", cartItems);
   // ✅ Restore BuyNow item from localStorage (no removal)
   useEffect(() => {
     if (!product) {
@@ -104,7 +102,6 @@ const selectedAddress =
   JSON.parse(localStorage.getItem("selectedAddress")) ||
   null;
 
-  console.log(selectedAddress);
 
     const formatAddress = (addrStr) => {
   if (!addrStr) return "";

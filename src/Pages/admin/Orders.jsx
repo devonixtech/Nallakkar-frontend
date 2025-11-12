@@ -11,7 +11,6 @@ export default function Orders() {
     dispatch(fetchAllOrders());
   }, [dispatch]);
     const orders = useSelector((state) => state.orders.orders);
-    console.log("Orders Data from Redux:", orders);
   // const orders = [
   //   {
   //     id: "#1001",

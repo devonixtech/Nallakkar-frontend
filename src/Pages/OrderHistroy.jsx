@@ -89,7 +89,6 @@ const OrderHistory = () => {
   const isFilterOpen = false;
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
-  console.log("User ID from Redux:", userId);
   useEffect(() => {
     if (userId) {
       dispatch(fetchOrdersByUserId(userId));
@@ -97,7 +96,6 @@ const OrderHistory = () => {
   }, [dispatch, userId]);
 
   const orders = useSelector((state) => state?.orders?.orders || []);
-  console.log("Orders from Redux Store:", orders);
 
   return (
     <>

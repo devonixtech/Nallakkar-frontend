@@ -35,7 +35,6 @@ api.interceptors.response.use(
     // You can add any global error handling logic here (e.g., logging, redirecting to login)
     if (error.response && error.response.status === 401) {
       // Handle Unauthorized Error (e.g., token expired)
-      console.log("Unauthorized. Redirecting to login...");
       // Redirect to login or show a login modal
     }
     return Promise.reject(error);  // Reject the promise with the error

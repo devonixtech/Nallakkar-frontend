@@ -171,13 +171,10 @@ const ProductListing = () => {
   }, [dispatch]);
 
   const products = useSelector((state) => state?.products?.products);
-  console.log("All products:", products);
-  console.log("selectedCategoryId:", selectedCategoryId);
 
   const filteredProducts = products?.filter(
     (product) => String(product.categoryId) === String(selectedCategoryId)
   );
-  console.log("Filtered products:", filteredProducts);
 
  
 

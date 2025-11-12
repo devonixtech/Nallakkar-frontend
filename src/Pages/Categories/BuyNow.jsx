@@ -57,7 +57,6 @@ const BuyNowPage = () => {
     dispatch(clearBuyNowItem());
     navigate("/");
   };
-  console.log("Buy Now Product:", product);
   const image =
     product?.image && product.image.length > 0 ? product.image[0] : imgFallback;
   const title = product?.name || "Unnamed Product";

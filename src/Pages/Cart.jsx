@@ -23,7 +23,6 @@ const user_Id = user.id;
   const userId = user_Id; // temp userId
   const dispatch = useDispatch();
   const items = useSelector((state) => state.cart);
-  console.log("Cart Items:", items);
 
   // useEffect(() => {
   //   if (userId) {

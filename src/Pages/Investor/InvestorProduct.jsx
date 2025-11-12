@@ -14,7 +14,7 @@ export default function InvestorProduct() {
   const products = useSelector((state) => state?.products?.products);
 const investorProducts = products?.filter(
   (product) => product?.investorId == investorId
-);console.log("Investor Products:", investorProducts);
+);
 
   // const products = [
   //   {

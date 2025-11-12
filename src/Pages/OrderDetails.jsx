@@ -8,7 +8,6 @@ const OrderDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const orderDetails = useSelector((state) => state?.orders?.orderData || null);
-  console.log("Order Details from Redux Store:", orderDetails);
 
   useEffect(() => {
     if (id) {

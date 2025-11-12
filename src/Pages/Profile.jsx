@@ -14,7 +14,6 @@ const Sidebar = ({ activeView, setActiveView }) => {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
    
-  console.log("Sidebar rendered");
   // Single logout implementation
   const handleLogout = () => {
     try {
@@ -33,7 +32,6 @@ const Sidebar = ({ activeView, setActiveView }) => {
     }
   }, [dispatch, userId]);
 const  userDetails = useSelector((state) =>  state?.users?.userData?.data);
- console.log("userDetails in sidebar:", userDetails);
   // avoid name collision: name redux value reduxUserData
   const reduxUserData = useSelector((state) => state?.users?.userData?.data);
   const authUser = useSelector((state) => state?.auth?.user);
@@ -157,7 +155,6 @@ const EditProfileView = ({ onGoBackClick, authUser }) => {
   const user = useSelector((state) => state.auth.user);
 
   const user_Id = user?.id;
-  console.log("user_Id in EditProfileView:", user_Id);
   useEffect(() => {
     dispatch(fetchUserById(user_Id));
   }, [dispatch, user_Id]);
@@ -243,7 +240,6 @@ const EditProfileView = ({ onGoBackClick, authUser }) => {
     }
   };
     const userId = localStorage.getItem("userId");
-  console.log("userId in EditProfileView local:", userId);
   useEffect(() => {
     if (userId) {
       dispatch(fetchUserById(userId));

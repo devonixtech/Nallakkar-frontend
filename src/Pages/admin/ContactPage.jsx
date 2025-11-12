@@ -25,7 +25,6 @@ const StatusBadge = ({ status }) => {
 //      dispatch(fetchAllContacts());
 //    }, [dispatch]);
 //    const inquiries = useSelector((state) => state?.contacts?.contacts);
-//   //  console.log(state);
 //   React.useEffect(() => {
 //     if (isEditMode) {
 //       setFormData(inquiryToEdit);

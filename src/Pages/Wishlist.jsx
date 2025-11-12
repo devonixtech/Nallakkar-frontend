@@ -104,7 +104,6 @@ const userId = user?.id;
       </div>
     );
   }
-console.log("Wishlist item:", items[0]);
 
   return (
     <>
