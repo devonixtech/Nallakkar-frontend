@@ -65,12 +65,7 @@ const user_Id = user.id;
           const finalPrice = parseFloat(product?.final_price ?? variantPrice);
           const discount = parseFloat(product?.discount ?? 0);
 
-          const productPrice =
-            !isNaN(variantPrice) && variantPrice > 0
-              ? variantPrice
-              : !isNaN(finalPrice) && finalPrice > 0
-              ? finalPrice
-              : basePrice;
+          const productPrice = finalPrice
 
           return [
             {
@@ -181,7 +176,7 @@ const selectedAddress = getSelectedAddress();
                         Qty: {item.quantity}
                       </p>
                       <p className="text-base font-bold text-gray-900 mt-1">
-                        ₹{(item.discountedPrice * item.quantity).toFixed(2)}
+                        ₹{item.productPrice.toFixed(2) }
                       </p>
 
                       {item.discount > 0 && (
