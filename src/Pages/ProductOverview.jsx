@@ -97,10 +97,25 @@ const user_Id = user.id;
   const orderTotal = cartItems?.totalPrice
 ;
 
-const selectedAddress =
-  useSelector((state) => state.address.selectedAddress) ||
-  JSON.parse(localStorage.getItem("selectedAddress")) ||
-  null;
+ const getSelectedAddress = () => {
+  try {
+    const saved = localStorage.getItem("selectedAddress");
+    if (!saved) return null;
+    const parsed = JSON.parse(saved);
+
+    // Handle cases where Safari stringifies nested objects as strings
+    if (typeof parsed.address === "string") {
+      parsed.address = JSON.parse(parsed.address);
+    }
+
+    return parsed;
+  } catch (err) {
+    console.error("Failed to parse selectedAddress from localStorage:", err);
+    return null;
+  }
+};
+
+const selectedAddress = getSelectedAddress();
 
 
     const formatAddress = (addrStr) => {
@@ -227,7 +242,7 @@ const selectedAddress =
           <p>
             <span className="font-semibold"> {`${selectedAddress?.firstName} ${selectedAddress?.lastName}`} </span>
             <br />
-            {formatAddress(selectedAddress?.address)}
+         {selectedAddress?.address?.house}  {selectedAddress?.address?.road} {selectedAddress?.address?.road} {selectedAddress?.address?.city}{selectedAddress?.address?.state}
             <br />
             {selectedAddress?.contactNumber}
           </p>

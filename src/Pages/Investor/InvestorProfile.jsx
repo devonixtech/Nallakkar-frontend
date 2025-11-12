@@ -11,17 +11,7 @@ const InvestorProfile = () => {
   }, [dispatch, investorId]);
 
   const profile = useSelector((state) => state?.investors?.investorData);
-  // console.log("Investor Data:", investorData);
-  // const profile = {
-  //   name: "Rahul Sharma",
-  //   email: "rahul.sharma@example.com",
-  //   contact: "+91 9876543210",
-  //   branch: "Indore Main Branch",
-  //   accountHolder: "Rahul Sharma",
-  //   ifsc: "SBIN0001234",
-  //   accountNumber: "123456789012",
-  // };
-
+ 
   // Function to get first two initials
   const getInitials = (name) => {
     const words = name.trim().split(" ");

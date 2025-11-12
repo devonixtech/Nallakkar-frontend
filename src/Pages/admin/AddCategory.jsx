@@ -8,7 +8,6 @@ export default function AddCategory() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ name, parent, active });
 
   };
 

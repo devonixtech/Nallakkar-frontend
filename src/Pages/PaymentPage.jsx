@@ -565,7 +565,6 @@ const selling_price = buyNowItem
   //     buyNowItem.variant?.price || buyNowItem.product.price || 0;
   //   totalPrice = variantPrice * buyNowItem.quantity;
   // }
-{console.log(userCart)}
   const handlePayment = async () => {
     try {
       // Step 1️⃣: Create Razorpay Order via Redux
