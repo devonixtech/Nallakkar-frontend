@@ -1,8 +1,8 @@
  import { useEffect, useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft,FaTrashAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddressesByUserId, setSelectedAddress } from "../Redux/slices/addressSlice";
+import { getAddressesByUserId, setSelectedAddress  , deleteAddress} from "../Redux/slices/addressSlice";
 
 export default function SelectAddress() {
   const [selected, setSelected] = useState(0);
@@ -43,6 +43,14 @@ export default function SelectAddress() {
     if (!phone) return "";
     return phone.slice(0, 4) + "********";
   };
+   // 🗑️ Handle delete address
+  const handleDelete = async (addressId) => {
+    if (window.confirm("Are you sure you want to delete this address?")) {
+      await dispatch(deleteAddress(addressId));
+      dispatch(getAddressesByUserId(user_Id)); // Refresh list after delete
+    }
+  };
+
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-8 lg:pb-8 pb-24">
@@ -93,6 +101,13 @@ export default function SelectAddress() {
                     Edit
                   </Link>
                 )}
+                <button
+                    onClick={() => handleDelete(addr.id || addr._id)}
+                    className="text-gray-500 hover:text-red-600"
+                    title="Delete address"
+                  >
+                    <FaTrashAlt />
+                  </button>
               </div>
 
               {/* Deliver Here Button (only for selected address) */}
