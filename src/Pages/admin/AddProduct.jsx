@@ -141,213 +141,236 @@ const groupedVariants = customVariants.reduce((acc, v) => {
 };
 
 
-  return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Add Product</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="title"
-          placeholder="Product Name"
-          value={formData.title}
-          onChange={handleChange}
-          className="w-full border p-2"
-        />
-        {errors.title && <p className="text-red-500">{errors.title}</p>}
+ return (
+  <div className="p-6 max-w-5xl mx-auto">
+    <h2 className="text-2xl font-bold mb-6">Add Product</h2>
 
-      <select
-  name="category"
-  value={formData.category}
-  onChange={(e) => {
-    handleChange(e);
-    setFormData((prev) => ({ ...prev, subcategory: "" }));  
-  }}
-  className="w-full border p-2"
->
-  <option value="">Select Category</option>
-  {categories?.map((c) => (
-    <option key={c.id} value={c.id}>
-      {c.name}
-    </option>
-  ))}
-</select>
-{errors.category && <p className="text-red-500">{errors.category}</p>}
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+    >
+      {/* PRODUCT DETAILS */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Product Details</h3>
 
-<select
-  name="subcategory"
-  value={formData.subcategory}
-  onChange={handleChange}
-  className="w-full border p-2"
-  disabled={!formData.category} // disable until category is chosen
->
-  <option value="">Select Subcategory</option>
-  {categories
-    ?.find((c) => c.id === Number(formData.category))
-    ?.subcategories?.map((sub) => (
-      <option key={sub.id} value={sub.id}>
-        {sub.name}
-      </option>
-    ))}
-</select>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Product Name
+            </label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Enter product name"
+              className="w-full border rounded-lg p-3 focus:ring focus:ring-blue-200"
+            />
+            {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+          </div>
 
+          {/* CATEGORY */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Category
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={(e) => {
+                handleChange(e);
+                setFormData((prev) => ({ ...prev, subcategory: "" }));
+              }}
+              className="w-full border rounded-lg p-3 bg-white"
+            >
+              <option value="">Select Category</option>
+              {categories?.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+            {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
+          </div>
 
-        <input
-          type="number"
-          name="price"
-          placeholder="Price"
-          value={formData.price}
-          onChange={handleChange}
-          className="w-full border p-2"
-        />
-        <input
-          type="number"
-          name="discountPrice"
-          placeholder="Discount (%)"
-          value={formData.discountPrice}
-          onChange={handleChange}
-          className="w-full border p-2"
-        />
-        <input
-          type="number"
-          name="stock"
-          placeholder="Stock"
-          value={formData.stock}
-          onChange={handleChange}
-          className="w-full border p-2"
-        />
+          {/* SUBCATEGORY */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Subcategory
+            </label>
+            <select
+              name="subcategory"
+              value={formData.subcategory}
+              onChange={handleChange}
+              disabled={!formData.category}
+              className="w-full border rounded-lg p-3 bg-white disabled:bg-gray-100"
+            >
+              <option value="">Select Subcategory</option>
+              {categories
+                ?.find((c) => c.id === Number(formData.category))
+                ?.subcategories?.map((sub) => (
+                  <option key={sub.id} value={sub.id}>{sub.name}</option>
+                ))}
+            </select>
+          </div>
+
+          {/* PRICE */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Price</label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="Enter price"
+              className="w-full border rounded-lg p-3"
+            />
+          </div>
+
+          {/* DISCOUNT */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Discount (%)</label>
+            <input
+              type="number"
+              name="discountPrice"
+              value={formData.discountPrice}
+              onChange={handleChange}
+              placeholder="Enter discount"
+              className="w-full border rounded-lg p-3"
+            />
+          </div>
+
+          {/* STOCK */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Stock</label>
+            <input
+              type="number"
+              name="stock"
+              value={formData.stock}
+              onChange={handleChange}
+              placeholder="Enter stock quantity"
+              className="w-full border rounded-lg p-3"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* DESCRIPTIONS */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Descriptions</h3>
         <textarea
           name="description"
-          placeholder="Description"
           value={formData.description}
           onChange={handleChange}
-          className="w-full border p-2"
+          placeholder="Enter full description"
+          className="w-full border rounded-lg p-3 h-24"
         />
         <textarea
           name="shortDescription"
-          placeholder="Short Description"
           value={formData.shortDescription}
           onChange={handleChange}
-          className="w-full border p-2"
+          placeholder="Short description"
+          className="w-full border rounded-lg p-3 h-20 mt-3"
         />
- {/* ✅ New Fields */}
-        <div className="grid grid-cols-2 gap-2">
-          <input
-            type="number"
-            name="length"
-            placeholder="Length (cm)"
-            value={formData.length}
-            onChange={handleChange}
-            className="border p-2"
-          />
-          <input
-            type="number"
-            name="breadth"
-            placeholder="Breadth (cm)"
-            value={formData.breadth}
-            onChange={handleChange}
-            className="border p-2"
-          />
-          <input
-            type="number"
-            name="height"
-            placeholder="Height (cm)"
-            value={formData.height}
-            onChange={handleChange}
-            className="border p-2"
-          />
-          <input
-            type="number"
-            name="weight"
-            placeholder="Weight (kg)"
-            value={formData.weight}
-            onChange={handleChange}
-            className="border p-2"
-          />
-        </div>
-        {/* Variants */}
-        <div>
-          <h3 className="font-semibold mb-2">Variants</h3>
-           {customVariants.map((variant, index) => (
-  <div key={index} className="mb-4">
-    <input
-      type="text"
-      placeholder="Type (e.g. Color)"
-      value={variant.type}
-      onChange={(e) => {
-        const updated = [...customVariants];
-        updated[index].type = e.target.value;
-        setCustomVariants(updated);
-      }}
-      className="border p-2 w-full mb-2"
-    />
-    <input
-      type="text"
-      placeholder="Values (comma separated e.g. L, XL, 2XL)"
-      value={variant.value}
-      onChange={(e) => {
-        const updated = [...customVariants];
-        updated[index].value = e.target.value;
-        setCustomVariants(updated);
-      }}
-      className="border p-2 w-full"
-    />
-  </div>
-  
-  
-))}
+      </div>
 
-          <button
-            type="button"
-            onClick={() => setCustomVariants([...customVariants, { type: "", value: "" }])}
-            className="px-3 py-1 bg-gray-200 rounded"
-          >
-            + Add Variant
-          </button>
-        </div>
+      {/* DIMENSIONS */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Dimensions</h3>
 
-        {/* Image Upload */}
-       {/* Image Upload */}
-<div>
-  <input type="file" multiple onChange={handleImageUpload} />
-  <div className="flex gap-2 mt-2 flex-wrap">
-    {images.map((img, i) => (
-      <div key={i} className="relative">
-        <img
-          src={img.url}
-          alt="preview"
-          className="w-20 h-20 object-cover rounded"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {["length","breadth","height","weight"].map((f)=>(
+            <input
+              key={f}
+              type="number"
+              name={f}
+              placeholder={`${f.charAt(0).toUpperCase() + f.slice(1)} ${f==="weight" ? "(kg)" : "(cm)"}`}
+              value={formData[f]}
+              onChange={handleChange}
+              className="border rounded-lg p-3"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* VARIANTS */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Variants</h3>
+
+        {customVariants.map((variant, index) => (
+          <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <input
+              type="text"
+              placeholder="Type (e.g. Color)"
+              value={variant.type}
+              onChange={(e) =>
+                updateVariant(index, "type", e.target.value)
+              }
+              className="border rounded-lg p-3"
+            />
+            <input
+              type="text"
+              placeholder="Values (comma separated)"
+              value={variant.value}
+              onChange={(e) =>
+                updateVariant(index, "value", e.target.value)
+              }
+              className="border rounded-lg p-3"
+            />
+          </div>
+        ))}
+
         <button
           type="button"
-          onClick={() => setImages(images.filter((_, index) => index !== i))}
-          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+          onClick={() => setCustomVariants([...customVariants, { type: "", value: "" }])}
+          className="px-4 py-2 bg-gray-100 border rounded-lg hover:bg-gray-200"
         >
-          ✕
+          + Add Variant
         </button>
       </div>
-    ))}
-  </div>
-</div>
 
+      {/* IMAGES */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Images</h3>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          {loading ? "Saving..." : "Save Product"}
-        </button>
-      </form>
+        <input type="file" multiple onChange={handleImageUpload} className="block" />
 
-      {toast.show && (
-        <div
-          className={`fixed bottom-4 right-4 p-3 rounded text-white ${
-            toast.type === "success" ? "bg-green-500" : "bg-red-500"
-          }`}
-        >
-          {toast.message}
+        <div className="flex gap-3 mt-3 flex-wrap">
+          {images.map((img, i) => (
+            <div key={i} className="relative">
+              <img
+                src={img.url}
+                className="w-24 h-24 object-cover rounded-lg border"
+              />
+              <button
+                type="button"
+                onClick={() => setImages(images.filter((_, x) => x !== i))}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
         </div>
-      )}
-    </div>
-  );
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="px-6 py-3 bg-blue-600 rounded-lg text-white font-semibold hover:bg-blue-700"
+      >
+        {loading ? "Saving..." : "Save Product"}
+      </button>
+    </form>
+
+    {/* Toast */}
+    {toast.show && (
+      <div className={`fixed bottom-4 right-4 px-4 py-3 rounded-lg text-white shadow-lg
+          ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}
+        `}
+      >
+        {toast.message}
+      </div>
+    )}
+  </div>
+);
+
 }

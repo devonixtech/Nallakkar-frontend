@@ -166,7 +166,7 @@ export default function TopSellingProducts() {
                 {/* Hover Add to Cart Button */}
                 <Link to={`/product/${item.id}`}>
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    {isInCart ? (
+                    {/* {isInCart ? (
 
 
                       <Link
@@ -210,7 +210,7 @@ export default function TopSellingProducts() {
                         </svg>
                         ADD TO CART
                       </Link>
-                    )}
+                    )} */}
                   </div>
                 </Link>
 

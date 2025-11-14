@@ -942,7 +942,7 @@ export default function ProductDetailsPage() {
                     />
                   </Link>
 
-                  <Link to={`/product/${item?.id}`}>
+                  {/* <Link to={`/product/${item?.id}`}>
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <Link
                         to={"/cart"}
@@ -965,7 +965,7 @@ export default function ProductDetailsPage() {
                         ADD TO CART
                       </Link>
                     </div>
-                  </Link>
+                  </Link> */}
 
                   <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                     <span>{item?.rating}</span> •{" "}
@@ -1040,7 +1040,7 @@ export default function ProductDetailsPage() {
                     />
                   </Link>
 
-                  <Link to={`/product/${item.id}`}>
+                  {/* <Link to={`/product/${item.id}`}>
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <Link
                         to={"/cart"}
@@ -1063,7 +1063,7 @@ export default function ProductDetailsPage() {
                         ADD TO CART
                       </Link>
                     </div>
-                  </Link>
+                  </Link> */}
 
                   <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                     <span>{item.rating}</span> •{" "}
