@@ -240,17 +240,13 @@ export default function Sidebar({ isOpen, onClose }) {
           icon: User,
           href: "/admin/addinvestor",
         },
-        {
-          id: "settings",
-          label: "Settings",
-          icon: Settings,
-          hasSubmenu: true,
-          submenu: [
-            { label: "Profile", href: "/admin/settings/profile" },
-            { label: "Change Password", href: "/admin/settings/password" },
-            { label: "Logout", href: "/login", icon: LogOut },
-          ],
+           {
+          id: "addinvestor",
+          label: "Logout",
+          icon: LogOut,
+          href: "/",
         },
+       
       ];
     } else if (role === "investor") {
       return [
@@ -266,7 +262,7 @@ export default function Sidebar({ isOpen, onClose }) {
           icon: User,
           href: "/investor/investorProfile",
         },
-        { id: "logout", label: "Logout", icon: User, href: "/login" },
+        { id: "logout", label: "Logout", icon: User, href: "/" },
       ];
     }
     return [];
