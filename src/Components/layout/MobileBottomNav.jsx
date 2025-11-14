@@ -90,7 +90,7 @@ export default function MobileBottomNav() {
       ];
         const handleCategoryClick = (id) => {
     localStorage.setItem("selectedCategoryId", id);
-    console.log("Selected Category ID set to:", id);
+    // console.log("Selected Category ID set to:", id);
     setShowCategories(false)
     // setSelectedCategory(id);
     // setSearchQuery("");

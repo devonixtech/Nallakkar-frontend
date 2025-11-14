@@ -180,36 +180,7 @@ const EditProfileView = ({ onGoBackClick, authUser }) => {
     }
   }, [userDetails]);
 
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-
-  //     const formData = new FormData();
-  //     formData.append("name", name);
-  //     formData.append("email", email);
-  //     formData.append("mobileNumber", number);
-  //     formData.append("dateOfBirth", dateOfBirth);
-  //     formData.append("gender", gender);
-
-  //     if (image) formData.append("image", image);
-
-  //  dispatch(updateUser({ id: user_Id, data: formData })).then((res) => {
-  //   // if (res.payload?.data) {
-  //       const updatedUser = res.payload.data;
-
-  //       // ✅ Update both slices first
-  //       dispatch(updateAuthUser(updatedUser));
-
-  //       // ✅ Also update localStorage immediately
-
-  //       // ✅ Then refetch the latest user from backend (for consistency)
-  //       dispatch(fetchUserById(user_Id));
-
-  //       // ✅ Finally go back to profile view
-  //       onGoBackClick();
-  //     // }
-  // });
-
-  //   };
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();

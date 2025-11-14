@@ -38,7 +38,7 @@ useEffect(() => {
   if (userId) {
     dispatch(fetchCartByUserId(userId))
       .unwrap()
-      .then((res) => console.log("Fetched cart:", res))
+      // .then((res) => console.log("Fetched cart:", res))
       .catch((err) => console.error("Fetch error:", err));
   }
 }, [dispatch]);
@@ -48,7 +48,7 @@ useEffect(() => {
   useEffect(() => {
     const buyNowItem = localStorage.getItem("buyNowItem");
     if (buyNowItem) {
-      console.log("🧹 Removing buyNowItem instantly since user opened Cart");
+      // console.log("🧹 Removing buyNowItem instantly since user opened Cart");
 
       // ✅ Remove from localStorage
       localStorage.removeItem("buyNowItem");

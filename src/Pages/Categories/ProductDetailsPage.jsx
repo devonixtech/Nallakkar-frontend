@@ -264,7 +264,7 @@ export default function ProductDetailsPage() {
     if (userId) {
       dispatch(fetchCartByUserId(userId))
         .unwrap()
-        .then((res) => console.log("Fetched cart:", res))
+        // .then((res) => console.log("Fetched cart:", res))
         .catch((err) => console.error("Fetch error:", err));
     }
   }, [dispatch, userId]);

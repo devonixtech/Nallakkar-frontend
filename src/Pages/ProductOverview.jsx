@@ -16,7 +16,7 @@ const userString = localStorage.getItem("user");
 
 // Parse it into an object
 const user = JSON.parse(userString);
-console.log("local forge", selectedAddress);
+// console.log("local forge", selectedAddress);
 // Access the id
 const user_Id = user.id;
 
