@@ -1,8 +1,8 @@
- import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { fetchAllProducts, deleteProduct , updateProductStatus,updateFeaturedStatus } from "../../Redux/slices/productSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";   // ← FIXED
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 
 export default function ProductList() {
@@ -15,6 +15,11 @@ export default function ProductList() {
 
   const products = useSelector((state) => state?.products?.products);
   const categories = useSelector((state) => state?.category?.categories);  
+const [currentPage, setCurrentPage] = useState(1);
+const productsPerPage = 10; // jitne per page chahiye
+const indexOfLast = currentPage * productsPerPage;
+const indexOfFirst = indexOfLast - productsPerPage;
+const currentProducts = products.slice(indexOfFirst, indexOfLast);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -62,6 +67,15 @@ const handleToggleFeatured = (product) => {
     .then(() => dispatch(fetchAllProducts()));
 };
 
+const totalPages = Math.ceil(products.length / productsPerPage);
+
+const nextPage = () => {
+  if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+};
+
+const prevPage = () => {
+  if (currentPage > 1) setCurrentPage(currentPage - 1);
+};
 
   return (
     <>
@@ -124,7 +138,7 @@ const handleToggleFeatured = (product) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {products?.map((product) => (
+                {currentProducts?.map((product) => (
                   <tr key={product?._id} className="hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="flex items-center">
@@ -193,19 +207,43 @@ const handleToggleFeatured = (product) => {
           </div>
 
           <div className="p-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-600">Showing 1 to {products?.length} of {products?.length} results</p>
-            <div className="flex items-center space-x-2">
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 cursor-pointer">
-                Previous
-              </button>
-              <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm cursor-pointer">1</button>
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
-                2
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
-                Next
-              </button>
-            </div>
+          <p className="text-sm text-gray-600">
+  Showing {indexOfFirst + 1} to {Math.min(indexOfLast, products.length)} of {products.length} results
+</p>
+
+           <div className="flex items-center space-x-2">
+  <button
+    onClick={prevPage}
+    disabled={currentPage === 1}
+    className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 cursor-pointer disabled:opacity-50"
+  >
+    Previous
+  </button>
+
+  {/* Dynamic page numbers */}
+  {[...Array(totalPages)].map((_, i) => (
+    <button
+      key={i}
+      onClick={() => setCurrentPage(i + 1)}
+      className={`px-3 py-1 rounded text-sm cursor-pointer ${
+        currentPage === i + 1
+          ? "bg-blue-600 text-white"
+          : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+      }`}
+    >
+      {i + 1}
+    </button>
+  ))}
+
+  <button
+    onClick={nextPage}
+    disabled={currentPage === totalPages}
+    className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer disabled:opacity-50"
+  >
+    Next
+  </button>
+</div>
+
           </div>
         </div>
       </div>

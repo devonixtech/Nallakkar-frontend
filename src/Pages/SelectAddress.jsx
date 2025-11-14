@@ -1,9 +1,10 @@
- import { useEffect, useState } from "react";
-import { FaArrowLeft,FaTrashAlt } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaArrowLeft, FaTrashAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddressesByUserId, deleteAddress} from "../Redux/slices/addressSlice";
+import { getAddressesByUserId, deleteAddress } from "../Redux/slices/addressSlice";
 import { setItem } from "../utils/localForageService";
+import { Pen } from "lucide-react";
 
 export default function SelectAddress() {
   const [selected, setSelected] = useState(0);
@@ -24,18 +25,18 @@ export default function SelectAddress() {
       dispatch(getAddressesByUserId(user_Id));
     }
   }, [dispatch, user_Id]);
-useEffect(() => {
-  if (addresses.length > 0) {
-    const firstAddress = addresses[0];
-    setSelected(0);
+  useEffect(() => {
+    if (addresses.length > 0) {
+      const firstAddress = addresses[0];
+      setSelected(0);
 
-    // Save first address automatically
-    setItem("selectedAddress", firstAddress);
+      // Save first address automatically
+      setItem("selectedAddress", firstAddress);
 
-    // // Optional: also store in Redux
-    // dispatch(setSelectedAddress(firstAddress));
-  }
-}, [addresses]);
+      // // Optional: also store in Redux
+      // dispatch(setSelectedAddress(firstAddress));
+    }
+  }, [addresses]);
 
 
   // Function to mask phone number
@@ -43,7 +44,7 @@ useEffect(() => {
   //   if (!phone) return "";
   //   return phone.slice(0, 4) + "********";
   // };
-   // 🗑️ Handle delete address
+  // 🗑️ Handle delete address
   const handleDelete = async (addressId) => {
     if (window.confirm("Are you sure you want to delete this address?")) {
       await dispatch(deleteAddress(addressId));
@@ -66,9 +67,8 @@ useEffect(() => {
           addresses.map((addr, index) => (
             <div
               key={addr.id}
-              className={`p-4 shadow-sm relative ${
-                selected === index ? "border-rose" : "border-gray-200"
-              }`}
+              className={`p-4 shadow-sm relative ${selected === index ? "border-rose" : "border-gray-200"
+                }`}
             >
               <div className="flex items-start justify-between">
                 {/* Radio Button + Name + Phone */}
@@ -96,27 +96,29 @@ useEffect(() => {
                     </p>
                   </div>
                 </div>
-<div className="">
- {/* Edit button (only for selected) */}
-                  
-  <Link 
-     to={`/EditDeliveryAddress/${addr._id || addr.id}`}
+              {/* Action Buttons (Edit + Delete) */}
+<div className="flex items-center gap-6 text-sm">
 
-    className="text-rose font-semibold me-3"
+  {/* Edit */}
+  <Link
+    to={`/EditDeliveryAddress/${addr._id || addr.id}`}
+    className="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition"
   >
-    Edit
+    <Pen size={16} strokeWidth={1.5} />
+    <span>Edit</span>
   </Link>
 
+  {/* Delete */}
+  <button
+    onClick={() => handleDelete(addr._id)}
+    className="flex items-center gap-1 text-gray-600 text-red-600 transition"
+  >
+    <FaTrashAlt size={14} />
+    <span>Delete</span>
+  </button>
 
-                <button
-                    onClick={() => handleDelete(addr._id)}
-                    className="text-gray-500 hover:text-red-600"
-                    title="Delete address"
-                  >
-                    <FaTrashAlt />
-                  </button>
 </div>
-               
+
               </div>
 
               {/* Deliver Here Button (only for selected address) */}
@@ -125,9 +127,10 @@ useEffect(() => {
                   to={"/ProductOverview"}
                   className="inline-block mt-4 bg-primary hover:bg-rose text-white px-4 py-2"
                   onClick={() => {
-                       setItem("selectedAddress", addr);
-  
-                    navigate("/ProductOverview")}}
+                    setItem("selectedAddress", addr);
+
+                    navigate("/ProductOverview")
+                  }}
                 >
                   Deliver Here
                 </button>

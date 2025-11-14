@@ -366,7 +366,7 @@ export default function Women() {
                     </Link>
 
                     {/* Hover Add to Cart Button with Icon */}
-                    <Link to={`/product/${item.id}`}>
+                    {/* <Link to={`/product/${item.id}`}>
                       {" "}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <button className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition">
@@ -387,7 +387,7 @@ export default function Women() {
                           ADD TO CART
                         </button>
                       </div>
-                    </Link>
+                    </Link> */}
 
                     {/* Rating */}
                     <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">

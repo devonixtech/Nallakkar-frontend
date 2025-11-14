@@ -195,67 +195,76 @@ const AddInvestor = () => {
       </div>
 
       {/* Add / Edit Modal */}
-      {showModal && (
-        <div
-          style={{ overflow: "scroll" }}
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50"
-        >
-          <div className="bg-white mt-12 rounded-lg shadow-lg w-full max-w-lg p-6 relative">
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-20 right-2 text-gray-600 hover:text-gray-800"
-            >
-              ✖
-            </button>
-            <h3 className="text-xl mt-12 font-semibold mb-4">
-              {isEditing ? "Edit Investor" : "Add Investor"}
-            </h3>
-            <form className="space-y-4 mt-4">
-              {[
-                { label: "Name", name: "name" },
-                { label: "Email", name: "email", type: "email" },
-                { label: "Phone", name: "mobileNumber" },
-                { label: "Password", name: "password", type: "password" },
-                { label: "Branch Name", name: "branchName" },
-                { label: "Account Holder Name", name: "accountHolderName" },
-                { label: "IFSC Code", name: "ifscCode" },
-                { label: "Account Number", name: "accountNumber" },
-              ].map((field) => (
-                <div key={field.name}>
-                  <label className="block text-gray-700">{field.label}</label>
-                  <input
-                    type={field.type || "text"}
-                    name={field.name}
-                    value={formData[field.name] || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, [e.target.name]: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                    placeholder={`Enter ${field.label.toLowerCase()}`}
-                  />
-                </div>
-              ))}
+     {showModal && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 overflow-auto">
+    <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl p-8 relative">
 
-              <div className="flex justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSaveInvestor}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  {isEditing ? "Update" : "Save"}
-                </button>
-              </div>
-            </form>
+      {/* Close Button */}
+      <button
+        onClick={handleCloseModal}
+        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl"
+      >
+        ✖
+      </button>
+
+      <h3 className="text-2xl font-semibold mb-6">
+        {isEditing ? "Edit Investor" : "Add Investor"}
+      </h3>
+
+      <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {[
+          { label: "Name", name: "name" },
+          { label: "Email", name: "email", type: "email" },
+          { label: "Phone", name: "mobileNumber" },
+          { label: "Password", name: "password", type: "password" },
+          { label: "Branch Name", name: "branchName" },
+          { label: "Account Holder Name", name: "accountHolderName" },
+          { label: "IFSC Code", name: "ifscCode" },
+          { label: "Account Number", name: "accountNumber" },
+        ].map((field) => (
+          <div key={field.name}>
+            <label className="block text-gray-700 font-medium mb-1">
+              {field.label}
+            </label>
+            <input
+              type={field.type || "text"}
+              name={field.name}
+              value={formData[field.name] || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, [e.target.name]: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder={`Enter ${field.label.toLowerCase()}`}
+            />
           </div>
-        </div>
-      )}
+        ))}
+
+      </form>
+
+      {/* Footer Buttons */}
+      <div className="flex justify-end space-x-3 mt-8">
+        <button
+          type="button"
+          onClick={handleCloseModal}
+          className="px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          onClick={handleSaveInvestor}
+          className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        >
+          {isEditing ? "Update" : "Save"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* View Investor Modal */}
       {viewInvestor && (
