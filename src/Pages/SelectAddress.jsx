@@ -3,6 +3,7 @@ import { FaArrowLeft,FaTrashAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAddressesByUserId, setSelectedAddress  , deleteAddress} from "../Redux/slices/addressSlice";
+import { setItem } from "../utils/localForageService";
 
 export default function SelectAddress() {
   const [selected, setSelected] = useState(0);
@@ -78,7 +79,7 @@ export default function SelectAddress() {
                     checked={selected === index}
                     onChange={() => {
                       setSelected(index);
-                      dispatch(setSelectedAddress(addr)); // Save in Redux + localStorage
+                      // dispatch(setSelectedAddress(addr)); // Save in Redux + localStorage
                     }}
                     className="mt-1 bg-rose"
                   />
@@ -114,12 +115,16 @@ export default function SelectAddress() {
 
               {/* Deliver Here Button (only for selected address) */}
               {selected === index && (
-                <Link
+                <button
                   to={"/ProductOverview"}
                   className="inline-block mt-4 bg-primary hover:bg-rose text-white px-4 py-2"
+                  onClick={() => {
+                       setItem("selectedAddress", addr);
+  
+                    navigate("/ProductOverview")}}
                 >
                   Deliver Here
-                </Link>
+                </button>
               )}
             </div>
           ))

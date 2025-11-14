@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
 import { nav } from "framer-motion/client";
 import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
+ import { getItem } from "../utils/localForageService";
 
 const PhonePeIcon = () => (
   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-700 text-white font-bold text-sm">
@@ -371,8 +372,9 @@ const parsedAddress = address?.address || null;
           {parsedAddress ? (
             <>
               <p className="mt-1">
-                {parsedAddress.house || ""}, {parsedAddress.nearby || ""},{" "}
-                {parsedAddress.landmark || ""}, {parsedAddress.city || ""},{" "}
+                {parsedAddress.house || ""}, {parsedAddress.road || ""},{" "}
+                {parsedAddress.nearby
+ || ""}, {parsedAddress.city || ""},{" "}
                 {parsedAddress.state || ""} - {parsedAddress.pincode || ""}
               </p>
               <p className="mt-1">{address?.contactNumber || ""}</p>
@@ -416,6 +418,8 @@ function PaymentPage() {
   const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
   const [amount, setAmount] = useState(100);
  const [userdetails, setUserdetails] = useState(null);
+   const [selectedAddress, setSelectedAddress] = useState(null);
+ 
 
   const [buyNowItem, setBuyNowItem] = useState(null);
   const dispatch = useDispatch();
@@ -433,6 +437,15 @@ const user_Id = user.id;
       dispatch(fetchCartByUserId(user_Id));
     }, [dispatch, user_Id]);
     useEffect(() => {
+        const fetchAddress = async () => {
+          const savedAddress = await getItem("selectedAddress");
+          setUserdetails(savedAddress);
+          // setSelectedAddress(savedAddress); // re-render
+        };
+        fetchAddress(); // <-- run async function
+      }, []);
+    useEffect(() => {
+      
   const storedItem = localStorage.getItem("buyNowItem");
   if (storedItem) {
     setBuyNowItem(JSON.parse(storedItem));
@@ -443,24 +456,24 @@ const user_Id = user.id;
     setOpenSection(openSection === section ? null : section);
   };
 
-useEffect(() => {
-  try {
-    const stored = localStorage.getItem("selectedAddress");
-    if (!stored) return;
+// useEffect(() => {
+//   try {
+//     const stored = localStorage.getItem("selectedAddress");
+//     if (!stored) return;
 
-    let parsed = JSON.parse(stored);
+//     let parsed = JSON.parse(stored);
 
-    // Handle Safari/double-string issue
-    if (parsed && typeof parsed.address === "string") {
-      parsed.address = JSON.parse(parsed.address);
-    }
+//     // Handle Safari/double-string issue
+//     if (parsed && typeof parsed.address === "string") {
+//       parsed.address = JSON.parse(parsed.address);
+//     }
 
-    setUserdetails(parsed);
-  } catch (err) {
-    console.error("Error parsing selectedAddress:", err);
-    setUserdetails(null);
-  }
-}, []);
+//     setUserdetails(parsed);
+//   } catch (err) {
+//     console.error("Error parsing selectedAddress:", err);
+//     setUserdetails(null);
+//   }
+// }, []);
 
    
 // Transform to Shiprocket order_items format

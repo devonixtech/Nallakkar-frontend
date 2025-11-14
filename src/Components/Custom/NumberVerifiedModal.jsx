@@ -19,12 +19,12 @@ const NumberVerifiedModal = ({ onClose }) => {
 
           {/* Heading */}
           <h2 className="text-xl font-semibold text-primary mb-2">
-            Number Verified
+            OTP Verified
           </h2>
 
           {/* Subtext */}
           <p className="text-gray-500 text-sm mb-6">
-            Your number has been successfully verified. Enjoy secure access to
+            Your OTP has been successfully verified. Enjoy secure access to
             your account.
           </p>
 

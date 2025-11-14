@@ -1,4 +1,5 @@
 // src/pages/ProductOverview.jsx
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,15 +7,16 @@ import { useEffect } from "react";
 import { fetchCartByUserId } from "../Redux/slices/cartSlice";
 import { setBuyNowItem } from "../Redux/slices/buyNowSlice";
 import imgFallback from "../assets/details2.png";
- import { setSelectedAddress } from "../Redux/slices/addressSlice";
+//  import { setSelectedAddress } from "../Redux/slices/addressSlice";
+ import { getItem } from "../utils/localForageService";
 export default function ProductOverview() {
-
+  const [selectedAddress, setSelectedAddress] = useState(null);
   // Get the user string from localStorage
 const userString = localStorage.getItem("user");
 
 // Parse it into an object
 const user = JSON.parse(userString);
-
+console.log("local forge", selectedAddress);
 // Access the id
 const user_Id = user.id;
 
@@ -44,6 +46,14 @@ const user_Id = user.id;
       }
     }
   }, [dispatch, product]);
+
+useEffect(() => {
+  const fetchAddress = async () => {
+    const savedAddress = await getItem("selectedAddress");
+    setSelectedAddress(savedAddress); // re-render
+  };
+  fetchAddress(); // <-- run async function
+}, []);
 
   // ✅ Fetch cart only if BuyNow not active
   useEffect(() => {
@@ -110,22 +120,7 @@ const user_Id = user.id;
   }
 };
 
-const selectedAddress = getSelectedAddress();
-
-
-    const formatAddress = (addrStr) => {
-  if (!addrStr) return "";
-  let addrObj;
-  try {
-    addrObj = typeof addrStr === "string" ? JSON.parse(addrStr) : addrStr;
-  } catch (error) {
-    console.error("Invalid address JSON:", addrStr);
-    return "";
-  }
-
-  const { house, road, nearby, city, state } = addrObj;
-  return `${house}, ${road}${nearby ? `, ${nearby}` : ""}, ${city}, ${state}`;
-};
+// const selectedAddress = getSelectedAddress();
 
 
   return (
@@ -237,7 +232,7 @@ const selectedAddress = getSelectedAddress();
           <p>
             <span className="font-semibold"> {`${selectedAddress?.firstName} ${selectedAddress?.lastName}`} </span>
             <br />
-         {selectedAddress?.address?.house}  {selectedAddress?.address?.road} {selectedAddress?.address?.road} {selectedAddress?.address?.city}{selectedAddress?.address?.state}
+         {selectedAddress?.address?.house}  {selectedAddress?.address?.road}  {selectedAddress?.address?.nearby} {selectedAddress?.address?.city}{selectedAddress?.address?.state}
             <br />
             {selectedAddress?.contactNumber}
           </p>
