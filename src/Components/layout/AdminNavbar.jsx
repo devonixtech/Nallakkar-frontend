@@ -1,4 +1,6 @@
+import { LogOut } from "lucide-react";
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function AdminNavbar({ onMenuToggle, title }) {
   return (
@@ -19,14 +21,20 @@ export default function AdminNavbar({ onMenuToggle, title }) {
 
         {/* Right side */}
         <div className="flex items-center space-x-4">
-          <button className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700">
-            <i className="ri-notification-line text-xl"></i>
-          </button>
+
           <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
             <i className="ri-user-line text-white"></i>
           </div>
+          <Link
+            to="/"
+            className="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors whitespace-nowrap 
+             text-gray-700 hover:bg-gray-100"
+          >
+            <LogOut className="w-5 h-5 mr-3" />
+            Logout
+          </Link>
         </div>
       </div>
-    </header>
+    </header >
   );
 }
