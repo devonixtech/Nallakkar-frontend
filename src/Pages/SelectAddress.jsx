@@ -2,7 +2,7 @@
 import { FaArrowLeft,FaTrashAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddressesByUserId, setSelectedAddress  , deleteAddress} from "../Redux/slices/addressSlice";
+import { getAddressesByUserId, deleteAddress} from "../Redux/slices/addressSlice";
 import { setItem } from "../utils/localForageService";
 
 export default function SelectAddress() {
@@ -24,26 +24,25 @@ export default function SelectAddress() {
       dispatch(getAddressesByUserId(user_Id));
     }
   }, [dispatch, user_Id]);
+useEffect(() => {
+  if (addresses.length > 0) {
+    const firstAddress = addresses[0];
+    setSelected(0);
 
-  // Function to safely parse and format address
-  const formatAddress = (addrStr) => {
-    if (!addrStr) return "";
-    let addrObj;
-    try {
-      addrObj = typeof addrStr === "string" ? JSON.parse(addrStr) : addrStr;
-    } catch (error) {
-      console.error("Invalid address JSON:", addrStr);
-      return "";
-    }
-    const { house, road, nearby, city, state } = addrObj;
-    return `${house}, ${road}${nearby ? `, ${nearby}` : ""}, ${city}, ${state}`;
-  };
+    // Save first address automatically
+    setItem("selectedAddress", firstAddress);
+
+    // // Optional: also store in Redux
+    // dispatch(setSelectedAddress(firstAddress));
+  }
+}, [addresses]);
+
 
   // Function to mask phone number
-  const maskPhone = (phone) => {
-    if (!phone) return "";
-    return phone.slice(0, 4) + "********";
-  };
+  // const maskPhone = (phone) => {
+  //   if (!phone) return "";
+  //   return phone.slice(0, 4) + "********";
+  // };
    // 🗑️ Handle delete address
   const handleDelete = async (addressId) => {
     if (window.confirm("Are you sure you want to delete this address?")) {
@@ -87,11 +86,13 @@ export default function SelectAddress() {
                     <h3 className="font-semibold">
                       {addr.firstName} {addr.lastName}{" "}
                       <span className="ml-4 text-gray-700">
-                        {maskPhone(addr.contactNumber)}
+                        {addr.contactNumber}
                       </span>
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {formatAddress(addr.address)}
+                      {addr?.address?.house || ""}, {addr?.address?.road || ""},{" "}
+                      {addr?.address?.nearby || ""}, {addr?.address?.city || ""},{" "}
+                      {addr?.address?.state || ""}
                     </p>
                   </div>
                 </div>
