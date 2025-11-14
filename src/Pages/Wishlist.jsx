@@ -156,12 +156,11 @@ const userId = user?.id;
                 </Link>
 
                 {/* overlay (not a Link) so we don't create nested anchors; pointer-events disabled until hover -- it was giving errors */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10 pointer-events-none group-hover:pointer-events-auto">
+                {/* <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10 pointer-events-none group-hover:pointer-events-auto">
                   <Link
                     to={"/cart"}
                     className="flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium rounded shadow hover:bg-darkpink hover:text-white transition"
                   >
-                    {/* cart icon */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 w-4"
@@ -178,7 +177,7 @@ const userId = user?.id;
                     </svg>
                     ADD TO CART
                   </Link>
-                </div>
+                </div> */}
 
                 <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
                   <span>{item?.rating}</span> • <span>{item?.reviews}</span>
