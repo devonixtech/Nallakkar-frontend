@@ -51,6 +51,7 @@ import InvestorProduct from "../Pages/Investor/InvestorProduct";
 import InvestorProfile from "../Pages/Investor/InvestorProfile";
 import Addinvestor from "../Pages/admin/Addinvestor";
 import InvestoreProductList from "../Pages/admin/InvestoreProductList";
+import EditDeliveryAddress from "../Pages/EditDeliveryAddress";
 
 import PublicRoute from "./PublicRoute";
 import AdminLayout from "../layouts/AdminLayout";
@@ -104,6 +105,8 @@ export default function AppRoutes() {
               path="/AddDeliveryAddress"
               element={<AddDeliveryAddress></AddDeliveryAddress>}
             ></Route>
+            <Route path="/EditDeliveryAddress/:id" element={<EditDeliveryAddress />} />
+
             <Route path="/ProductOverview" element={<ProductOverview />} />
             <Route
               path="/PaymentPage"

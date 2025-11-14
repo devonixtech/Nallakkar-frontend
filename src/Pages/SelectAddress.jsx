@@ -98,13 +98,18 @@ useEffect(() => {
                 </div>
 <div className="">
  {/* Edit button (only for selected) */}
-                {selected === index && (
-                  <Link to={"/AddDeliveryAddress"} className="text-rose font-semibold me-3">
-                    Edit
-                  </Link>
-                )}
+                  
+  <Link 
+     to={`/EditDeliveryAddress/${addr._id || addr.id}`}
+
+    className="text-rose font-semibold me-3"
+  >
+    Edit
+  </Link>
+
+
                 <button
-                    onClick={() => handleDelete(addr.id || addr._id)}
+                    onClick={() => handleDelete(addr._id)}
                     className="text-gray-500 hover:text-red-600"
                     title="Delete address"
                   >
