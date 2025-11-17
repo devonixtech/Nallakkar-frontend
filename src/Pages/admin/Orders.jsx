@@ -1,23 +1,30 @@
 import { Helmet } from "react-helmet-async";
-import React,{useEffect} from "react";
-import { useDispatch,useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchAllOrders } from "../../Redux/slices/ordersSlice";
 
 export default function Orders() {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const rowsPerPage = 10; // per-page limit
 
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     dispatch(fetchAllOrders());
   }, [dispatch]);
-    const orders = useSelector((state) => state.orders.orders);
-    const pendingOrders = orders?.filter(o => o.tracking_status === "Pending") || [];
-const processingOrders = orders?.filter(o => o.tracking_status === "Processing") || [];
-const shippedOrders = orders?.filter(o => o.tracking_status === "Shipped") || [];
-const deliveredOrders = orders?.filter(o => o.tracking_status === "Delivered") || [];
+  const orders = useSelector((state) => state.orders.orders);
+  const pendingOrders = orders?.filter(o => o.tracking_status === "Pending") || [];
+  const processingOrders = orders?.filter(o => o.tracking_status === "Processing") || [];
+  const shippedOrders = orders?.filter(o => o.tracking_status === "Shipped") || [];
+  const deliveredOrders = orders?.filter(o => o.tracking_status === "Delivered") || [];
 
-  
- console.log("Orders from Redux:", orders);
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = orders?.slice(indexOfFirstRow, indexOfLastRow);
+
+  const totalPages = Math.ceil((orders?.length || 0) / rowsPerPage);
+
+  console.log("Orders from Redux:", orders);
   const getStatusColor = (status) => {
     switch (status) {
       case "Delivered":
@@ -158,12 +165,13 @@ const deliveredOrders = orders?.filter(o => o.tracking_status === "Delivered") |
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {orders?.map((order) => (
+                {currentRows?.map((order) => (
+
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <span className="text-sm font-medium text-blue-600">
                         {order?.shiprocket_order_id}
-                        
+
                       </span>
                     </td>
                     <td className="py-4 px-4">
@@ -175,11 +183,11 @@ const deliveredOrders = orders?.filter(o => o.tracking_status === "Delivered") |
                       </div>
                     </td>
                     <td className="py-4 px-4 text-sm text-gray-700">
-  {new Date(order?.created_at).toLocaleString("en-IN", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  })}
-</td>
+                      {new Date(order?.created_at).toLocaleString("en-IN", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
+                    </td>
 
                     <td className="py-4 px-4 text-sm text-gray-700">
                       {order?.items}
@@ -189,8 +197,8 @@ const deliveredOrders = orders?.filter(o => o.tracking_status === "Delivered") |
                     </td>
                     <td className="py-4 px-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.tracking_status)}`}>
-  {order.tracking_status}
-</span>
+                        {order.tracking_status}
+                      </span>
                       {/* <select
                         className={`text-xs font-medium rounded-full px-2 py-1 border-0 ${getStatusColor(
                           order?.status
@@ -244,26 +252,46 @@ const deliveredOrders = orders?.filter(o => o.tracking_status === "Delivered") |
 
           <div className="p-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-600">
-              Showing 1 to 5 of 1,247 results
+              Showing {indexOfFirstRow + 1} to {Math.min(indexOfLastRow, orders?.length)} of {orders?.length} results
             </p>
+
             <div className="flex items-center space-x-2">
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 cursor-pointer">
+              {/* Previous Button */}
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+                className={`px-3 py-1 border rounded text-sm ${currentPage === 1 ? "text-gray-300" : "text-gray-700 hover:bg-gray-50"
+                  }`}
+              >
                 Previous
               </button>
-              <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm cursor-pointer">
-                1
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
-                2
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
-                3
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
+
+              {/* Page Numbers */}
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`px-3 py-1 rounded text-sm border ${currentPage === i + 1
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+                className={`px-3 py-1 border rounded text-sm ${currentPage === totalPages ? "text-gray-300" : "text-gray-700 hover:bg-gray-50"
+                  }`}
+              >
                 Next
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </>
