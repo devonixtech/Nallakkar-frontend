@@ -483,6 +483,7 @@ const orderItems =
         {
           name: buyNowItem.product?.productName?.trim() || "Unnamed Product",
           sku: `PROD-${buyNowItem.product?._id}`,
+          product_id: buyNowItem.product?._id,
           units: Number(buyNowItem.quantity || 1),
           selling_price:
             buyNowItem.variant?.price ||
@@ -498,8 +499,9 @@ const orderItems =
     : items?.items?.map((item) => ({
         name: item.productName?.trim(),
         sku: `PROD-${item.productId}`,
-        units: Number(item.quantity),
-        selling_price: item.productPrice,
+        productId: item.productId,
+        units: Number(item?.quantity),
+        selling_price: item?.productPrice,
         length: item?.length || 10,
         breadth: item?.breadth || 10,
         height: item?.height || 10,
