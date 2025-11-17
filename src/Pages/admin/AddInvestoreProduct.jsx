@@ -146,7 +146,7 @@ const groupedVariants = customVariants.reduce((acc, v) => {
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Add John Deo Product</h2>
+      {/* <h2 className="text-xl font-bold mb-4">Add John Deo Product</h2> */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"

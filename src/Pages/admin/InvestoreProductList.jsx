@@ -64,8 +64,8 @@ const investorProducts = products?.filter(
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">John deo </h2>
-            <p className="text-gray-600">Manage John Deo inventory</p>
+            {/* <h2 className="text-xl font-semibold text-gray-900">John deo </h2>
+            <p className="text-gray-600">Manage John Deo inventory</p> */}
           </div>
             {/* ✅ Add Product Button */}
           <button

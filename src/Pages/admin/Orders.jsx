@@ -11,54 +11,13 @@ export default function Orders() {
     dispatch(fetchAllOrders());
   }, [dispatch]);
     const orders = useSelector((state) => state.orders.orders);
-  // const orders = [
-  //   {
-  //     id: "#1001",
-  //     customer: "John Doe",
-  //     email: "john@example.com",
-  //     date: "2024-01-15",
-  //     total: "$299.99",
-  //     status: "Delivered",
-  //     items: 3,
-  //   },
-  //   {
-  //     id: "#1002",
-  //     customer: "Jane Smith",
-  //     email: "jane@example.com",
-  //     date: "2024-01-14",
-  //     total: "$89.50",
-  //     status: "Processing",
-  //     items: 2,
-  //   },
-  //   {
-  //     id: "#1003",
-  //     customer: "Mike Johnson",
-  //     email: "mike@example.com",
-  //     date: "2024-01-14",
-  //     total: "$449.99",
-  //     status: "Shipped",
-  //     items: 1,
-  //   },
-  //   {
-  //     id: "#1004",
-  //     customer: "Sarah Wilson",
-  //     email: "sarah@example.com",
-  //     date: "2024-01-13",
-  //     total: "$159.99",
-  //     status: "Pending",
-  //     items: 4,
-  //   },
-  //   {
-  //     id: "#1005",
-  //     customer: "David Brown",
-  //     email: "david@example.com",
-  //     date: "2024-01-13",
-  //     total: "$75.00",
-  //     status: "Cancelled",
-  //     items: 2,
-  //   },
-  // ];
+    const pendingOrders = orders?.filter(o => o.tracking_status === "Pending") || [];
+const processingOrders = orders?.filter(o => o.tracking_status === "Processing") || [];
+const shippedOrders = orders?.filter(o => o.tracking_status === "Shipped") || [];
+const deliveredOrders = orders?.filter(o => o.tracking_status === "Delivered") || [];
 
+  
+ console.log("Orders from Redux:", orders);
   const getStatusColor = (status) => {
     switch (status) {
       case "Delivered":
@@ -87,12 +46,12 @@ export default function Orders() {
             </h2>
             <p className="text-gray-600">Track and manage customer orders</p>
           </div>
-          <div className="flex items-center space-x-3">
+          {/* <div className="flex items-center space-x-3">
             <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center whitespace-nowrap cursor-pointer">
               <i className="ri-download-line mr-2"></i>
               Export Orders
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -102,7 +61,7 @@ export default function Orders() {
                 <p className="text-sm font-medium text-gray-600">
                   Total Orders
                 </p>
-                <p className="text-2xl font-bold text-gray-900 mt-2">1,247</p>
+                <p className="text-2xl font-bold text-gray-900 mt-2">{orders?.length}</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <i className="ri-shopping-cart-line text-blue-600 text-xl"></i>
@@ -115,7 +74,7 @@ export default function Orders() {
                 <p className="text-sm font-medium text-gray-600">
                   Pending Orders
                 </p>
-                <p className="text-2xl font-bold text-gray-900 mt-2">23</p>
+                <p className="text-2xl font-bold text-gray-900 mt-2">{pendingOrders?.length}</p>
               </div>
               <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                 <i className="ri-time-line text-orange-600 text-xl"></i>
@@ -126,7 +85,7 @@ export default function Orders() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Processing</p>
-                <p className="text-2xl font-bold text-gray-900 mt-2">45</p>
+                <p className="text-2xl font-bold text-gray-900 mt-2">{processingOrders?.length}</p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                 <i className="ri-loader-line text-yellow-600 text-xl"></i>
@@ -137,7 +96,7 @@ export default function Orders() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Delivered</p>
-                <p className="text-2xl font-bold text-gray-900 mt-2">1,156</p>
+                <p className="text-2xl font-bold text-gray-900 mt-2">{deliveredOrders?.length}</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <i className="ri-check-line text-green-600 text-xl"></i>
@@ -229,7 +188,9 @@ export default function Orders() {
                       {order?.total_amount}
                     </td>
                     <td className="py-4 px-4">
-                      {order?.tracking_status}
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.tracking_status)}`}>
+  {order.tracking_status}
+</span>
                       {/* <select
                         className={`text-xs font-medium rounded-full px-2 py-1 border-0 ${getStatusColor(
                           order?.status
