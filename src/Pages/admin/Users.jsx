@@ -1,7 +1,7 @@
-import { useState , useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchAllUsers } from '../../Redux/slices/userSlice';
-import { useSelector , useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 export default function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('All');
@@ -11,98 +11,98 @@ export default function UsersPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-//   const [users, setUsers] = useState(
-//     [
-//     {
-//       id: '1',
-//       name: 'John Anderson',
-//       email: 'john.anderson@gmail.com',
-//       role: 'Admin',
-//       status: 'Active',
-//       joinDate: '2023-01-15',
-//       lastLogin: '2024-01-20',
-//       orders: 0,
-//       totalSpent: '$0',
-//       avatar: 'https://readdy.ai/api/search-image?query=professional%20business%20man%20portrait%20headshot%20clean%20background%20corporate%20style&width=80&height=80&seq=user1&orientation=squarish',
-//       phone: '+1 (555) 123-4567',
-//       location: 'New York, USA'
-//     },
-//     {
-//       id: '2',
-//       name: 'Sarah Williams',
-//       email: 'sarah.williams@yahoo.com',
-//       role: 'Customer',
-//       status: 'Active',
-//       joinDate: '2023-03-22',
-//       lastLogin: '2024-01-19',
-//       orders: 12,
-//       totalSpent: '$1,847',
-//       avatar: 'https://readdy.ai/api/search-image?query=professional%20business%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20friendly%20smile&width=80&height=80&seq=user2&orientation=squarish',
-//       phone: '+1 (555) 987-6543',
-//       location: 'California, USA'
-//     },
-//     {
-//       id: '3',
-//       name: 'Michael Chen',
-//       email: 'michael.chen@outlook.com',
-//       role: 'Manager',
-//       status: 'Active',
-//       joinDate: '2023-02-08',
-//       lastLogin: '2024-01-18',
-//       orders: 0,
-//       totalSpent: '$0',
-//       avatar: 'https://readdy.ai/api/search-image?query=professional%20asian%20business%20man%20portrait%20headshot%20clean%20background%20corporate%20style%20confident&width=80&height=80&seq=user3&orientation=squarish',
-//       phone: '+1 (555) 456-7890',
-//       location: 'Texas, USA'
-//     },
-//     {
-//       id: '4',
-//       name: 'Emily Davis',
-//       email: 'emily.davis@gmail.com',
-//       role: 'Customer',
-//       status: 'Active',
-//       joinDate: '2023-06-12',
-//       lastLogin: '2024-01-17',
-//       orders: 8,
-//       totalSpent: '$924',
-//       avatar: 'https://readdy.ai/api/search-image?query=professional%20young%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20modern&width=80&height=80&seq=user4&orientation=squarish',
-//       phone: '+1 (555) 234-5678',
-//       location: 'Florida, USA'
-//     },
-//     {
-//       id: '5',
-//       name: 'Robert Johnson',
-//       email: 'robert.johnson@hotmail.com',
-//       role: 'Customer',
-//       status: 'Inactive',
-//       joinDate: '2023-09-03',
-//       lastLogin: '2023-12-15',
-//       orders: 3,
-//       totalSpent: '$287',
-//       avatar: 'https://readdy.ai/api/search-image?query=professional%20middle%20aged%20man%20portrait%20headshot%20clean%20background%20corporate%20style%20serious&width=80&height=80&seq=user5&orientation=squarish',
-//       phone: '+1 (555) 345-6789',
-//       location: 'Illinois, USA'
-//     },
-//     {
-//       id: '6',
-//       name: 'Lisa Thompson',
-//       email: 'lisa.thompson@gmail.com',
-//       role: 'Customer',
-//       status: 'Suspended',
-//       joinDate: '2023-11-18',
-//       lastLogin: '2024-01-05',
-//       orders: 1,
-//       totalSpent: '$45',
-//       avatar: 'https://readdy.ai/api/search-image?query=professional%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20professional&width=80&height=80&seq=user6&orientation=squarish',
-//       phone: '+1 (555) 567-8901',
-//       location: 'Nevada, USA'
-//     }
-//   ]
-// );
+  //   const [users, setUsers] = useState(
+  //     [
+  //     {
+  //       id: '1',
+  //       name: 'John Anderson',
+  //       email: 'john.anderson@gmail.com',
+  //       role: 'Admin',
+  //       status: 'Active',
+  //       joinDate: '2023-01-15',
+  //       lastLogin: '2024-01-20',
+  //       orders: 0,
+  //       totalSpent: '$0',
+  //       avatar: 'https://readdy.ai/api/search-image?query=professional%20business%20man%20portrait%20headshot%20clean%20background%20corporate%20style&width=80&height=80&seq=user1&orientation=squarish',
+  //       phone: '+1 (555) 123-4567',
+  //       location: 'New York, USA'
+  //     },
+  //     {
+  //       id: '2',
+  //       name: 'Sarah Williams',
+  //       email: 'sarah.williams@yahoo.com',
+  //       role: 'Customer',
+  //       status: 'Active',
+  //       joinDate: '2023-03-22',
+  //       lastLogin: '2024-01-19',
+  //       orders: 12,
+  //       totalSpent: '$1,847',
+  //       avatar: 'https://readdy.ai/api/search-image?query=professional%20business%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20friendly%20smile&width=80&height=80&seq=user2&orientation=squarish',
+  //       phone: '+1 (555) 987-6543',
+  //       location: 'California, USA'
+  //     },
+  //     {
+  //       id: '3',
+  //       name: 'Michael Chen',
+  //       email: 'michael.chen@outlook.com',
+  //       role: 'Manager',
+  //       status: 'Active',
+  //       joinDate: '2023-02-08',
+  //       lastLogin: '2024-01-18',
+  //       orders: 0,
+  //       totalSpent: '$0',
+  //       avatar: 'https://readdy.ai/api/search-image?query=professional%20asian%20business%20man%20portrait%20headshot%20clean%20background%20corporate%20style%20confident&width=80&height=80&seq=user3&orientation=squarish',
+  //       phone: '+1 (555) 456-7890',
+  //       location: 'Texas, USA'
+  //     },
+  //     {
+  //       id: '4',
+  //       name: 'Emily Davis',
+  //       email: 'emily.davis@gmail.com',
+  //       role: 'Customer',
+  //       status: 'Active',
+  //       joinDate: '2023-06-12',
+  //       lastLogin: '2024-01-17',
+  //       orders: 8,
+  //       totalSpent: '$924',
+  //       avatar: 'https://readdy.ai/api/search-image?query=professional%20young%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20modern&width=80&height=80&seq=user4&orientation=squarish',
+  //       phone: '+1 (555) 234-5678',
+  //       location: 'Florida, USA'
+  //     },
+  //     {
+  //       id: '5',
+  //       name: 'Robert Johnson',
+  //       email: 'robert.johnson@hotmail.com',
+  //       role: 'Customer',
+  //       status: 'Inactive',
+  //       joinDate: '2023-09-03',
+  //       lastLogin: '2023-12-15',
+  //       orders: 3,
+  //       totalSpent: '$287',
+  //       avatar: 'https://readdy.ai/api/search-image?query=professional%20middle%20aged%20man%20portrait%20headshot%20clean%20background%20corporate%20style%20serious&width=80&height=80&seq=user5&orientation=squarish',
+  //       phone: '+1 (555) 345-6789',
+  //       location: 'Illinois, USA'
+  //     },
+  //     {
+  //       id: '6',
+  //       name: 'Lisa Thompson',
+  //       email: 'lisa.thompson@gmail.com',
+  //       role: 'Customer',
+  //       status: 'Suspended',
+  //       joinDate: '2023-11-18',
+  //       lastLogin: '2024-01-05',
+  //       orders: 1,
+  //       totalSpent: '$45',
+  //       avatar: 'https://readdy.ai/api/search-image?query=professional%20woman%20portrait%20headshot%20clean%20background%20corporate%20style%20professional&width=80&height=80&seq=user6&orientation=squarish',
+  //       phone: '+1 (555) 567-8901',
+  //       location: 'Nevada, USA'
+  //     }
+  //   ]
+  // );
   const dispatch = useDispatch();
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(fetchAllUsers());
-  },[dispatch])
+  }, [dispatch])
   const users = useSelector((state) => state?.users?.users);
   const [newUser, setNewUser] = useState({
     name: '',
@@ -115,10 +115,10 @@ export default function UsersPage() {
 
   const filteredUsers = users?.filter(user => {
     const matchesSearch = user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user?.email?.toLowerCase().includes(searchTerm.toLowerCase());
+      user?.email?.toLowerCase().includes(searchTerm.toLowerCase());
     // const matchesRole = roleFilter === 'All' || user?.role === roleFilter;
     // const matchesStatus = statusFilter === 'All' || user?.status === statusFilter;
-    
+
     return matchesSearch;
   });
 
@@ -171,8 +171,8 @@ export default function UsersPage() {
 
   const handleEditUser = () => {
     if (!selectedUser) return;
-    
-    setUsers(users.map(user => 
+
+    setUsers(users.map(user =>
       user.id === selectedUser.id ? selectedUser : user
     ));
     setShowEditModal(false);
@@ -181,7 +181,7 @@ export default function UsersPage() {
 
   const handleDeleteUser = () => {
     if (!selectedUser) return;
-    
+
     setUsers(users.filter(user => user.id !== selectedUser.id));
     setShowDeleteModal(false);
     setSelectedUser(null);
@@ -208,10 +208,29 @@ export default function UsersPage() {
     setSelectedUser(user);
     setShowDeleteModal(true);
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+
+  const data = filteredUsers?.length ? filteredUsers : users;
+
+  const indexOfLast = currentPage * productsPerPage;
+  const indexOfFirst = indexOfLast - productsPerPage;
+
+  const currentUsers = data?.slice(indexOfFirst, indexOfLast);
+
+  const totalPages = Math.ceil(data?.length / productsPerPage);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
 
   return (
     <>
-            <div className="space-y-6">
+      <div className="space-y-6">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -348,7 +367,7 @@ export default function UsersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredUsers?.map((user) => (
+                {currentUsers?.map((user) => (
                   <tr key={user?.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
@@ -389,11 +408,10 @@ export default function UsersPage() {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => toggleUserStatus(user?.id)}
-                          className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
-                            user?.status === 'Active' 
-                              ? 'text-red-600 hover:bg-red-50' 
+                          className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${user?.status === 'Active'
+                              ? 'text-red-600 hover:bg-red-50'
                               : 'text-green-600 hover:bg-green-50'
-                          }`}
+                            }`}
                           title={user.status === 'Active' ? 'Deactivate' : 'Activate'}
                         >
                           <i className={user.status === 'Active' ? 'ri-pause-circle-line' : 'ri-play-circle-line'}></i>
@@ -426,7 +444,45 @@ export default function UsersPage() {
               </tbody>
             </table>
           </div>
-          
+          <div className="p-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-600">
+              Showing {indexOfFirst + 1} to {Math.min(indexOfLast, data.length)} of {data.length} results
+            </p>
+
+
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 cursor-pointer disabled:opacity-50"
+              >
+                Previous
+              </button>
+
+              {/* Dynamic page numbers */}
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`px-3 py-1 rounded text-sm cursor-pointer ${currentPage === i + 1
+                      ? "bg-blue-600 text-white"
+                      : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={nextPage}
+                disabled={currentUsers === totalPages}
+                className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+
+          </div>
           {filteredUsers.length === 0 && (
             <div className="text-center py-12">
               <i className="ri-user-line text-gray-300 text-4xl mb-4"></i>
@@ -573,7 +629,7 @@ export default function UsersPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
                     <select
                       value={selectedUser.role}
-                      onChange={(e) => setSelectedUser({ ...selectedUser, role: e.target.value})}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, role: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-8"
                     >
                       <option value="Customer">Customer</option>
@@ -585,7 +641,7 @@ export default function UsersPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
                     <select
                       value={selectedUser.status}
-                      onChange={(e) => setSelectedUser({ ...selectedUser, status: e.target.value})}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, status: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-8"
                     >
                       <option value="Active">Active</option>
@@ -627,7 +683,7 @@ export default function UsersPage() {
                 </div>
               </div>
               <p className="text-gray-700 mb-6">
-                Are you sure you want to delete <strong>{selectedUser.name}</strong>? 
+                Are you sure you want to delete <strong>{selectedUser.name}</strong>?
                 This will permanently remove their account and all associated data.
               </p>
               <div className="flex justify-end space-x-3">

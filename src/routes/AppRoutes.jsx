@@ -159,7 +159,7 @@ export default function AppRoutes() {
             element={<AddCategory></AddCategory>}
           ></Route>
           <Route
-            path="productsDetails"
+            path="productsDetails/:id"
             element={<ProductDetails></ProductDetails>}
           ></Route>
         </Route>
