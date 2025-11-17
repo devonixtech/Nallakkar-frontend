@@ -481,9 +481,9 @@ const orderItems =
   buyNowItem
     ? [
         {
-          name: buyNowItem.product?.productName?.trim() || "Unnamed Product",
-          sku: `PROD-${buyNowItem.product?._id}`,
-          product_id: buyNowItem.product?._id,
+          name: buyNowItem.product?.name?.trim() || "Unnamed Product",
+          sku: `PROD-${buyNowItem.product?.id}`,
+          productId: buyNowItem.product?.id,
           units: Number(buyNowItem.quantity || 1),
           selling_price:
             buyNowItem.variant?.price ||
@@ -497,7 +497,7 @@ const orderItems =
         },
       ]
     : items?.items?.map((item) => ({
-        name: item.productName?.trim(),
+        name: item.name?.trim(),
         sku: `PROD-${item.productId}`,
         productId: item.productId,
         units: Number(item?.quantity),
@@ -509,7 +509,7 @@ const orderItems =
       }));
  
  
-
+ console.log("order",orderItems)
  
 const totalWeight = buyNowItem
   ? (buyNowItem.product?.weight || 0.5) * buyNowItem.quantity
