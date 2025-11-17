@@ -475,7 +475,6 @@ const user_Id = user.id;
 //   }
 // }, []);
 
-   
 // Transform to Shiprocket order_items format
 const orderItems =
   buyNowItem
@@ -497,7 +496,7 @@ const orderItems =
         },
       ]
     : items?.items?.map((item) => ({
-        name: item.name?.trim(),
+        name: item.productName|| "Unnamed Product",
         sku: `PROD-${item.productId}`,
         productId: item.productId,
         units: Number(item?.quantity),
@@ -509,7 +508,6 @@ const orderItems =
       }));
  
  
- console.log("order",orderItems)
  
 const totalWeight = buyNowItem
   ? (buyNowItem.product?.weight || 0.5) * buyNowItem.quantity
