@@ -56,12 +56,14 @@ import EditDeliveryAddress from "../Pages/EditDeliveryAddress";
 import PublicRoute from "./PublicRoute";
 import AdminLayout from "../layouts/AdminLayout";
 import OrderDetails from "../Pages/OrderDetails";
+import InvestorLogin from "../Pages/InvestorLogin";
 
 export default function AppRoutes() {
   return (
     <Routes>
       {/* ✅ Home routes */}
       <Route path="/login" element={<Login />} />
+      <Route path="/investorLogin" element={<InvestorLogin />} />
       <Route element={<PublicRoute />}>
         <Route element={<HomeLayout />}>
           {/* <Route path="/" element={<Home />} /> */}
