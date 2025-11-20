@@ -1,17 +1,17 @@
 
-import  React ,{ useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchAllCategories , createCategory, deleteCategory,updateCategory} from '../../Redux/slices/categorySlice';
-import { useSelector , useDispatch } from "react-redux";
-import { fetchSubcategoryBycategoryId , createSubcategory,deleteSubcategory , updateSubcategory} from '../../Redux/slices/subcategorySlice';
+import { fetchAllCategories, createCategory, deleteCategory, updateCategory } from '../../Redux/slices/categorySlice';
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSubcategoryBycategoryId, createSubcategory, deleteSubcategory, updateSubcategory } from '../../Redux/slices/subcategorySlice';
 export default function CategoriesPage() {
   const dispatch = useDispatch();
-   useEffect(()=>{
-        dispatch(fetchAllCategories());
-      },[dispatch])
-    const categories  = useSelector((state) => state?.ctegory?.categories);
-    const subcategoryById  = useSelector((state) => state?.subcategory?.subcategoryData?.data);
-    
+  useEffect(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch])
+  const categories = useSelector((state) => state?.ctegory?.categories);
+  const subcategoryById = useSelector((state) => state?.subcategory?.subcategoryData?.data);
+
 
   const [subcategories, setSubcategories] = useState([
     { id: 1, name: 'Smartphones', slug: 'smartphones', description: 'Mobile phones and accessories', status: 'Active', categoryId: 1, parentCategoryName: 'Electronics', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=smartphone%20subcategory%20icon%20modern%20mobile%20phone%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub1&orientation=squarish' },
@@ -23,7 +23,7 @@ export default function CategoriesPage() {
     { id: 7, name: 'Cables', slug: 'cables', description: 'Charging and data cables', status: 'Active', categoryId: 2, parentCategoryName: 'Accessories', productsCount: 18, image: 'https://readdy.ai/api/search-image?query=cable%20subcategory%20icon%20charging%20data%20cord%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub7&orientation=squarish' },
     { id: 8, name: 'Chargers', slug: 'chargers', description: 'Power adapters and wireless chargers', status: 'Active', categoryId: 2, parentCategoryName: 'Accessories', productsCount: 12, image: 'https://readdy.ai/api/search-image?query=charger%20subcategory%20icon%20power%20adapter%20on%20clean%20white%20background%2C%20minimal%20design&width=40&height=40&seq=sub8&orientation=squarish' }
   ]);
-    
+
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -32,7 +32,7 @@ export default function CategoriesPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [expandedRows, setExpandedRows] = useState([]);
-  
+
   // Subcategory states
   const [showSubcategoryModal, setShowSubcategoryModal] = useState(false);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
@@ -44,27 +44,27 @@ export default function CategoriesPage() {
 
   const filteredCategories = categories?.filter(category => {
     const matchesSearch = category?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-                          
+
     const matchesStatus = statusFilter === '' || category?.status == statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const getSubcategoriesForCategory = (categoryId) => {
-  return subcategoryById?.filter(sub => {
-    const belongsToCategory = sub.categoryId === categoryId;
-    const matchesSearch = sub.name.toLowerCase().includes(subcategorySearchTerm.toLowerCase()) ||
-                         sub.description.toLowerCase().includes(subcategorySearchTerm.toLowerCase());
-    const matchesStatus = subcategoryStatusFilter === '' || sub.status === subcategoryStatusFilter;
-    return belongsToCategory && matchesSearch && matchesStatus;
-  });
-};
+    return subcategoryById?.filter(sub => {
+      const belongsToCategory = sub.categoryId === categoryId;
+      const matchesSearch = sub.name.toLowerCase().includes(subcategorySearchTerm.toLowerCase()) ||
+        sub.description.toLowerCase().includes(subcategorySearchTerm.toLowerCase());
+      const matchesStatus = subcategoryStatusFilter === '' || sub.status === subcategoryStatusFilter;
+      return belongsToCategory && matchesSearch && matchesStatus;
+    });
+  };
 
 
-   
-   
+
+
   const toggleSubcategoryStatus = (id) => {
-    setSubcategories(prev => prev.map(sub => 
-      sub.id === id 
+    setSubcategories(prev => prev.map(sub =>
+      sub.id === id
         ? { ...sub, status: sub.status === 'Active' ? 'Inactive' : 'Active' }
         : sub
     ));
@@ -89,16 +89,16 @@ export default function CategoriesPage() {
 
   const handleDeleteSubcategory = (id) => {
     if (window.confirm("Are you sure you want to delete this subcategory?")) {
-    dispatch(deleteSubcategory(id))
-      .unwrap()
-      .then(() => {
-        // ✅ refresh subcategory list after delete
-        dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
-      })
-      .catch((err) => {
-        console.error("Delete failed:", err);
-      });
-  }
+      dispatch(deleteSubcategory(id))
+        .unwrap()
+        .then(() => {
+          // ✅ refresh subcategory list after delete
+          dispatch(fetchSubcategoryBycategoryId(selectedCategoryId));
+        })
+        .catch((err) => {
+          console.error("Delete failed:", err);
+        });
+    }
   };
 
   const confirmDelete = () => {
@@ -126,8 +126,8 @@ export default function CategoriesPage() {
       setSubcategoryToDelete(null);
     }
   };
-  
-    const toggleSubcategories = (categoryId) => {
+
+  const toggleSubcategories = (categoryId) => {
     setSelectedCategoryId(categoryId);
     if (!expandedRows.includes(categoryId)) {
       dispatch(fetchSubcategoryBycategoryId(categoryId));
@@ -141,12 +141,12 @@ export default function CategoriesPage() {
 
 
   const getStatusColor = (status) => {
-    return status ==1 
+    return status == 1
       ? 'bg-green-100 text-green-800'
       : 'bg-red-100 text-red-800';
   };
-   
-  
+
+
   return (
     <>
       <div className="space-y-6">
@@ -218,7 +218,7 @@ export default function CategoriesPage() {
               <tbody className="divide-y divide-gray-200">
                 {filteredCategories?.map((category) => (
                   < React.Fragment key={category.id}>
-                    <tr  className="hover:bg-gray-50">
+                    <tr className="hover:bg-gray-50">
                       <td className="py-4 px-4">
                         <div className="flex items-center">
                           {category?.image && (
@@ -233,39 +233,38 @@ export default function CategoriesPage() {
                           </div>
                         </div>
                       </td>
-                      
+
                       <td className="py-4 px-4">
                         <button
                           onClick={() => toggleCategoryStatus(category?.id)}
                           className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(category?.status)}`}
                         >
-                          {category?.status==1?'Active':'Inactive'}
+                          {category?.status == 1 ? 'Active' : 'Inactive'}
                         </button>
                       </td>
                       <td className="py-4 px-4 text-sm text-gray-700">{category?.productsCount}</td>
                       <td className="py-4 px-4">
-  <button
-    onClick={() => toggleSubcategories(category?.id)}
-    className="flex items-center text-sm text-blue-600 hover:text-blue-700 cursor-pointer"
-  >
-    {category?.subcategories?.length || 0}
-    <i
-      className={`ri-arrow-down-s-line ml-1 transition-transform ${
-        expandedRows.includes(category?.id) ? "rotate-180" : ""
-      }`}
-    ></i>
-  </button>
-</td>
+                        <button
+                          onClick={() => toggleSubcategories(category?.id)}
+                          className="flex items-center text-sm text-blue-600 hover:text-blue-700 cursor-pointer"
+                        >
+                          {category?.subcategories?.length || 0}
+                          <i
+                            className={`ri-arrow-down-s-line ml-1 transition-transform ${expandedRows.includes(category?.id) ? "rotate-180" : ""
+                              }`}
+                          ></i>
+                        </button>
+                      </td>
 
                       <td className="py-4 px-4">
                         <div className="flex items-center space-x-2">
-                          <button 
+                          <button
                             onClick={() => handleEdit(category)}
                             className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-blue-600 cursor-pointer"
                           >
                             <i className="ri-edit-line"></i>
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleDelete(category?.id)}
                             className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-red-600 cursor-pointer"
                           >
@@ -274,7 +273,7 @@ export default function CategoriesPage() {
                         </div>
                       </td>
                     </tr>
-                    
+
                     {expandedRows?.includes(category?.id) && (
                       <tr>
                         <td colSpan={6} className="py-4 px-4 bg-gray-50">
@@ -283,8 +282,8 @@ export default function CategoriesPage() {
                               <h5 className="text-sm font-medium text-gray-700">Subcategories for {category?.name}</h5>
                               <button
                                 onClick={() => {
-                                    setSelectedSubcategory(null);
-                setShowSubcategoryModal(true);
+                                  setSelectedSubcategory(null);
+                                  setShowSubcategoryModal(true);
                                 }}
                                 className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition-colors flex items-center text-sm cursor-pointer"
                               >
@@ -339,25 +338,25 @@ export default function CategoriesPage() {
                                           </div>
                                         </div>
                                       </td>
-                                      
+
                                       <td className="py-3 px-3">
                                         <button
                                           onClick={() => toggleSubcategoryStatus(subcategory?.id)}
                                           className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(subcategory?.status)}`}
                                         >
-                                          {subcategory?.status==1?'Active':'Inactive'}
+                                          {subcategory?.status == 1 ? 'Active' : 'Inactive'}
                                         </button>
                                       </td>
                                       <td className="py-3 px-3 text-sm text-gray-700">{subcategory?.productsCount}</td>
                                       <td className="py-3 px-3">
                                         <div className="flex items-center space-x-1">
-                                          <button 
+                                          <button
                                             onClick={() => handleEditSubcategory(subcategory)}
                                             className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-blue-600 cursor-pointer"
                                           >
                                             <i className="ri-edit-line text-sm"></i>
                                           </button>
-                                          <button 
+                                          <button
                                             onClick={() => handleDeleteSubcategory(subcategory?.id)}
                                             className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-red-600 cursor-pointer"
                                           >
@@ -369,7 +368,7 @@ export default function CategoriesPage() {
                                   ))}
                                 </tbody>
                               </table>
-                              
+
                               {getSubcategoriesForCategory(category?.id)?.length === 0 && (
                                 <div className="p-8 text-center text-gray-500">
                                   <i className="ri-folder-open-line text-3xl mb-2"></i>
@@ -442,7 +441,7 @@ export default function CategoriesPage() {
           onSave={(subcategoryData) => {
             if (selectedSubcategory && selectedSubcategory.id > 0) {
               // Edit existing subcategory
-              setSubcategories(prev => prev.map(sub => 
+              setSubcategories(prev => prev.map(sub =>
                 sub.id === selectedSubcategory.id ? { ...sub, ...subcategoryData } : sub
               ));
             } else {
@@ -453,7 +452,7 @@ export default function CategoriesPage() {
                 ...subcategoryData
               };
               setSubcategories(prev => [...prev, newSubcategory]);
-              
+
               // Update category subcategories count
               // setCategories(prev => prev.map(cat => 
               //   cat.id === subcategoryData.categoryId 
@@ -522,8 +521,8 @@ export default function CategoriesPage() {
 
 
 function CategoryModal({ category, onClose, onSave }) {
-   const dispatch = useDispatch();
-   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: category?.name || "",
     status: category?.status || "0",
@@ -538,51 +537,51 @@ function CategoryModal({ category, onClose, onSave }) {
   };
 
   const handleSubmit = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const data = new FormData();
-  data.append("name", formData.name);
-  data.append("status", formData.status === "Active" ? 1 : 0);
-  if (formData.image) {
-    data.append("image", formData.image);
-  }
-setLoading(true)
-  if (category?.id) {
-    // ✅ Update existing category
-    dispatch(updateCategory({ id: category.id, data }))
-      .unwrap()
-      .then(() => {
-        dispatch(fetchAllCategories()); // refresh
-        onClose();
-      })
-      .catch((err) => console.error("Failed to update category:", err));
-      
-  } else {
-    // ✅ Create new category
-    dispatch(createCategory(data))
-      .unwrap()
-      .then(() => {
-        dispatch(fetchAllCategories());
-        onClose();
-      })
-      .catch((err) => console.error("Failed to create category:", err));
-  }
-  setLoading(false);
-};
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("status", formData.status === "Active" ? 1 : 0);
+    if (formData.image) {
+      data.append("image", formData.image);
+    }
+    setLoading(true)
+    if (category?.id) {
+      // ✅ Update existing category
+      dispatch(updateCategory({ id: category.id, data }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchAllCategories()); // refresh
+          onClose();
+        })
+        .catch((err) => console.error("Failed to update category:", err));
+
+    } else {
+      // ✅ Create new category
+      dispatch(createCategory(data))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchAllCategories());
+          onClose();
+        })
+        .catch((err) => console.error("Failed to create category:", err));
+    }
+    setLoading(false);
+  };
 
 
-const confirmDelete = () => {
-  if (categoryToDelete) {
-    dispatch(deleteCategory(categoryToDelete))
-      .unwrap()
-      .then(() => {
-        dispatch(fetchAllCategories()); // refresh list
-        setShowDeleteConfirm(false);
-        setCategoryToDelete(null);
-      })
-      .catch(err => console.error("Delete failed:", err));
-  }
-};
+  const confirmDelete = () => {
+    if (categoryToDelete) {
+      dispatch(deleteCategory(categoryToDelete))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchAllCategories()); // refresh list
+          setShowDeleteConfirm(false);
+          setCategoryToDelete(null);
+        })
+        .catch(err => console.error("Delete failed:", err));
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
@@ -644,21 +643,20 @@ const confirmDelete = () => {
             >
               Cancel
             </button>
-             <button
-      type="submit"
-      disabled={loading}  
-      className={`px-4 py-2 text-white rounded-lg ${
-        loading
-          ? "bg-blue-400 cursor-not-allowed"
-          : "bg-blue-600 hover:bg-blue-700"
-      }`}
-    >
-      {loading
-        ? "Saving..."
-        : category
-        ? "Update Category"
-        : "Create Category"}
-    </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`px-4 py-2 text-white rounded-lg ${loading
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+                }`}
+            >
+              {loading
+                ? "Saving..."
+                : category
+                  ? "Update Category"
+                  : "Create Category"}
+            </button>
           </div>
         </form>
       </div>
@@ -666,7 +664,7 @@ const confirmDelete = () => {
   );
 }
 
- function SubcategoryModal({ subcategory, categories, onClose }) {
+function SubcategoryModal({ subcategory, categories, onClose }) {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
@@ -679,9 +677,9 @@ const confirmDelete = () => {
   const [filters, setFilters] = useState(
     subcategory?.filters
       ? Object.entries(subcategory.filters).map(([key, values]) => ({
-          key,
-          values: values.join(", "),
-        }))
+        key,
+        values: values.join(", "),
+      }))
       : []
   );
 

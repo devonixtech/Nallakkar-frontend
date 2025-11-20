@@ -262,7 +262,7 @@ export default function Sidebar({ isOpen, onClose }) {
           icon: User,
           href: "/investor/investorProfile",
         },
-        { id: "logout", label: "Logout", icon: User, href: "/" },
+        { id: "logout", label: "Logout", icon: User, href: "/investorLogin" },
       ];
     }
     return [];
