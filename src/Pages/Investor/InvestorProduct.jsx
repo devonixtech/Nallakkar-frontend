@@ -158,9 +158,12 @@ export default function InvestorProduct() {
                     </td>
 
                     <td className="py-4 px-4">
-                      <button className="w-8 h-8 flex items-center justify-center hover:text-blue-600">
-                        <i className="ri-eye-line"></i>
-                      </button>
+                      <Link
+                          to={`/investor/investorProductDetails/${product?.id}`}
+                          className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-blue-600 cursor-pointer"
+                        >
+                          <i className="ri-eye-line"></i>
+                        </Link>
                     </td>
                   </tr>
                 ))}

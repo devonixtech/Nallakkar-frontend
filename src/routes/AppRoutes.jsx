@@ -57,13 +57,15 @@ import PublicRoute from "./PublicRoute";
 import AdminLayout from "../layouts/AdminLayout";
 import OrderDetails from "../Pages/OrderDetails";
 import InvestorLogin from "../Pages/InvestorLogin";
+import InvestorProductDetails from "../Pages/Investor/InvestorProductDetails";
 
 export default function AppRoutes() {
   return (
     <Routes>
       {/* ✅ Home routes */}
       <Route path="/login" element={<Login />} />
-      <Route path="/investorLogin" element={<InvestorLogin />} />
+      {/* <Route path="/investorLogin" element={<InvestorLogin />} /> */}
+      <Route path="/" element={<InvestorLogin />} />
       <Route element={<PublicRoute />}>
         <Route element={<HomeLayout />}>
           {/* <Route path="/" element={<Home />} /> */}
@@ -178,6 +180,7 @@ export default function AppRoutes() {
           <Route path="investorProduct" element={<InvestorProduct />} />
           <Route path="investorOrder" element={<InvestorOrder />} />
           <Route path="investorProfile" element={<InvestorProfile />} />
+          <Route path="investorProductDetails/:id" element={<InvestorProductDetails />} />
         </Route>
       </Route>
     </Routes>
