@@ -171,6 +171,9 @@
 // }
 
 // Sidebar.jsx
+
+
+
 import { useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -257,12 +260,12 @@ export default function Sidebar({ isOpen, onClose }) {
           href: "/investor/investorDashboard",
         },
         {
-          id: "profile",
+          id: "profile", 
           label: "My Profile",
           icon: User,
           href: "/investor/investorProfile",
         },
-        { id: "logout", label: "Logout", icon: User, href: "/" },
+        { id: "logout", label: "Logout", icon: User, href: "/investorLogin" },
       ];
     }
     return [];

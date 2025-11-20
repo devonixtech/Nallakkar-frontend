@@ -25,14 +25,14 @@ export default function AdminNavbar({ onMenuToggle, title }) {
           <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
             <i className="ri-user-line text-white"></i>
           </div>
-          <Link
+          {/* <Link
             to="/"
             className="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors whitespace-nowrap 
              text-gray-700 hover:bg-gray-100"
           >
             <LogOut className="w-5 h-5 mr-3" />
             Logout
-          </Link>
+          </Link> */}
         </div>
       </div>
     </header >
