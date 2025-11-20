@@ -1,8 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { fetchAllProducts, deleteProduct , updateProductStatus,updateFeaturedStatus } from "../../Redux/slices/productSlice";
+import { fetchAllProducts, deleteProduct, updateProductStatus, updateFeaturedStatus } from "../../Redux/slices/productSlice";
+import { useEffect, useMemo, useState } from "react";   // ← FIXED
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";   // ← FIXED
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 
 export default function ProductList() {
@@ -14,12 +14,59 @@ export default function ProductList() {
   }, [dispatch]);
 
   const products = useSelector((state) => state?.products?.products);
-  const categories = useSelector((state) => state?.category?.categories);  
-const [currentPage, setCurrentPage] = useState(1);
-const productsPerPage = 10; // jitne per page chahiye
-const indexOfLast = currentPage * productsPerPage;
-const indexOfFirst = indexOfLast - productsPerPage;
-const currentProducts = products.slice(indexOfFirst, indexOfLast);
+  const categories = useSelector((state) => state?.category?.categories);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const productsPerPage = 10;
+
+  // FILTERED LIST
+  const filteredProducts = useMemo(() => {
+    const search = searchTerm.toLowerCase();
+
+    return products.filter((p) =>
+      p.name.toLowerCase().includes(search) ||
+      p.categoryName.toLowerCase().includes(search)
+    );
+  }, [products, searchTerm]);
+
+  // PAGINATION
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const indexOfLast = currentPage * productsPerPage;
+  const indexOfFirst = indexOfLast - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
+
+  // SMART PAGINATION FUNCTION
+  const getPageList = (totalPages, currentPage) => {
+    let pages = [];
+
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    pages.push(1);
+
+    if (currentPage > 3) {
+      pages.push("...");
+    }
+
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (currentPage < totalPages - 2) {
+      pages.push("...");
+    }
+
+    pages.push(totalPages);
+
+    return pages;
+  };
+
+  const pageList = getPageList(totalPages, currentPage);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -52,30 +99,34 @@ const currentProducts = products.slice(indexOfFirst, indexOfLast);
     }
   };
   // ✅ Toggle Active/Inactive
-const handleToggleStatus = (product) => {
-  const newStatus = product.status === 1 ? 0 : 1;
-  dispatch(updateProductStatus({ id: product.id, status: newStatus }))
-    .unwrap()
-    .then(() => dispatch(fetchAllProducts()));
-};
+  const handleToggleStatus = (product) => {
+    const newStatus = product.status === 1 ? 0 : 1;
+    dispatch(updateProductStatus({ id: product.id, status: newStatus }))
+      .unwrap()
+      .then(() => dispatch(fetchAllProducts()));
+  };
 
-// ✅ Toggle Featured/Unfeatured
-const handleToggleFeatured = (product) => {
-  const newStatus = product.featuredStatus === 1 ? 0 : 1;
-  dispatch(updateFeaturedStatus({ id: product.id, featuredStatus: newStatus }))
-    .unwrap()
-    .then(() => dispatch(fetchAllProducts()));
-};
+  // ✅ Toggle Featured/Unfeatured
+  const handleToggleFeatured = (product) => {
+    const newStatus = product.featuredStatus === 1 ? 0 : 1;
+    dispatch(updateFeaturedStatus({ id: product.id, featuredStatus: newStatus }))
+      .unwrap()
+      .then(() => dispatch(fetchAllProducts()));
+  };
 
-const totalPages = Math.ceil(products.length / productsPerPage);
 
-const nextPage = () => {
-  if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-};
 
-const prevPage = () => {
-  if (currentPage > 1) setCurrentPage(currentPage - 1);
-};
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+  useEffect(() => {
+  setCurrentPage(1);
+}, [searchTerm]);
+
 
   return (
     <>
@@ -101,11 +152,14 @@ const prevPage = () => {
           <div className="p-4 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
+               <input
+  type="text"
+  placeholder="Search products..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+/>
+
               </div>
               <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
                 <option value="">All Categories</option>
@@ -157,28 +211,26 @@ const prevPage = () => {
                     <td className="py-4 px-4 text-sm text-gray-700">{product?.stock}</td>
                     <td className="py-4 px-4">
                       <button
-  onClick={() => handleToggleStatus(product)}
-  className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${
-    product?.status == 1
-      ? "bg-green-100 text-green-800"
-      : "bg-red-100 text-red-800"
-  }`}
->
-  {product?.status == 1 ? "Active" : "Inactive"}
-</button>
+                        onClick={() => handleToggleStatus(product)}
+                        className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${product?.status == 1
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                          }`}
+                      >
+                        {product?.status == 1 ? "Active" : "Inactive"}
+                      </button>
 
                     </td>
                     <td className="py-4 px-4">
                       <button
-  onClick={() => handleToggleFeatured(product)}
-  className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${
-    product?.featuredStatus == 1
-      ? "bg-blue-100 text-blue-800"
-      : "bg-gray-200 text-gray-700"
-  }`}
->
-  {product?.featuredStatus == 1 ? "Featured" : "Not Featured"}
-</button>
+                        onClick={() => handleToggleFeatured(product)}
+                        className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${product?.featuredStatus == 1
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-200 text-gray-700"
+                          }`}
+                      >
+                        {product?.featuredStatus == 1 ? "Featured" : "Not Featured"}
+                      </button>
 
                     </td>
                     <td className="py-4 px-4">
@@ -206,45 +258,46 @@ const prevPage = () => {
             </table>
           </div>
 
-          <div className="p-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-600">
-  Showing {indexOfFirst + 1} to {Math.min(indexOfLast, products.length)} of {products.length} results
-</p>
+         <div className="flex items-center space-x-2 mt-4 mb-4 ms-4">
 
-           <div className="flex items-center space-x-2">
   <button
-    onClick={prevPage}
+    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
     disabled={currentPage === 1}
-    className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 cursor-pointer disabled:opacity-50"
+    className="px-3 py-1 border border-gray-300 rounded text-sm
+               disabled:opacity-50"
   >
     Previous
   </button>
 
-  {/* Dynamic page numbers */}
-  {[...Array(totalPages)].map((_, i) => (
-    <button
-      key={i}
-      onClick={() => setCurrentPage(i + 1)}
-      className={`px-3 py-1 rounded text-sm cursor-pointer ${
-        currentPage === i + 1
-          ? "bg-blue-600 text-white"
-          : "border border-gray-300 text-gray-700 hover:bg-gray-50"
-      }`}
-    >
-      {i + 1}
-    </button>
-  ))}
+  {pageList.map((p, index) =>
+    p === "..." ? (
+      <span key={index} className="px-3 py-1 text-gray-500">...</span>
+    ) : (
+      <button
+        key={p}
+        onClick={() => setCurrentPage(p)}
+        className={`px-3 py-1 rounded text-sm ${
+          currentPage === p
+            ? "bg-blue-600 text-white"
+            : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+        }`}
+      >
+        {p}
+      </button>
+    )
+  )}
 
   <button
-    onClick={nextPage}
+    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
     disabled={currentPage === totalPages}
-    className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer disabled:opacity-50"
+    className="px-3 py-1 border border-gray-300 rounded text-sm
+               disabled:opacity-50"
   >
     Next
   </button>
+
 </div>
 
-          </div>
         </div>
       </div>
     </>

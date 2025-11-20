@@ -873,9 +873,9 @@ export default function ProductDetails() {
         <header className="pt-8 flex justify-between items-center">
           <button className="flex items-center gap-2">
             <FiChevronLeft size={20} />
-            <span className="font-medium text-xl">
-              <Link to={"/admin/products"}>Home</Link> / Product details
-            </span>
+           
+            <span onClick={() => navigate(-1)}>Home</span>/ Product details
+
           </button>
           {/* <button className="flex items-center gap-2">
             <FiShare2 size={20} />

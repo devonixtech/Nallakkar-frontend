@@ -16,13 +16,23 @@ export default function InvestoreProductList() {
 
   const products = useSelector((state) => state?.products?.products);
   const categories = useSelector((state) => state?.category?.categories);  
+const [searchTerm, setSearchTerm] = useState("");
+const [currentPage, setCurrentPage] = useState(1);
+
 
   // Get investorId from localStorage
 
 // Filter products where investorId matches
-const investorProducts = products?.filter(
-  (product) => product?.investorId === investorId
-);
+const investorProducts = products
+  ?.filter((product) => product?.investorId === investorId)
+  ?.filter((product) =>
+    product?.name?.toLowerCase().includes(searchTerm)
+  );
+const itemsPerPage = 10; // you can change
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+const currentProducts = investorProducts?.slice(indexOfFirstItem, indexOfLastItem);
 
  const [showAddModal, setShowAddModal] = useState(false); 
   const getStatusColor = (status) => {
@@ -81,11 +91,14 @@ const investorProducts = products?.filter(
           <div className="p-4 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
+              <input
+  type="text"
+  placeholder="Search products..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+/>
+
               </div>
               {/* <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
                 <option value="">All Categories</option>
@@ -117,7 +130,7 @@ const investorProducts = products?.filter(
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {investorProducts?.map((product) => (
+                {currentProducts?.map((product) => (
                   <tr key={product?.id} className="hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="flex items-center">
@@ -168,21 +181,40 @@ const investorProducts = products?.filter(
             </table>
           </div>
 
-          <div className="p-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-600">Showing 1 to {products?.length} of {products?.length} results</p>
-            <div className="flex items-center space-x-2">
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 cursor-pointer">
-                Previous
-              </button>
-              <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm cursor-pointer">1</button>
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
-                2
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
-                Next
-              </button>
-            </div>
-          </div>
+       <div className="flex items-center space-x-2 mb-3 ">
+
+  <button
+    className="px-3 py-1 ms-3 border border-gray-300 rounded text-sm text-gray-500 cursor-pointer"
+    disabled={currentPage === 1}
+    onClick={() => setCurrentPage((prev) => prev - 1)}
+  >
+    Previous
+  </button>
+
+  {Array.from({ length: Math.ceil(investorProducts?.length / itemsPerPage) }, (_, i) => (
+    <button
+      key={i}
+      className={`px-3 py-1 rounded text-sm ${
+        currentPage === i + 1
+          ? "bg-blue-600 text-white"
+          : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+      }`}
+      onClick={() => setCurrentPage(i + 1)}
+    >
+      {i + 1}
+    </button>
+  ))}
+
+  <button
+    className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+    disabled={currentPage === Math.ceil(investorProducts?.length / itemsPerPage)}
+    onClick={() => setCurrentPage((prev) => prev + 1)}
+  >
+    Next
+  </button>
+
+</div>
+
         </div>
       </div>
 

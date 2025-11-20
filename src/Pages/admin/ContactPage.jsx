@@ -199,7 +199,9 @@ const InquiriesPage = () => {
   // const [inquiries, setInquiries] = useState(initialInquiries);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All Status');
-  
+  const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 10; // change if needed
+
   // Modal states
   const [isAddEditModalOpen, setAddEditModalOpen] = useState(false);
   const [isViewModalOpen, setViewModalOpen] = useState(false);
@@ -223,18 +225,32 @@ const InquiriesPage = () => {
   }, [inquiries]);
   
   // Filtering logic
-  const filteredInquiries = useMemo(() => {
-    return inquiries?.filter(inquiry => {
-      const matchesSearch =
-        inquiry?.customerName?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-        inquiry?.email?.toLowerCase()?.includes(searchTerm.toLowerCase()) 
-      
-      const matchesStatus = statusFilter === 'All Status' || inquiry.status === statusFilter;
-      
-      return matchesSearch && matchesStatus;
-    });
-  }, [inquiries, searchTerm, statusFilter]);
-  
+const filteredInquiries = useMemo(() => {
+  return inquiries?.filter((inquiry) => {
+    const search = searchTerm.toLowerCase();
+
+    const matchesSearch =
+      inquiry?.name?.toLowerCase().includes(search) ||
+      inquiry?.email?.toLowerCase().includes(search) ||
+      inquiry?.message?.toLowerCase().includes(search);
+
+    return matchesSearch;
+  });
+}, [inquiries, searchTerm]);
+// Pagination calculations
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentInquiries = filteredInquiries?.slice(indexOfFirstItem, indexOfLastItem);
+
+// Total Pages
+const totalPages = Math.ceil(filteredInquiries?.length / itemsPerPage);
+
+  useEffect(() => {
+  if (currentPage > totalPages) {
+    setCurrentPage(1);
+  }
+}, [filteredInquiries, totalPages]);
+
   // --- Event Handlers ---
   
   const handleOpenAddModal = () => {
@@ -354,7 +370,8 @@ const InquiriesPage = () => {
                 type="text"
                 placeholder="Search inquiries..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
             </div>
@@ -386,11 +403,12 @@ const InquiriesPage = () => {
               </tr>
             </thead>
              <tbody className="bg-white divide-y divide-gray-200">
-  {filteredInquiries.map((inquiry, index) => (
+{currentInquiries?.map((inquiry, index) => (
+
     <tr key={inquiry.id}>
       {/* 👇 use index + 1 instead of inquiry.id */}
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-        {index + 1}
+    {indexOfFirstItem + index + 1}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{inquiry?.name}</td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{inquiry?.email}</td>
@@ -433,7 +451,47 @@ const InquiriesPage = () => {
 </tbody>
 
           </table>
+          {/* Pagination Controls */}
+{totalPages > 1 && (
+  <div className="flex justify-left mt-6 space-x-2 mb-4 ms-4">
+    <button
+      disabled={currentPage === 1}
+      onClick={() => setCurrentPage((prev) => prev - 1)}
+      className={`px-3 py-1 rounded border ${
+        currentPage === 1 ? "bg-gray-200 cursor-not-allowed" : "bg-white hover:bg-gray-100"
+      }`}
+    >
+      Previous
+    </button>
+
+    {Array.from({ length: totalPages }, (_, i) => (
+      <button
+        key={i}
+        onClick={() => setCurrentPage(i + 1)}
+        className={`px-3 py-1 rounded border ${
+          currentPage === i + 1
+            ? "bg-blue-600 text-white"
+            : "bg-white hover:bg-gray-100"
+        }`}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    <button
+      disabled={currentPage === totalPages}
+      onClick={() => setCurrentPage((prev) => prev + 1)}
+      className={`px-3 py-1 rounded border ${
+        currentPage === totalPages ? "bg-gray-200 cursor-not-allowed" : "bg-white hover:bg-gray-100"
+      }`}
+    >
+      Next
+    </button>
+  </div>
+)}
+
         </div>
+        
       </div>
       
       {/* Modals */}
