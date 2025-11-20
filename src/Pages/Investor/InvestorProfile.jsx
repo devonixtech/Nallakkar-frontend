@@ -5,7 +5,7 @@ import { fetchInvestorById } from "../../Redux/slices/investorSlice";
 
 const InvestorProfile = () => {
   const dispatch = useDispatch();
-  const investorId = 5;
+  const investorId = localStorage.getItem("investorId");
   useEffect(() => {
     dispatch(fetchInvestorById(investorId));
   }, [dispatch, investorId]);

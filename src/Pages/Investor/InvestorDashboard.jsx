@@ -1,55 +1,42 @@
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import InvestorProduct from "./InvestorProduct";
+import { useDispatch,useSelector } from "react-redux";
+import { fetchAllProducts } from "../../Redux/slices/productSlice";
+
 export default function InvestorDashboard() {
+    const dispatch = useDispatch();
+  const investorId = localStorage.getItem('investorId');
+  // const investorId = 5;
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+  const products = useSelector((state) => state?.products?.products);
+const investorProducts = products?.filter(
+  (product) => product?.investorId == investorId
+);
+
+  
   const stats = [
    
     {
-      title: "Total Orders",
-      value: "245",
+      title: "Total Products",
+      value: investorProducts?.length,
       icon: "ri-shopping-cart-line",
     },
-    {
-      title: "Pending Claims",
-      value: "5",
-      icon: "ri-time-line",
-    },
+    // {
+    //   title: "Pending Claims",
+    //   value: "5",
+    //   icon: "ri-time-line",
+    // },
     {
       title: "Total Earnings",
-      value: "$4,560",
+      value: "0.00",
       icon: "ri-money-dollar-circle-line",
     },
   ];
 
-  const recentOrders = [
-    {
-      id: "#INV-1001",
-      product: "Wireless Headphones",
-      amount: "$299",
-      status: "Delivered",
-      claimable: true,
-    },
-    {
-      id: "#INV-1002",
-      product: "Smartphone Case",
-      amount: "$29",
-      status: "Processing",
-      claimable: false,
-    },
-    {
-      id: "#INV-1003",
-      product: "Laptop Stand",
-      amount: "$89",
-      status: "Shipped",
-      claimable: false,
-    },
-    {
-      id: "#INV-1004",
-      product: "USB Cable",
-      amount: "$15",
-      status: "Pending",
-      claimable: false,
-    },
-  ];
+  
 
   const getStatusColor = (status) => {
     switch (status) {
