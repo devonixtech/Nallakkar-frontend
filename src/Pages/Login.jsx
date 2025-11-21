@@ -1,60 +1,91 @@
-import React from 'react';
+ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
+import { BASE_URL } from '../../config';
 const Login = () => {
-     const navigate = useNavigate();
-    return (
-        <div>
-            <div className="min-h-screen flex items-center justify-center bg-gray-100">
-                <div className="w-full max-w-md bg-white p-8 rounded shadow-md">
-                    <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+  const navigate = useNavigate();
 
-                    <form className="space-y-4" >
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Email
-                            </label>
-                            <div className="flex">
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-                                <input
-                                    type="emsil"
-                                    placeholder="Enter email"
+  const handleLogin = async () => {
+    setError("");
+    setLoading(true);
 
-                                    className={`w-full px-4 py-2 border`}
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Password
-                            </label>
-                            <div className="flex">
+    try {
+      const res = await axios.post(
+        `${BASE_URL}admin/login`,
+        {
+          email,
+          password,
+        }
+      );
+        console.log(res)
+      // Save token or role
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", "admin");
 
-                                <input
-                                    type="password"
-                                    placeholder="Enter password"
+      navigate("/admin/dashboard");
 
-                                    className={`w-full px-4 py-2 border `}
-                                />
-                            </div>
-                        </div>
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
 
-                    </form>
+    setLoading(false);
+  };
 
-                    <button
-                        type="button"
-                        onClick={() => {
-                            localStorage.setItem("role", "admin");
-                            navigate("/admin/dashboard")
-                        }}
-                        className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
-                    >
-                        Login
-                    </button>
-                </div>
+  return (
+    <div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="w-full max-w-md bg-white p-8 rounded shadow-md">
+          <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+
+          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <div>
+              <label className="block text-sm font-medium mb-1">Email</label>
+              <input
+                type="email"
+                placeholder="Enter email"
+                className="w-full px-4 py-2 border"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Password</label>
+              <input
+                type="password"
+                placeholder="Enter password"
+                className="w-full px-4 py-2 border"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </form>
+
+          {error && (
+            <p className="text-red-600 text-sm mt-2 text-center">{error}</p>
+          )}
+
+          <button
+            type="button"
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </div>
-    );
-}
+      </div>
+    </div>
+  );
+};
 
 export default Login;
