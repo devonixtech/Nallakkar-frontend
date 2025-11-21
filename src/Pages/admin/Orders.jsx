@@ -313,8 +313,9 @@ export default function Orders() {
                       </div>
                     </td>
                     <td className="py-4 px-4 text-sm text-gray-700">{formatDate(order?.created_at)}</td>
-                    <td className="py-4 px-4 text-sm text-gray-700">{order?.items}</td>
-                    <td className="py-4 px-4 text-sm font-medium text-gray-900">{order?.total_amount}</td>
+                    <td className="py-4 px-4 text-sm text-gray-700">{order?.order_details?.
+order_items?.length}</td>
+                    <td className="py-4 px-4 text-sm font-medium text-gray-900">{order?.total_amount/100}</td>
                     <td className="py-4 px-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order?.tracking_status)}`}>
                         {order?.tracking_status || "-"}

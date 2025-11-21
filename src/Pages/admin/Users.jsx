@@ -406,7 +406,7 @@ export default function UsersPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
-                        <button
+                        {/* <button
                           onClick={() => toggleUserStatus(user?.id)}
                           className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${user?.status === 'Active'
                               ? 'text-red-600 hover:bg-red-50'
@@ -415,7 +415,7 @@ export default function UsersPage() {
                           title={user.status === 'Active' ? 'Deactivate' : 'Activate'}
                         >
                           <i className={user.status === 'Active' ? 'ri-pause-circle-line' : 'ri-play-circle-line'}></i>
-                        </button>
+                        </button> */}
                         <button
                           onClick={() => openEditModal(user)}
                           className="w-8 h-8 flex items-center justify-center text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
