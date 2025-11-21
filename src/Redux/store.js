@@ -16,6 +16,7 @@ import AddDeliveryAddress from "./slices/addressSlice";
 import ordersReducer from "./slices/ordersSlice";
 import addressSlice from "./slices/addressSlice";
 import OrderHistoryReducer from "./slices/orderHistorySlice";
+import dashboardReducer from "./slices/dashboardSlice"
 export const store = configureStore({
   reducer: {
     ctegory : categoryreducer,
@@ -34,6 +35,7 @@ export const store = configureStore({
     orders : ordersReducer,
     address : addressSlice,
     orderHistory : OrderHistoryReducer,
+    dashboard:dashboardReducer,
 
   },
 });

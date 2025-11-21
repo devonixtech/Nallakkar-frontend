@@ -1,63 +1,53 @@
 import { Helmet } from "react-helmet-async";
-
+import { useEffect } from "react";
+import { useDispatch,useSelector } from "react-redux";
+import { fetchDashboardStats } from "../../Redux/slices/dashboardSlice";
+import { useNavigate } from "react-router-dom";
+import { fetchAllOrders } from "../../Redux/slices/ordersSlice";
 export default function Dashboard() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+   
+
+  useEffect(()=>{
+      dispatch(fetchDashboardStats())
+       dispatch(fetchAllOrders());
+  },[])
+  const dashboard = useSelector((state)=>state?.dashboard?.stats)
+  const orders = useSelector((state) => state?.orders?.orders) || [];
+  const recentOrders = orders.slice(0, 5);
+
+  console.log(orders)
+  console.log(dashboard)
   const stats = [
     {
       title: "Total Revenue",
-      value: "$24,500",
-      change: "+12%",
+      value: dashboard?.totalRevenue/100,
+      // change: "+12%",
       icon: "ri-money-dollar-circle-line",
     },
     {
       title: "Total Orders",
-      value: "1,247",
-      change: "+8%",
+      value: dashboard?.totalOrders,
+      // change: "+8%",
       icon: "ri-shopping-cart-line",
     },
     {
       title: "Total Products",
-      value: "156",
-      change: "+3%",
+      value: dashboard?.totalProducts,
+      // change: "+3%",
       icon: "ri-box-3-line",
     },
     {
       title: "Total Users",
-      value: "2,847",
-      change: "+15%",
+      value: dashboard?.totalUsers,
+      // change: "+15%",
       icon: "ri-user-line",
     },
   ];
 
-  const recentOrders = [
-    {
-      id: "#1001",
-      customer: "John Doe",
-      product: "Wireless Headphones",
-      amount: "$299",
-      status: "Delivered",
-    },
-    {
-      id: "#1002",
-      customer: "Jane Smith",
-      product: "Smartphone Case",
-      amount: "$29",
-      status: "Processing",
-    },
-    {
-      id: "#1003",
-      customer: "Mike Johnson",
-      product: "Laptop Stand",
-      amount: "$89",
-      status: "Shipped",
-    },
-    {
-      id: "#1004",
-      customer: "Sarah Wilson",
-      product: "USB Cable",
-      amount: "$15",
-      status: "Pending",
-    },
-  ];
+   
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -94,9 +84,9 @@ export default function Dashboard() {
                   <p className="text-2xl font-bold text-gray-900 mt-2">
                     {stat.value}
                   </p>
-                  <p className="text-sm text-green-600 mt-1">
+                  {/* <p className="text-sm text-green-600 mt-1">
                     {stat.change} from last month
-                  </p>
+                  </p> */}
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <i className={`${stat.icon} text-blue-600 text-xl`}></i>
@@ -115,7 +105,7 @@ export default function Dashboard() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="text-left py-2 text-gray-600">Order ID</th>
+                    <th className="text-left py-2 text-gray-600">Shiprocket ID</th>
                     <th className="text-left py-2 text-gray-600">Customer</th>
                     <th className="text-left py-2 text-gray-600">Amount</th>
                     <th className="text-left py-2 text-gray-600">Status</th>
@@ -124,18 +114,18 @@ export default function Dashboard() {
                 <tbody>
                   {recentOrders.map((order) => (
                     <tr key={order.id} className="border-b border-gray-100">
-                      <td className="py-3 text-gray-900">{order.id}</td>
-                      <td className="py-3 text-gray-700">{order.customer}</td>
+                      <td className="py-3 text-gray-900">{order.shiprocket_order_id}</td>
+                      <td className="py-3 text-gray-700">{order?.customer_email}</td>
                       <td className="py-3 font-medium text-gray-900">
-                        {order.amount}
+                        {order?.total_amount/100}
                       </td>
                       <td className="py-3">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                            order.status
+                            order?.tracking_status
                           )}`}
                         >
-                          {order.status}
+                          {order?.tracking_status}
                         </span>
                       </td>
                     </tr>
@@ -150,28 +140,28 @@ export default function Dashboard() {
               Quick Actions
             </h3>
             <div className="space-y-3">
-              <button className="w-full flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+              <button onClick={()=>{navigate("/admin/products/add")}} className="w-full flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
                 <i className="ri-add-line w-5 h-5 text-blue-600 mr-3"></i>
                 <span className="text-gray-900 font-medium">
                   Add New Product
                 </span>
               </button>
-              <button className="w-full flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+              <button onClick={()=>{navigate("/admin/orders")}} className="w-full flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
                 <i className="ri-eye-line w-5 h-5 text-green-600 mr-3"></i>
                 <span className="text-gray-900 font-medium">
                   View All Orders
                 </span>
               </button>
-              <button className="w-full flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+              <button  onClick={(()=>{navigate("/admin/users")})} className="w-full flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
                 <i className="ri-user-add-line w-5 h-5 text-purple-600 mr-3"></i>
-                <span className="text-gray-900 font-medium">Manage Users</span>
+                <span className="text-gray-900 font-medium"> Manage Users</span>
               </button>
-              <button className="w-full flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+              {/* <button className="w-full flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
                 <i className="ri-settings-line w-5 h-5 text-gray-600 mr-3"></i>
                 <span className="text-gray-900 font-medium">
                   System Settings
                 </span>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
