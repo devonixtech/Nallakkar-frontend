@@ -70,7 +70,7 @@ const OrderDetails = () => {
                   >
                     {/* Placeholder product image */}
                     <img
-                      src={`https://via.placeholder.com/150?text=${encodeURIComponent(item.name)}`}
+                      src= {item?.image}
                       alt={item.name}
                       className="w-24 h-24 object-cover rounded-md border border-gray-100"
                     />

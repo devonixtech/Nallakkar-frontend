@@ -1,14 +1,14 @@
  import React, { useState, useEffect } from "react";
 import { IoChevronUp, IoChevronDown, IoLocationSharp } from "react-icons/io5";
-import { SiGooglepay } from "react-icons/si";
-import { ArrowLeft } from "lucide-react";
-import img1 from "../assets/details2.png";
-import { Link, useNavigate } from "react-router-dom";
+// import { SiGooglepay } from "react-icons/si";
+// import { ArrowLeft } from "lucide-react";
+// import img1 from "../assets/details2.png";
+import {  useNavigate } from "react-router-dom";
 import { fetchCartByUserId } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { createPaymentOrder, verifyPaymentAndCreateShipment, resetPaymentState } from "../Redux/slices/paymentSlice";
-import { nav } from "framer-motion/client";
-import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
+// import { nav } from "framer-motion/client";
+// import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
  import { getItem } from "../utils/localForageService";
 
 const PhonePeIcon = () => (
@@ -415,10 +415,10 @@ const parsedAddress = address?.address || null;
 };
 
 function PaymentPage() {
-  const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
-  const [amount, setAmount] = useState(100);
+  // const [selectedPayment, setSelectedPayment] = useState("phonepe_last_used");
+  // const [amount, setAmount] = useState(100);
  const [userdetails, setUserdetails] = useState(null);
-   const [selectedAddress, setSelectedAddress] = useState(null);
+  //  const [selectedAddress, setSelectedAddress] = useState(null);
  
 
   const [buyNowItem, setBuyNowItem] = useState(null);
@@ -426,10 +426,10 @@ function PaymentPage() {
   const navigate = useNavigate();
   //  const userId = localStorage.getItem("userId");
  
-  const userCart = useSelector((state) => state?.cart?.items);
-  const { order, shipment, loading, error, success } = useSelector(
-    (state) => state.payment
-  );
+  // const userCart = useSelector((state) => state?.cart?.items);
+  // const { order, shipment, loading, error, success } = useSelector(
+  //   (state) => state.payment
+  // );
  const userString = localStorage.getItem("user");
 const user = JSON.parse(userString);
 const user_Id = user.id;
@@ -476,6 +476,7 @@ const user_Id = user.id;
 // }, []);
 
 // Transform to Shiprocket order_items format
+console.log(items)
 const orderItems =
   buyNowItem
     ? [
@@ -483,6 +484,7 @@ const orderItems =
           name: buyNowItem.product?.name?.trim() || "Unnamed Product",
           sku: `PROD-${buyNowItem.product?.id}`,
           productId: buyNowItem.product?.id,
+          image:buyNowItem?.product?.image[0] || '',
           units: Number(buyNowItem.quantity || 1),
           selling_price:
             buyNowItem.variant?.price ||
@@ -499,6 +501,7 @@ const orderItems =
         name: item.productName|| "Unnamed Product",
         sku: `PROD-${item.productId}`,
         productId: item.productId,
+        image:item?.productImage[0],
         units: Number(item?.quantity),
         selling_price: item?.productPrice,
         length: item?.length || 10,
@@ -506,7 +509,6 @@ const orderItems =
         height: item?.height || 10,
         weight: item?.weight || 0.5,
       }));
- 
  
  
 const totalWeight = buyNowItem
