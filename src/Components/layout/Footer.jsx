@@ -114,11 +114,11 @@ const Footer = () => {
                     Contact Us
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <a href="#" className={hoverClasses}>
                     Nallakkar Stories
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
 
