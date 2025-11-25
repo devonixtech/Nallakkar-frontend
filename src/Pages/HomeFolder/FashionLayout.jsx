@@ -128,6 +128,7 @@ import blackgirl from "../../assets/fashionale.png";
 import couple from "../../assets/couple.png";
 import bannerlast from "../../assets/Bannerlast.png";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const images = {
   main: banner1,
@@ -136,6 +137,7 @@ const images = {
 };
 
 export default function FashionLayout() {
+  const navigate = useNavigate()
   return (
     <div className="flex flex-wrap overflow-x-hidden">
       {/* Left main block (desktop unchanged) */}
@@ -176,7 +178,7 @@ export default function FashionLayout() {
                   Trendy
                 </span>
               </h2>
-              <Link to={'/category/women'} className="mt-2 sm:mt-4 py-1.5 px-4 bg-white text-black text-xs sm:text-sm md:text-base font-semibold w-fit tracking-wide">
+              <Link   to={"/category/kids"} className="mt-2 sm:mt-4 py-1.5 px-4 bg-white text-black text-xs sm:text-sm md:text-base font-semibold w-fit tracking-wide">
                 SHOP NOW
               </Link>
             </div>
@@ -200,7 +202,7 @@ export default function FashionLayout() {
                 Find your <br />
                 <span className="text-white">style</span>
               </h2>
-              <button className="mt-2 sm:mt-4 py-1 px-3 bg-white text-black text-xs sm:text-sm md:text-base font-semibold tracking-wide">
+              <button  onClick={()=>navigate( "/category/kids")} className="mt-2 sm:mt-4 py-1 px-3 bg-white text-black text-xs sm:text-sm md:text-base font-semibold tracking-wide">
                 SHOP NOW
               </button>
             </div>

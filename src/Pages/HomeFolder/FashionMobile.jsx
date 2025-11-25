@@ -4,7 +4,7 @@ import banner1 from "../../assets/Group 328.png";
 import blackgirl from "../../assets/fashionale.png";
 import couple from "../../assets/couple.png";
 import mainImage from "../../assets/sunglasses.png"; // Image with three children
-
+import { useNavigate } from "react-router-dom";
 // Helper component for the navigation icons
 const NavIcon = ({ icon }) => (
   <button className="text-white text-2xl p-2 hover:bg-gray-700 rounded-full">
@@ -14,6 +14,7 @@ const NavIcon = ({ icon }) => (
 
 // Main component for the fashion layout
 const FashionMobile = () => {
+  const navigate = useNavigate()
   return (
     <div className="bg-white font-sans">
       {/* Sticky Header */}
@@ -66,7 +67,7 @@ const FashionMobile = () => {
           <div className="relative z-10 text-center p-8">
             <h3 className="text-4xl md:text-6xl font-bold">Women</h3>
             <h3 className="text-4xl md:text-6xl font-bold">Trendy</h3>
-            <button className="mt-6 bg-white text-black font-semibold px-8 py-3 hover:bg-gray-200 transition-colors duration-300">
+            <button  onClick={()=>navigate( "/category/kids")} className="mt-6 bg-white text-black font-semibold px-8 py-3 hover:bg-gray-200 transition-colors duration-300">
               SHOP NOW
             </button>
           </div>
@@ -94,7 +95,7 @@ const FashionMobile = () => {
             <h3 className="text-4xl md:text-6xl font-bold leading-tight">
               Find your <br /> style
             </h3>
-            <button className="mt-6 bg-white text-black font-semibold px-8 py-3 hover:bg-gray-200 transition-colors duration-300">
+            <button  onClick={()=>navigate( "/category/kids")} className="mt-6 bg-white text-black font-semibold px-8 py-3 hover:bg-gray-200 transition-colors duration-300">
               SHOP NOW
             </button>
           </div>
