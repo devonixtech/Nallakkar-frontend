@@ -58,6 +58,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import OrderDetails from "../Pages/OrderDetails";
 import InvestorLogin from "../Pages/InvestorLogin";
 import InvestorProductDetails from "../Pages/Investor/InvestorProductDetails";
+import PrivacyPolicy from "../Pages/PrivacyPolicy";
 
 export default function AppRoutes() {
   return (
@@ -77,6 +78,10 @@ export default function AppRoutes() {
           <Route
             path="/TermsAndConditions"
             element={<TermsAndConditions></TermsAndConditions>}
+          ></Route>
+           <Route
+            path="/privacyPolicy"
+            element={<PrivacyPolicy></PrivacyPolicy>}
           ></Route>
           <Route path="/FAQSection" element={<FAQSection></FAQSection>}></Route>
           <Route
