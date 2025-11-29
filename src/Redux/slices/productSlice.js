@@ -70,17 +70,20 @@ export const fetchSimilarProducts = createAsyncThunk(
   }
 );
 // ✅ Update product
-export const updateProduct = createAsyncThunk(
+ export const updateProduct = createAsyncThunk(
   "products/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`${BASE_URL}/${id}`, data);
+      const res = await api.patch(`/product/updateProduct/${id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
 
 // ✅ Delete product
 export const deleteProduct = createAsyncThunk(
@@ -240,12 +243,12 @@ const productSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.products = state.products.map((p) =>
-          p._id === action.payload._id ? action.payload : p
-        );
-      })
+       .addCase(updateProduct.fulfilled, (state, action) => {
+  state.products = state.products.map((p) =>
+    p.id === action.payload.id ? action.payload : p
+  );
+})
+
       .addCase(updateProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

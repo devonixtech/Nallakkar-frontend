@@ -241,9 +241,13 @@ export default function ProductList() {
                         >
                           <i className="ri-eye-line"></i>
                         </Link>
-                        <button className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-green-600 cursor-pointer">
-                          <i className="ri-edit-line"></i>
-                        </button>
+                         <Link
+  to={`/admin/products/edit/${product.id}`}
+  className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-green-600"
+>
+  <i className="ri-edit-line"></i>
+</Link>
+
                         <button
                           onClick={() => handleDelete(product?.id)}
                           className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-red-600 cursor-pointer"

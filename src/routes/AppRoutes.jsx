@@ -60,6 +60,7 @@ import InvestorLogin from "../Pages/InvestorLogin";
 import InvestorProductDetails from "../Pages/Investor/InvestorProductDetails";
 import PrivacyPolicy from "../Pages/PrivacyPolicy";
 
+import EditProduct from "../Pages/admin/EditProduct";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -153,6 +154,8 @@ export default function AppRoutes() {
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="products" element={<ProductList />} />
           <Route path="products/add" element={<AddProduct />} />
+          <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+
           <Route path="orders" element={<Orders />} />
           <Route path="users" element={<Users />} />
           <Route path="addinvestor" element={<Addinvestor />} />
