@@ -136,11 +136,7 @@ const Footer = () => {
                     Shipping
                   </Link>
                 </li>
-                <li>
-                  <Link to={"/TermsAndConditions"} className={hoverClasses}>
-                    Cancellation & Returns
-                  </Link>
-                </li>
+               
                 <li>
                   <Link to={"/FAQSection"} className={hoverClasses}>
                     FAQ
@@ -197,7 +193,7 @@ const Footer = () => {
       {/* Bottom Links */}
       <div className="border-t border-gray-500 py-4 px-6 flex justify-center">
         <div className="flex flex-wrap gap-6 text-xs text-gray-200 justify-center">
-          <Link to="/" className={hoverClasses}>
+          <Link to="/returnPolicy" className={hoverClasses}>
             Returns Policy
           </Link>
           <Link to="/privacyPolicy" className={hoverClasses}>

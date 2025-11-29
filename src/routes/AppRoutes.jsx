@@ -61,6 +61,7 @@ import InvestorProductDetails from "../Pages/Investor/InvestorProductDetails";
 import PrivacyPolicy from "../Pages/PrivacyPolicy";
 
 import EditProduct from "../Pages/admin/EditProduct";
+import ReturnPolicy from "../Pages/ReturnPolicy";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -83,6 +84,10 @@ export default function AppRoutes() {
            <Route
             path="/privacyPolicy"
             element={<PrivacyPolicy></PrivacyPolicy>}
+          ></Route>
+           <Route
+            path="/returnPolicy"
+            element={<ReturnPolicy></ReturnPolicy>}
           ></Route>
           <Route path="/FAQSection" element={<FAQSection></FAQSection>}></Route>
           <Route
