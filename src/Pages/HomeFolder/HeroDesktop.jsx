@@ -68,7 +68,7 @@ const HeroDesktop = () => {
           className="hidden md:flex absolute right-0 top-0 h-full w-auto justify-center items-center z-10"
         >
           <img
-            src={modelImg}
+            src= "https://share.google/f3L0cT6ozzl4FgdAT"
             alt="Model"
             className="
       h-full object-contain pt-3

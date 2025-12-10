@@ -347,7 +347,7 @@ const SettingsView = ({ onNavigate }) => (
       <Link to={"/FAQSection"} className="block hover:text-red-500">
         Help & Supports
       </Link>
-      <Link to={"/ShippingPolicy"} className="block hover:text-red-500">
+      <Link  to="/privacyPolicy" className="block hover:text-red-500">
         Privacy & Policy
       </Link>
       <Link to={"/about"} className="block hover:text-red-500">
