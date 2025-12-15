@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import modelImg from "../../assets/banner.png";
 import NallakkarSVG from "../../assets/NALLAKKAR.png";
+import { getBanners } from "../../Redux/slices/bannerSlice";
+
 
 // Redux slices
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
@@ -22,8 +24,12 @@ const HeroMobile = () => {
     dispatch(fetchAllCategories());
     dispatch(fetchAllSubcategories());
     dispatch(fetchAllProducts());
-  }, [dispatch]);
+    dispatch(getBanners());
 
+  }, [dispatch]);
+  
+  
+  const { banners, loading } = useSelector((state) => state.banners);
   const categories = useSelector((state) => state?.ctegory?.categories || []);
   const subcategories = useSelector(
     (state) => state?.subcategory?.subcategories || []
@@ -191,9 +197,7 @@ const HeroMobile = () => {
             </div>
 
             <p className="text-[#17171A] font-semibold leading-tight mt-[66px] text-[10px]">
-              Step into the world of NALLAKKAR – where <br /> tradition meets
-              modern elegance. From timeless <br /> weaves to bold essentials,
-              discover your next <br /> signature look.
+              {banners && banners.length > 0 ? banners[0].name : "" }
             </p>
 
             <Link
@@ -206,7 +210,7 @@ const HeroMobile = () => {
 
           <div className="absolute right-[-90px] bottom-0 w-[340px] h-[211px] z-10">
             <img
-              src={modelImg}
+            src={banners && banners.length > 0 ? banners[0].images : ""}
               alt="Model showcasing Nallakkar fashion"
               className="w-full h-full object-contain"
             />

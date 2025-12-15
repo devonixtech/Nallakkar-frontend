@@ -36,6 +36,7 @@ import BuyNow from "../Pages/Categories/BuyNow";
 import Categories from "../Pages/admin/Categories";
 import AddCategory from "../Pages/admin/AddCategory";
 import ProductDetails from "../Pages/admin/ProductDetails";
+import Banner from "../Pages/admin/Banners";
 import OrderHistory from "../Pages/OrderHistroy";
 import KidsWrapper from "../Pages/Categories/KidsWrapper";
 import PaymentSuccess from "../Pages/PaymentSuccess";
@@ -160,6 +161,7 @@ export default function AppRoutes() {
           <Route path="products" element={<ProductList />} />
           <Route path="products/add" element={<AddProduct />} />
           <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+          <Route  path="/admin/banner" element={<Banner/>}></Route>
 
           <Route path="orders" element={<Orders />} />
           <Route path="users" element={<Users />} />

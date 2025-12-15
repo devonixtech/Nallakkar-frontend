@@ -2,16 +2,26 @@ import React from "react";
 import shoeImg from "../../assets/Rectangle 116.png"; // update path
 import chairImg from "../../assets/Rectangle 119.png"; // update path
 import { useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getBanners } from "../../Redux/slices/bannerSlice";
 export default function PromoGrid() {
   const navigate = useNavigate()
+   const dispatch = useDispatch();
+    
+      useEffect(() => {
+        dispatch(getBanners());
+      }, [dispatch]);
+      
+      const { banners, loading } = useSelector((state) => state.banners);
+  
   return (
     <section className="w-full bg-white">
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <article className="relative isolate overflow-hidden bg-gray-50">
             <img
-              src={shoeImg}
+               src={banners && banners.length > 0 ? banners[6].images : ""}
               alt="Minimalist Sneaker"
               className="absolute inset-0 h-full w-full object-cover"
             />
@@ -37,7 +47,7 @@ export default function PromoGrid() {
           <article className="relative isolate overflow-hidden bg-gray-50">
             {/* Image */}
             <img
-              src={chairImg}
+               src={banners && banners.length > 0 ? banners[7].images : ""}
               alt="Folded clothes on chair"
               className="absolute inset-0 h-full w-full object-cover"
             />

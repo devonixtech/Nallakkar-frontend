@@ -17,6 +17,7 @@ import ordersReducer from "./slices/ordersSlice";
 import addressSlice from "./slices/addressSlice";
 import OrderHistoryReducer from "./slices/orderHistorySlice";
 import dashboardReducer from "./slices/dashboardSlice"
+import bannerReducer from "./slices/bannerSlice";
 export const store = configureStore({
   reducer: {
     ctegory : categoryreducer,
@@ -36,6 +37,7 @@ export const store = configureStore({
     address : addressSlice,
     orderHistory : OrderHistoryReducer,
     dashboard:dashboardReducer,
+    banners : bannerReducer,
 
   },
 });

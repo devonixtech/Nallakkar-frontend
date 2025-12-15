@@ -1,12 +1,26 @@
 import { Link } from "react-router-dom";
 import newoffer from "../../assets/newoffer.png";
-import banner from "../../assets/portrat.png";
+// import banner from "../../assets/portrat.png";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getBanners } from "../../Redux/slices/bannerSlice";
 
-const Banner = () => (
+
+const Banner = () => {
+  
+  const dispatch = useDispatch();
+    
+      useEffect(() => {
+        dispatch(getBanners());
+      }, [dispatch]);
+      
+      const { banners, loading } = useSelector((state) => state.banners);
+  
+  return(
   <div
     className="w-full h-[350px] md:h-[400px] relative flex items-center"
     style={{
-      backgroundImage: `url(${banner})`,
+      backgroundImage:  `url(${banners && banners.length > 0 ? banners[5].images : ""})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
     }}
@@ -24,8 +38,7 @@ const Banner = () => (
           className="h-[180px] w-auto mb-2 mx-auto md:mx-0"
         />
         <p className="text-black text-sm md:text-base mt-2 mb-5 max-w-sm mx-auto md:mx-0 leading-tight font-semibold">
-          Shop more, save more. Get fast, free delivery right to your door Get
-          fast, free delivery.
+            {banners && banners.length > 0 ? banners[5].name : "" }
         </p>
         <Link
           to={"/category/kids"}
@@ -40,5 +53,5 @@ const Banner = () => (
     </div>
   </div>
 );
-
+};
 export default Banner;
