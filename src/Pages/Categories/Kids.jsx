@@ -523,7 +523,7 @@ export default function ProductListingPage() {
                       {item.final_price}
                     </span>
                     <span className="text-gray-500 text-xs">
-                      (off {item.discount})
+                      (off {item.discount}%)
                     </span>
                   </div>
                 </div>
