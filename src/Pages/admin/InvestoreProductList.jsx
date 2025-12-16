@@ -5,6 +5,7 @@ import { fetchAllProducts, deleteProduct } from "../../Redux/slices/productSlice
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
 import AddInvestoreProduct from "./AddInvestoreProduct";
+import { useNavigate } from "react-router-dom";
 
 export default function InvestoreProductList() {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ export default function InvestoreProductList() {
     dispatch(fetchAllProducts());
     dispatch(fetchAllCategories());
   }, [dispatch]);
-
+const navigate=useNavigate();
   const products = useSelector((state) => state?.products?.products);
   const categories = useSelector((state) => state?.category?.categories);  
 const [searchTerm, setSearchTerm] = useState("");
@@ -164,7 +165,9 @@ const currentProducts = investorProducts?.slice(indexOfFirstItem, indexOfLastIte
                         >
                           <i className="ri-eye-line"></i>
                         </Link>
-                        <button className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-green-600 cursor-pointer">
+                        <button   
+                         onClick={()=>{navigate( `/admin/products/edit/${product?.id}`)}}
+                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-green-600 cursor-pointer">
                           <i className="ri-edit-line"></i>
                         </button>
                         <button
