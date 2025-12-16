@@ -157,7 +157,7 @@ const OrderHistory = () => {
                     {/* Product Info */}
                     <div className="sm:col-span-2 flex items-center gap-4">
                       <img
-                        src={order?.image}
+                        src=  "https://res.cloudinary.com/dkqcqrrbp/image/upload/v1765119636/categories/giwu5fc3dplz4o5cqops.jpg"
                         alt={order?.productName}
                         className="w-16 h-16 object-cover rounded-md border border-gray-100"
                       />
@@ -178,7 +178,7 @@ const OrderHistory = () => {
                     {/* Price */}
                     <div className="sm:col-span-1 text-left sm:text-center pt-2 sm:pt-0">
                       <p className="text-lg font-semibold text-gray-800">
-                        ₹{order?.order_details?.amount}
+                        ₹{order?.order_details?.amount/100}
                       </p>
                     </div>
 
