@@ -60,8 +60,9 @@ import OrderDetails from "../Pages/OrderDetails";
 import InvestorLogin from "../Pages/InvestorLogin";
 import InvestorProductDetails from "../Pages/Investor/InvestorProductDetails";
 import PrivacyPolicy from "../Pages/PrivacyPolicy";
-
+import AdminOrderDetails from "../Pages/admin/AdminOrderDetails";
 import EditProduct from "../Pages/admin/EditProduct";
+
 import ReturnPolicy from "../Pages/ReturnPolicy";
 export default function AppRoutes() {
   return (
@@ -161,6 +162,8 @@ export default function AppRoutes() {
           <Route path="products" element={<ProductList />} />
           <Route path="products/add" element={<AddProduct />} />
           <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+          <Route path="/admin/orders/:id" element={<AdminOrderDetails />}/>
+
           <Route  path="/admin/banner" element={<Banner/>}></Route>
 
           <Route path="orders" element={<Orders />} />
