@@ -2,19 +2,25 @@ import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrderByOrderId } from "../Redux/slices/ordersSlice";
+import { fetchOrderByOrderId,trackOrderByOrderId } from "../Redux/slices/ordersSlice";
 
 const OrderDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const orderDetails = useSelector((state) => state?.orders?.orderData || null);
+  const tracking = useSelector((state) => state?.orders?.tracking);
 
+  
   useEffect(() => {
     if (id) {
       dispatch(fetchOrderByOrderId(id));
     }
   }, [dispatch, id]);
-
+useEffect(() => {
+  if (orderDetails?.order_id) {
+    dispatch(trackOrderByOrderId(orderDetails.order_id));
+  }
+}, [dispatch, orderDetails?.order_id]);
   if (!orderDetails) {
     return (
       <div className="text-center py-20 text-gray-600">
@@ -25,6 +31,7 @@ const OrderDetails = () => {
 
   const orderInfo = orderDetails.order_details;
   const items = orderInfo?.order_items || [];
+
 
   return (
     <>
@@ -57,8 +64,23 @@ const OrderDetails = () => {
                   Order #{orderDetails?.order_id}
                 </h2>
                 <span className="text-lg font-semibold text-gray-600">
-                  {orderDetails?.tracking_status}
-                </span>
+  {tracking?.display_status ||
+    tracking?.status ||
+    orderDetails?.tracking_status ||
+    "Order Confirmed"}
+</span>
+{tracking?.tracking_url && (
+  <a
+    href={tracking.tracking_url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block mt-2 text-sm text-blue-600 hover:underline"
+  >
+    Track Shipment
+  </a>
+)}
+
+
               </div>
 
               {/* 🛍️ Multiple Products Section */}
@@ -139,13 +161,13 @@ const OrderDetails = () => {
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200">
-              {orderDetails?.tracking_status !== "Delivered" && orderDetails?.tracking_status !== "Cancelled" && (
+              {tracking?.display_status !== "Delivered" && orderDetails?.tracking_status !== "Cancelled" && (
                 <button className="w-full sm:w-auto px-6 py-2 border border-red-500 text-red-500 font-semibold rounded-lg hover:bg-red-50 transition duration-150">
                   Cancel Order
                 </button>
               )}
 
-              {orderDetails?.tracking_status === "Delivered" && (
+              {tracking?.display_status === "Delivered" && (
                 <Link
                   to={`/writeReview`}
                   className="w-full sm:w-auto px-6 py-2 bg-[#141A44] text-white font-semibold rounded-lg text-center hover:bg-opacity-90 transition duration-150"
@@ -156,7 +178,7 @@ const OrderDetails = () => {
 
               <p className="text-sm text-gray-500 sm:ml-auto flex items-center">
                 Need help?{" "}
-                <Link to="/support" className="text-blue-600 ml-1 hover:underline">
+                <Link to="/ContactSection" className="text-blue-600 ml-1 hover:underline">
                   Contact Support
                 </Link>
               </p>

@@ -56,6 +56,19 @@ export const checkPincodeServiceability = createAsyncThunk(
     }
   }
 );
+/* 🆕 ✅ Track Order by Order ID */
+export const trackOrderByOrderId = createAsyncThunk(
+  "orders/trackOrder",
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/orders/track/${orderId}`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 
 /* 🔽 Slice */
 const ordersSlice = createSlice({
@@ -63,7 +76,8 @@ const ordersSlice = createSlice({
   initialState: {
     orders: [],
     orderData: null,
-    serviceability: null, // 🆕 new state for pincode check
+    serviceability: null,
+    tracking: null,  
     loading: false,
     error: null,
   },
@@ -74,6 +88,9 @@ const ordersSlice = createSlice({
     clearServiceability: (state) => {
       state.serviceability = null;
     },
+    clearTracking: (state) => {       
+    state.tracking = null;
+  },
   },
   extraReducers: (builder) => {
     builder
@@ -131,9 +148,23 @@ const ordersSlice = createSlice({
       .addCase(checkPincodeServiceability.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // 🆕 ✅ Track Order
+.addCase(trackOrderByOrderId.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+.addCase(trackOrderByOrderId.fulfilled, (state, action) => {
+  state.loading = false;
+  state.tracking = action.payload;
+})
+.addCase(trackOrderByOrderId.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+})
+
   },
 });
 
-export const { clearOrderData, clearServiceability } = ordersSlice.actions;
+export const { clearOrderData, clearServiceability,clearTracking } = ordersSlice.actions;
 export default ordersSlice.reducer;

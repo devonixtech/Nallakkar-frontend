@@ -101,7 +101,7 @@ useEffect(() => {
 
   const orderTotal = cartItems?.totalPrice
 ;
-
+ console.log("selected address", itemsToShow);
  const getSelectedAddress = () => {
   try {
     const saved = localStorage.getItem("selectedAddress");

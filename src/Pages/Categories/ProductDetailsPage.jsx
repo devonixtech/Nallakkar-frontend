@@ -617,9 +617,9 @@ export default function ProductDetailsPage() {
               <p className="text-3xl font-bold text-gray-900">
                 ₹{product?.final_price}
               </p>
-              <p className="text-sm font-medium mt-4">
+              {/* <p className="text-sm font-medium mt-4">
                 Order in 12h 30m to get next day delivery
-              </p>
+              </p> */}
               <p className="text-sm font-medium mt-4 text-primary">
                 {product?.productCode}
               </p>
