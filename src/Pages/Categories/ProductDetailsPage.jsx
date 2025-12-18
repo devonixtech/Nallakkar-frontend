@@ -148,7 +148,7 @@ export default function ProductDetailsPage() {
   const userId = user?.id;
 
   useEffect(() => {
-    dispatch(fetchReviewsByProduct(2));
+    dispatch(fetchReviewsByProduct(productId?.id));
     dispatch(fetchProductById(productId?.id));
     dispatch(fetchSimilarProducts(productId?.id));
     dispatch(addRecentlyViewed({ userId, productId: productId?.id }));
