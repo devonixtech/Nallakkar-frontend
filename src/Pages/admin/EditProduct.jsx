@@ -43,6 +43,13 @@ export default function EditProduct() {
   const [newImages, setNewImages] = useState([]); // File objects
 
   const [customVariants, setCustomVariants] = useState([{ type: "", value: "" }]);
+  const [extraFields, setExtraFields] = useState({
+  field1: { key: "", value: "" },
+  field2: { key: "", value: "" },
+  field3: { key: "", value: "" },
+  field4: { key: "", value: "" },
+});
+
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -83,6 +90,15 @@ export default function EditProduct() {
     } else {
       setCustomVariants([{ type: "", value: "" }]);
     }
+
+  if (product.extraFields && typeof product.extraFields === "object") {
+    setExtraFields({
+      field1: product.extraFields.field1 || { key: "", value: "" },
+      field2: product.extraFields.field2 || { key: "", value: "" },
+      field3: product.extraFields.field3 || { key: "", value: "" },
+      field4: product.extraFields.field4 || { key: "", value: "" },
+    });
+  }
   }, [product]);
 
   // generic input handler
@@ -98,6 +114,15 @@ export default function EditProduct() {
   };
   const addVariant = () => setCustomVariants((p) => [...p, { type: "", value: "" }]);
   const removeVariant = (i) => setCustomVariants((p) => p.filter((_, idx) => idx !== i));
+const handleExtraFieldChange = (field, type, value) => {
+  setExtraFields((prev) => ({
+    ...prev,
+    [field]: {
+      ...prev[field],
+      [type]: value,
+    },
+  }));
+};
 
   // image handlers
   const handleNewImageUpload = (e) => {
@@ -154,6 +179,15 @@ export default function EditProduct() {
       return acc;
     }, {});
     form.append("variants", JSON.stringify(variantsToSend));
+    // Clean extraFields
+const cleanedExtraFields = Object.fromEntries(
+  Object.entries(extraFields).filter(
+    ([_, v]) => v.key.trim() && v.value.trim()
+  )
+);
+
+form.append("extraFields", JSON.stringify(cleanedExtraFields));
+
 
     // ❌ REMOVE THIS LINE (CAUSES CRASH)
     // form.append("existingImages", JSON.stringify(existingImages));
@@ -355,6 +389,42 @@ export default function EditProduct() {
             + Add Variant
           </button>
         </div>
+  {/* EXTRA FIELDS */}
+<div>
+  <h3 className="text-lg font-semibold mb-3 text-gray-800">
+    Additional Information
+  </h3>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {Object.entries(extraFields).map(([field, data], index) => (
+      <div key={field} className="border rounded-lg p-4 bg-gray-50">
+        <p className="text-sm font-medium text-gray-600 mb-2">
+          Field {index + 1}
+        </p>
+
+        <input
+          type="text"
+          placeholder="Key (e.g. Material)"
+          value={data.key}
+          onChange={(e) =>
+            handleExtraFieldChange(field, "key", e.target.value)
+          }
+          className="w-full border rounded-lg p-2 mb-2"
+        />
+
+        <input
+          type="text"
+          placeholder="Value (e.g. Cotton)"
+          value={data.value}
+          onChange={(e) =>
+            handleExtraFieldChange(field, "value", e.target.value)
+          }
+          className="w-full border rounded-lg p-2"
+        />
+      </div>
+    ))}
+  </div>
+</div>
 
         {/* IMAGES */}
         <div>

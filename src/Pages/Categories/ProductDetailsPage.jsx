@@ -754,55 +754,93 @@ export default function ProductDetailsPage() {
 
             {/* Product Details - Updated Structure */}
             <div className=" text-sm">
-              <div className="max-w-md bg-white rounded-xl shadow p-4 border">
-                <h2 className="text-lg font-bold mb-3">Shipping</h2>
-
-                <div className="grid grid-cols-2 gap-y-4">
-                  {/* Discount */}
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={discountIcon}
-                      alt="Discount"
-                      className="w-6 h-6"
-                    />
-                    <div>
-                      <p className="text-sm text-gray-500">Discount</p>
-                      <p className="text-sm font-semibold">Dis 30%</p>
-                    </div>
-                  </div>
-
-                  {/* Package */}
-                  <div className="flex items-center gap-2">
-                    <img src={packageIcon} alt="Package" className="w-6 h-6" />
-                    <div>
-                      <p className="text-sm text-gray-500">Package</p>
-                      <p className="text-sm font-semibold">Regular Package</p>
-                    </div>
-                  </div>
-
-                  {/* Delivery Days */}
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={daysIcon}
-                      alt="Working Days"
-                      className="w-6 h-6"
-                    />
-                    <div>
-                      <p className="text-sm text-gray-500">Discount</p>
-                      <p className="text-sm font-semibold">3-4 Working days</p>
-                    </div>
-                  </div>
-
-                  {/* Estimated Arrival */}
-                  <div className="flex items-center gap-2">
-                    <img src={arrivalIcon} alt="Arrival" className="w-6 h-6" />
-                    <div>
-                      <p className="text-sm text-gray-500">Estimated Arrival</p>
-                      <p className="text-sm font-semibold">23-06-2025</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+               {product?.extraFields?.field1 && (
+                           <div className=" text-sm">
+                             <div className="max-w-md bg-white rounded-xl shadow p-4 border">
+                               <h2 className="text-lg font-bold mb-3">Shipping</h2>
+               
+                               <div className="grid grid-cols-2 gap-y-4">
+                                 {/* Discount */}
+                                 <div className="flex items-center gap-2">
+                                   <img
+                                     src={discountIcon}
+                                     alt="Discount"
+                                     className="w-6 h-6"
+                                   />
+                                   <div>
+                                     <p className="text-sm text-gray-500">{product?.extraFields?.field1?.key}</p>
+                                     <p className="text-sm font-semibold">{product?.extraFields?.field1?.value}</p>
+                                   </div>
+                                 </div>
+               
+                                 {/* Package */}
+                                 <div className="flex items-center gap-2">
+                                   <img src={packageIcon} alt="Package" className="w-6 h-6" />
+                                   <div>
+                                     <p className="text-sm text-gray-500"> {product?.extraFields?.field2?.key}</p>
+                                     <p className="text-sm font-semibold"> {product?.extraFields?.field2?.value}</p>
+                                   </div>
+                                 </div>
+               
+                                 {/* Delivery Days */}
+                                 <div className="flex items-center gap-2">
+                                   <img
+                                     src={daysIcon}
+                                     alt="Working Days"
+                                     className="w-6 h-6"
+                                   />
+                                   <div>
+                                     <p className="text-sm text-gray-500"> {product?.extraFields?.field3?.key}</p>
+                                     <p className="text-sm font-semibold">{product?.extraFields?.field3?.value}</p>
+                                   </div>
+                                 </div>
+               
+                                 {/* Estimated Arrival */}
+                                 <div className="flex items-center gap-2">
+                                   <img src={arrivalIcon} alt="Arrival" className="w-6 h-6" />
+                                   <div>
+                                     <p className="text-sm text-gray-500"> {product?.extraFields?.field4?.key}</p>
+                                     <p className="text-sm font-semibold">{product?.extraFields?.field4?.value}</p>
+                                   </div>
+                                 </div>
+                               </div>
+                             </div>
+                             {/* <div className="mt-4 pt-4 text-[15px] font-bold text-gray-600 space-y-2"> */}
+                               {/* <p>{product?.description2}</p> */}
+                               {/* <p>
+                                 <span>Name:</span> {productData.details.name}
+                               </p>
+                               <p>
+                                 <span>Fabric:</span> {productData.details.fabric}
+                               </p>
+                               <p>
+                                 <span>Sleeve Length:</span> {productData.details.sleeveLength}
+                               </p>
+                               <p>
+                                 <span>Pattern:</span> {productData.details.pattern}
+                               </p>
+                               <p>
+                                 <span>Net Quantity (N):</span>{" "}
+                                 {productData.details.netQuantity}
+                               </p>
+                               <p>
+                                 <span className="font-semibold text-gray-800">Type:</span>{" "}
+                                 {productData.details.type}
+                               </p>
+                               <div className="mt-2">
+                                 <p>Sizes:</p>
+                                 {productData.details.sizesInfo.map((info, i) => (
+                                   <p key={i}>{info}</p>
+                                 ))}
+                               </div>
+                               <p className="mt-2">
+                                 <span>Country of Origin:</span> {productData.details.country}
+                               </p>
+                               <button className=" underline font-bold mt-2">
+                                 More Information
+                               </button>*/}
+                             {/* </div> */}
+                           </div>)}
               <div className="mt-4 pt-4 text-[15px] font-bold text-gray-600 space-y-2">
                 <p>{product?.description2}</p>
                 {/* <p>
