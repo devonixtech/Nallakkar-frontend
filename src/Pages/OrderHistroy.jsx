@@ -3,47 +3,8 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import order from "../assets/order.png";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrdersByUserId } from "../Redux/slices/ordersSlice";
-// const orders = [
-//   {
-//     id: 1001,
-//     brand: "Nallakkar",
-//     productName: "Boy Regular Fit Self Design Light T Shirt (S)",
-//     image: "https://via.placeholder.com/150/0000FF/808080?text=Product+1",
-//     unitPrice: "1500.00",
-//     orderDate: "2025-05-01",
-//     status: "Delivered",
-//     statusColor: "text-green-600",
-//     dotColor: "bg-green-600",
-//     description: "Your item has been delivered",
-//   },
-//   {
-//     id: 1002,
-//     brand: "Nallakkar",
-//     productName: "Women Casual Solid Straight Kurta (M)",
-//     image: "https://via.placeholder.com/150/FF0000/FFFFFF?text=Product+2",
-//     unitPrice: "2499.00",
-//     orderDate: "2025-10-25",
-//     status: "On the way",
-//     statusColor: "text-blue-600",
-//     dotColor: "bg-blue-600",
-//     description: "Estimated delivery: Nov 10",
-//   },
-//   {
-//     id: 1003,
-//     brand: "Nallakkar",
-//     productName: "Home Decor Geometric Pattern Cushion Cover",
-//     image: "https://via.placeholder.com/150/808080/FFFFFF?text=Product+3",
-//     unitPrice: "899.00",
-//     orderDate: "2025-05-01",
-//     status: "Cancelled",
-//     statusColor: "text-red-600",
-//     dotColor: "bg-red-600",
-//     description: "This order has been cancelled",
-//   },
-// ];
-
-// ✅ Extracted out component to avoid hook issues
+import { fetchOrdersByUserId,trackOrderByOrderId } from "../Redux/slices/ordersSlice";
+ 
 const OrderFilters = () => (
   <div className="bg-white p-4 sm:p-6 border border-gray-100 rounded-lg shadow-sm">
     <h3 className="font-bold text-gray-800 mb-4 text-lg">Price Details</h3>
@@ -89,13 +50,19 @@ const OrderHistory = () => {
   const isFilterOpen = false;
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
+    const tracking = useSelector((state) => state?.orders?.tracking);
+  const orders = useSelector((state) => state?.orders?.orders || []);
+  
   useEffect(() => {
     if (userId) {
       dispatch(fetchOrdersByUserId(userId));
     }
   }, [dispatch, userId]);
-
-  const orders = useSelector((state) => state?.orders?.orders || []);
+// useEffect(() => {
+//   if (orderDetails?.order_id) {
+//     dispatch(trackOrderByOrderId(orderDetails.order_id));
+//   }
+// }, [dispatch, orderDetails?.order_id]);
 
   return (
     <>
@@ -157,7 +124,7 @@ const OrderHistory = () => {
                     {/* Product Info */}
                     <div className="sm:col-span-2 flex items-center gap-4">
                       <img
-                        src={order?.image}
+                        src=  "https://res.cloudinary.com/dkqcqrrbp/image/upload/v1765119636/categories/giwu5fc3dplz4o5cqops.jpg"
                         alt={order?.productName}
                         className="w-16 h-16 object-cover rounded-md border border-gray-100"
                       />
@@ -178,7 +145,7 @@ const OrderHistory = () => {
                     {/* Price */}
                     <div className="sm:col-span-1 text-left sm:text-center pt-2 sm:pt-0">
                       <p className="text-lg font-semibold text-gray-800">
-                        ₹{order?.order_details?.amount}
+                        ₹{order?.order_details?.amount/100}
                       </p>
                     </div>
 

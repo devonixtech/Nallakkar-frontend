@@ -28,6 +28,13 @@ export default function AddProduct() {
 
   const [images, setImages] = useState([]);
   const [customVariants, setCustomVariants] = useState([{ type: "", value: "" }]);
+  const [extraFields, setExtraFields] = useState({
+  field1: { key: "", value: "" },
+  field2: { key: "", value: "" },
+  field3: { key: "", value: "" },
+  field4: { key: "", value: "" },
+});
+
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState({ show: false, type: "success", message: "" });
    
@@ -36,13 +43,7 @@ export default function AddProduct() {
     dispatch(fetchAllCategories());
   }, [dispatch]);
  const categories = useSelector((state) => state?.ctegory?.categories);
-  // ---------- dummy data ----------
-  // Replace with actual categories from Redux store
-  // and fetch subcategories based on selected category
-  // const categories = [
-  //   { id: 1, name: "Clothing", subcategories: ["T-Shirts", "Shirts", "Pants"] },
-  //   { id: 2, name: "Electronics", subcategories: ["Phones", "Laptops"] },
-  // ];
+   
 
   // ---------- helpers ----------
   const showToast = (message, type = "success") => {
@@ -79,6 +80,16 @@ const groupedVariants = customVariants.reduce((acc, v) => {
   }
   return acc;
 }, {});
+const handleExtraFieldChange = (field, type, value) => {
+  setExtraFields((prev) => ({
+    ...prev,
+    [field]: {
+      ...prev[field],
+      [type]: value,
+    },
+  }));
+};
+
   const validate = () => {
     const errs = {};
     if (!formData.title.trim()) errs.title = "Product name is required";
@@ -125,6 +136,16 @@ const groupedVariants = customVariants.reduce((acc, v) => {
       return acc;
     }, {});
     form.append("variants", JSON.stringify(variantsToSend));
+    // Clean extraFields (remove empty ones)
+const cleanedExtraFields = Object.fromEntries(
+  Object.entries(extraFields).filter(
+    ([_, v]) => v.key.trim() && v.value.trim()
+  )
+);
+
+// Send to backend
+form.append("extraFields", JSON.stringify(cleanedExtraFields));
+
 
     // Images
     images.forEach((img) => {
@@ -326,6 +347,42 @@ const groupedVariants = customVariants.reduce((acc, v) => {
           + Add Variant
         </button>
       </div>
+{/* EXTRA FIELDS */}
+<div>
+  <h3 className="text-lg font-semibold mb-3 text-gray-800">
+    Additional Information
+  </h3>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {Object.entries(extraFields).map(([field, data], index) => (
+      <div key={field} className="border rounded-lg p-4 bg-gray-50">
+        <p className="text-sm font-medium text-gray-600 mb-2">
+          Field {index + 1}
+        </p>
+
+        <input
+          type="text"
+          placeholder="Key (e.g. Material)"
+          value={data.key}
+          onChange={(e) =>
+            handleExtraFieldChange(field, "key", e.target.value)
+          }
+          className="w-full border rounded-lg p-2 mb-2"
+        />
+
+        <input
+          type="text"
+          placeholder="Value (e.g. Cotton)"
+          value={data.value}
+          onChange={(e) =>
+            handleExtraFieldChange(field, "value", e.target.value)
+          }
+          className="w-full border rounded-lg p-2"
+        />
+      </div>
+    ))}
+  </div>
+</div>
 
       {/* IMAGES */}
       <div>

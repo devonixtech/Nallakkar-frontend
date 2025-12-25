@@ -105,7 +105,7 @@ export default function Home() {
         <FashionLayout></FashionLayout>
       </div>
       <div className="block md:hidden">
-        <FashionMobile></FashionMobile>
+        {/* <FashionMobile></FashionMobile> */}
       </div>
 
       {/* Top Selling Products */}

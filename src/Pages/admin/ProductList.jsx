@@ -22,11 +22,11 @@ export default function ProductList() {
 
   // FILTERED LIST
   const filteredProducts = useMemo(() => {
-    const search = searchTerm.toLowerCase();
+    const search = searchTerm?.toLowerCase();
 
     return products.filter((p) =>
-      p.name.toLowerCase().includes(search) ||
-      p.categoryName.toLowerCase().includes(search)
+      p.name?.toLowerCase().includes(search) ||
+      p.categoryName?.toLowerCase().includes(search)
     );
   }, [products, searchTerm]);
 

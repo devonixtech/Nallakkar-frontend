@@ -4,11 +4,11 @@ import { Helmet } from "react-helmet-async";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllOrders } from "../../Redux/slices/ordersSlice";
-
+import { useNavigate } from "react-router-dom";
  
 export default function Orders() {
   const dispatch = useDispatch();
-
+  const navigate=useNavigate();
   // fetch orders once on mount
   useEffect(() => {
     dispatch(fetchAllOrders());
@@ -300,9 +300,9 @@ export default function Orders() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {currentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
+                  <tr key={order.id} className="hover:bg-gray-50" >
                     <td className="py-4 px-4">
-                      <span className="text-sm font-medium text-blue-600">
+                      <span className="text-sm font-medium text-blue-600" onClick={() => {navigate(`/admin/orders/${order.id}`)}} style={{cursor: 'pointer'}}>
                         {order?.shiprocket_order_id || order?.id}
                       </span>
                     </td>

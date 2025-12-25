@@ -515,7 +515,7 @@ export default function ProductListingPage() {
                   </p>
 
                   <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                    {item.title}
+                    {item?.name}
                   </p>
 
                   <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
@@ -523,7 +523,7 @@ export default function ProductListingPage() {
                       {item.final_price}
                     </span>
                     <span className="text-gray-500 text-xs">
-                      (off {item.discount})
+                      (off {item.discount}%)
                     </span>
                   </div>
                 </div>

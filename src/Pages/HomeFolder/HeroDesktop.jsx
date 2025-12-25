@@ -3,10 +3,21 @@ import gsap from "gsap";
 import modelImg from "../../assets/banner.png";
 import NallakkarSVG from "../../assets/NALLAKKAR.png";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getBanners } from "../../Redux/slices/bannerSlice";
+
+
 
 const HeroDesktop = () => {
   const bgRef = useRef(null);
   const imgRef = useRef(null);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getBanners());
+  }, [dispatch]);
+  
+  const { banners, loading } = useSelector((state) => state.banners);
 
   useEffect(() => {
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -48,9 +59,7 @@ const HeroDesktop = () => {
               <span className="text-rose font-bold">NALLAKKAR</span>
             </h2>
             <p className="text-[#17171A] font-semibold leading-tight mt-8 lg:mt-[14rem] md:mt-[12rem] text-[18px] lg:text-[21px] md:text-[18px]">
-              Step into the world of NALLAKKAR – where tradition meets modern
-              elegance. From timeless weaves to bold essentials, discover your
-              next signature look.
+              {banners && banners.length > 0 ? banners[0].name : "" }
             </p>
             <Link
               // to="/login"
@@ -68,7 +77,7 @@ const HeroDesktop = () => {
           className="hidden md:flex absolute right-0 top-0 h-full w-auto justify-center items-center z-10"
         >
           <img
-            src={modelImg}
+            src={banners && banners.length > 0 ? banners[0].images : ""}
             alt="Model"
             className="
       h-full object-contain pt-3

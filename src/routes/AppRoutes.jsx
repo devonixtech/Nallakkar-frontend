@@ -36,6 +36,7 @@ import BuyNow from "../Pages/Categories/BuyNow";
 import Categories from "../Pages/admin/Categories";
 import AddCategory from "../Pages/admin/AddCategory";
 import ProductDetails from "../Pages/admin/ProductDetails";
+import Banner from "../Pages/admin/Banners";
 import OrderHistory from "../Pages/OrderHistroy";
 import KidsWrapper from "../Pages/Categories/KidsWrapper";
 import PaymentSuccess from "../Pages/PaymentSuccess";
@@ -59,14 +60,15 @@ import OrderDetails from "../Pages/OrderDetails";
 import InvestorLogin from "../Pages/InvestorLogin";
 import InvestorProductDetails from "../Pages/Investor/InvestorProductDetails";
 import PrivacyPolicy from "../Pages/PrivacyPolicy";
-
+import AdminOrderDetails from "../Pages/admin/AdminOrderDetails";
 import EditProduct from "../Pages/admin/EditProduct";
+
 import ReturnPolicy from "../Pages/ReturnPolicy";
 export default function AppRoutes() {
   return (
     <Routes>
       {/* ✅ Home routes */}
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/investorLogin" element={<InvestorLogin />} />
       <Route element={<PublicRoute />}>
         <Route element={<HomeLayout />}>
@@ -160,6 +162,9 @@ export default function AppRoutes() {
           <Route path="products" element={<ProductList />} />
           <Route path="products/add" element={<AddProduct />} />
           <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+          <Route path="/admin/orders/:id" element={<AdminOrderDetails />}/>
+
+          <Route  path="/admin/banner" element={<Banner/>}></Route>
 
           <Route path="orders" element={<Orders />} />
           <Route path="users" element={<Users />} />
