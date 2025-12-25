@@ -1146,7 +1146,7 @@ export default function ProductDetails() {
                 <h2 className="text-lg font-bold mb-3">Shipping</h2>
 
                 <div className="grid grid-cols-2 gap-y-4">
-                  {/* Discount */}
+                
                   <div className="flex items-center gap-2">
                     <img
                       src={discountIcon}
@@ -1159,7 +1159,7 @@ export default function ProductDetails() {
                     </div>
                   </div>
 
-                  {/* Package */}
+                  
                   <div className="flex items-center gap-2">
                     <img src={packageIcon} alt="Package" className="w-6 h-6" />
                     <div>
@@ -1168,7 +1168,7 @@ export default function ProductDetails() {
                     </div>
                   </div>
 
-                  {/* Delivery Days */}
+                
                   <div className="flex items-center gap-2">
                     <img
                       src={daysIcon}
@@ -1181,7 +1181,7 @@ export default function ProductDetails() {
                     </div>
                   </div>
 
-                  {/* Estimated Arrival */}
+                  
                   <div className="flex items-center gap-2">
                     <img src={arrivalIcon} alt="Arrival" className="w-6 h-6" />
                     <div>
