@@ -69,7 +69,7 @@ export default function Sidebar({ isOpen, onClose }) {
           href: "/admin/addinvestor",
         },
            {
-          id: "addinvestor",
+          id: "logout",
           label: "Logout",
           icon: LogOut,
           href: "/",

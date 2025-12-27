@@ -33,7 +33,7 @@ const AddInvestor = () => {
   const investors = useSelector((state) => state.investors.investors);
 
   const addviewProduct = () => {
-    navigate("/admin/investoreProductList");
+    navigate("/admin/products/add");
   };
 
   // ✅ Handle Create / Update Investor
@@ -181,8 +181,7 @@ const AddInvestor = () => {
                     </button>
                     <button
                       className="px-3 ms-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600"
-                      onClick={() =>{localStorage.setItem('investorId',inv.id); 
-                        addviewProduct()}}
+                      onClick={ addviewProduct}
                     >
                       Add / View Product
                     </button>
