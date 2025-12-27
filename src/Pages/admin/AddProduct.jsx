@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../Redux/slices/productSlice"; // make sure this thunk exists
 import { fetchAllCategories } from "../../Redux/slices/categorySlice";
+import { fetchAllInvestors } from "../../Redux/slices/investorSlice";
 export default function AddProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function AddProduct() {
     breadth: "",
     height: "",
     weight: "",
+    investorId: "" ,
   });
 
   const [images, setImages] = useState([]);
@@ -41,8 +43,12 @@ export default function AddProduct() {
   // Fetch categories and subcategories on mount
   useEffect(() => {
     dispatch(fetchAllCategories());
+        dispatch(fetchAllInvestors());
+    
   }, [dispatch]);
  const categories = useSelector((state) => state?.ctegory?.categories);
+  const investors = useSelector((state) => state.investors.investors);
+ 
    
 
   // ---------- helpers ----------
@@ -145,6 +151,11 @@ const cleanedExtraFields = Object.fromEntries(
 
 // Send to backend
 form.append("extraFields", JSON.stringify(cleanedExtraFields));
+// 👇 Only append if investor is selected
+if (formData.investorId) {
+  form.append("investorId", formData.investorId);
+}
+
 
 
     // Images
@@ -271,6 +282,27 @@ form.append("extraFields", JSON.stringify(cleanedExtraFields));
               className="w-full border rounded-lg p-3"
             />
           </div>
+          {/* INVESTOR (OPTIONAL) */}
+<div>
+  <label className="block text-sm font-medium text-gray-600 mb-1">
+    Investor (Optional)
+  </label>
+
+  <select
+    name="investorId"
+    value={formData.investorId}
+    onChange={handleChange}
+    className="w-full border rounded-lg p-3 bg-white"
+  >
+    <option value="">No Investor</option>
+    {investors?.map((inv) => (
+      <option key={inv.id} value={inv.id}>
+        {inv.name}
+      </option>
+    ))}
+  </select>
+</div>
+
         </div>
       </div>
 
