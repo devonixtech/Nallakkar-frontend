@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
+import { fetchAllInvestors } from "../../Redux/slices/investorSlice";
+
 
 import {
   fetchProductById,
@@ -37,6 +39,7 @@ export default function EditProduct() {
     breadth: "",
     height: "",
     weight: "",
+    investorId: "",
   });
 
   const [existingImages, setExistingImages] = useState([]); // URLs
@@ -55,7 +58,9 @@ export default function EditProduct() {
   useEffect(() => {
     if (id) dispatch(fetchProductById(id));
     dispatch(fetchAllCategories());
+    dispatch(fetchAllInvestors());
   }, [dispatch, id]);
+const investors = useSelector((state) => state.investors.investors);
 
   // populate form after product loads
   useEffect(() => {
@@ -77,6 +82,7 @@ export default function EditProduct() {
       weight: product.weight ?? "",
       reviewCount: product.reviewCount ?? "",
       rating: product.rating ?? "",
+      investorId: product.investorId ?? "",
     });
 
     setExistingImages(product.image || []);
@@ -187,6 +193,10 @@ const cleanedExtraFields = Object.fromEntries(
 );
 
 form.append("extraFields", JSON.stringify(cleanedExtraFields));
+// 👇 only send if selected
+if (formData.investorId) {
+  form.append("investorId", Number(formData.investorId));
+}
 
 
     // ❌ REMOVE THIS LINE (CAUSES CRASH)
@@ -309,6 +319,27 @@ form.append("extraFields", JSON.stringify(cleanedExtraFields));
               />
               {errors.stock && <p className="text-red-500 text-sm">{errors.stock}</p>}
             </div>
+            {/* INVESTOR */}
+<div>
+  <label className="block text-sm font-medium text-gray-600 mb-1">
+    Investor (Optional)
+  </label>
+
+  <select
+    name="investorId"
+    value={formData.investorId}
+    onChange={handleChange}
+    className="w-full border rounded-lg p-3 bg-white"
+  >
+    <option value="">No Investor</option>
+    {investors?.map((inv) => (
+      <option key={inv.id} value={inv.id}>
+        {inv.name}
+      </option>
+    ))}
+  </select>
+</div>
+
           </div>
         </div>
 
