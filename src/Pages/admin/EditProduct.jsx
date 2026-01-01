@@ -22,7 +22,6 @@ export default function EditProduct() {
 //   const categories = useSelector((s) => s.category?.categories);
   const categories = useSelector((state) => state?.ctegory?.categories);
 
-  console.log("p",product)
   const [formData, setFormData] = useState({
     title: "",
     category: "",

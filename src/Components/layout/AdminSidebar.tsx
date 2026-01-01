@@ -63,6 +63,18 @@ export default function Sidebar({ isOpen, onClose }) {
         { id: "banners", label: "Banners", icon: Users, href: "/admin/banner" },
         { id: "users", label: "Users", icon: Users, href: "/admin/users" },
         {
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      hasSubmenu: true,
+      submenu: [
+        {
+          label: "Reset Password",
+          href: "/admin/reset-password",
+        },
+      ],
+    },
+        {
           id: "addinvestor",
           label: "Investor",
           icon: User,

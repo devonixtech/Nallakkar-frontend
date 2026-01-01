@@ -62,6 +62,7 @@ import InvestorProductDetails from "../Pages/Investor/InvestorProductDetails";
 import PrivacyPolicy from "../Pages/PrivacyPolicy";
 import AdminOrderDetails from "../Pages/admin/AdminOrderDetails";
 import EditProduct from "../Pages/admin/EditProduct";
+import AdminResetPassword from "../Pages/admin/AdminResetPassword";
 
 import ReturnPolicy from "../Pages/ReturnPolicy";
 export default function AppRoutes() {
@@ -173,6 +174,11 @@ export default function AppRoutes() {
             path="investoreProductList"
             element={<InvestoreProductList />}
           />
+          <Route
+  path="/admin/reset-password"
+  element={<AdminResetPassword />}
+/>
+
           <Route path="categories" element={<Categories></Categories>}></Route>
           <Route path="Inquiries" element={<ContactPage></ContactPage>}></Route>
           <Route
