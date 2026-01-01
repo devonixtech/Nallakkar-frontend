@@ -358,12 +358,12 @@ export default function UsersPage() {
                   {/* <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Last Login
                   </th> */}
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {/* <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Orders
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -400,10 +400,10 @@ export default function UsersPage() {
                     {/* <td className="px-6 py-4 text-sm text-gray-900">
                       {user?.lastLogin === 'Never' ? 'Never' : new Date(user.lastLogin).toLocaleDateString()}
                     </td> */}
-                    <td className="px-6 py-4">
+                    {/* <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">{user?.orders} orders</div>
                       <div className="text-sm font-medium text-green-600">{user?.totalSpent}</div>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
                         {/* <button
@@ -416,13 +416,13 @@ export default function UsersPage() {
                         >
                           <i className={user.status === 'Active' ? 'ri-pause-circle-line' : 'ri-play-circle-line'}></i>
                         </button> */}
-                        <button
+                        {/* <button
                           onClick={() => openEditModal(user)}
                           className="w-8 h-8 flex items-center justify-center text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Edit User"
                         >
                           <i className="ri-edit-line"></i>
-                        </button>
+                        </button> */}
                         {/* <Link
                           to={`/admin/users/${user?.id}`}
                           className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
@@ -430,13 +430,13 @@ export default function UsersPage() {
                         >
                           <i className="ri-eye-line"></i>
                         </Link> */}
-                        <button
+                        {/* <button
                           onClick={() => openDeleteModal(user)}
                           className="w-8 h-8 flex items-center justify-center text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete User"
                         >
                           <i className="ri-delete-bin-line"></i>
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
