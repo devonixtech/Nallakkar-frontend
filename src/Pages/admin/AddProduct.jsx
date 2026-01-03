@@ -16,7 +16,7 @@ export default function AddProduct() {
     price: "",
     discountPrice: "",
     stock: "",
-    status: "active",
+    status: "0",
     description: "",
     shortDescription: "",
     reviewCount: "",

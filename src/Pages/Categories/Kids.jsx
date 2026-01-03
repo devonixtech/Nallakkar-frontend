@@ -159,7 +159,8 @@ export default function ProductListingPage() {
   const [maxPrice, setMaxPrice] = useState(4000);
 
   const filteredProducts = products
-    ?.filter((product) => product.subCategoryName === selectedCategory)
+    ?.filter((product) => Number(product.status) === 1)
+    .filter((product) => product.subCategoryName === selectedCategory)
     .filter((product) => product.final_price <= maxPrice)
     .filter((product) => {
       if (!appliedFilters || Object.keys(appliedFilters).length === 0)

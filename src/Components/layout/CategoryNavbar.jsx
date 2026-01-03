@@ -77,10 +77,12 @@ export default function CategoryNavbar() {
       );
 
   const filteredProducts =
-    searchQuery.trim() === ""
-      ? []
-      : products.filter((prod) =>
-        prod.title.toLowerCase().includes(searchQuery.toLowerCase())
+  searchQuery.trim() === ""
+    ? []
+    : products.filter(
+        (prod) =>
+          prod.status === 1 && // ✅ only active products
+          prod.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
   const hasResults =

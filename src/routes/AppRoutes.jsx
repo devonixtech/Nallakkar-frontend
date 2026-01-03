@@ -71,7 +71,7 @@ export default function AppRoutes() {
     <Routes>
       {/* ✅ Home routes */}
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<InvestorLogin />} />
+      <Route path="/investorLogin" element={<InvestorLogin />} />
       <Route element={<PublicRoute />}>
         <Route element={<HomeLayout />}>
           {/* <Route path="/" element={<Home/>} /> */}

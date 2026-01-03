@@ -100,7 +100,7 @@ export default function ProductList() {
   };
   // ✅ Toggle Active/Inactive
   const handleToggleStatus = (product) => {
-    const newStatus = product.status === 1 ? 0 : 1;
+    const newStatus = product.status === "1" ? "0" : "1";
     dispatch(updateProductStatus({ id: product.id, status: newStatus }))
       .unwrap()
       .then(() => dispatch(fetchAllProducts()));

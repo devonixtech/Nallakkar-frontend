@@ -97,10 +97,17 @@ export default function TopSellingProducts() {
   };
 
   // --- Filter products based on active tab ---
-  const filteredProducts =
-    activeTab === "Featured"
-      ? products?.filter((p) => p.featuredStatus === "1")
-      : products;
+   const filteredProducts =
+  activeTab === "Featured"
+    ? products?.filter(
+        (p) =>
+          Number(p.featuredStatus) === 1 &&
+          Number(p.status) === 1
+      )
+    : products?.filter(
+        (p) => Number(p.status) === 1
+      );
+
 
   // --- Pagination ---
   const indexOfLastProduct = currentPage * productsPerPage;

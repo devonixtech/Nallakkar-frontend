@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import banner from "../assets/wishlist.png";
-import wishlist1 from "../assets/whishlist1.png";
-import wishlist2 from "../assets/whishlist2.png";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,12 +45,16 @@ const userId = user?.id;
       })
     );
   };
+const activeWishlistItems = items.filter(
+  (item) => Number(item?.status) === 1
+);
 
   // pagination
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+   const totalPages = Math.ceil(items.length / itemsPerPage);
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
