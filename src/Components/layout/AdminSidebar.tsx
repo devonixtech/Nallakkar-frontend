@@ -102,7 +102,19 @@ export default function Sidebar({ isOpen, onClose }) {
           icon: User,
           href: "/investor/investorProfile",
         },
-        { id: "logout", label: "Logout", icon: User, href: "/investorLogin" },
+        {
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      hasSubmenu: true,
+      submenu: [
+        {
+          label: "Reset Password",
+          href: "/investor/reset-password",
+        },
+      ],
+    },
+        { id: "logout", label: "Logout", icon: User, href: "/" },
       ];
     }
     return [];

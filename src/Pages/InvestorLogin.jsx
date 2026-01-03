@@ -18,7 +18,7 @@ const InvestorLogin = () => {
       if (res.data.success) {
       console.log(res.data)
         // Save token & role
-        localStorage.setItem("token", res?.data?.token);
+        localStorage.setItem("authToken", res?.data?.token);
         localStorage.setItem("role", "investor");
         localStorage.setItem("investor", JSON.stringify(res.data?.investor));
         localStorage.setItem("investorId",res.data?.investor?.id)

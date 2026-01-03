@@ -24,7 +24,8 @@ const Login = () => {
       );
         console.log(res)
       // Save token or role
-      localStorage.setItem("token", res.data.token);
+      console.log("Login successful:", res.data);
+      localStorage.setItem("authToken", res.data.token);
       localStorage.setItem("role", "admin");
 
       navigate("/admin/dashboard");

@@ -6,7 +6,7 @@ import { fetchAllProducts } from "../../Redux/slices/productSlice";
 
 export default function InvestorProduct() {
   const dispatch = useDispatch();
-  const investorId = 5; // static for now
+  const investorId = localStorage.getItem("investorId"); // static for now
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -127,7 +127,7 @@ export default function InvestorProduct() {
                     <td className="py-4 px-4">
                       <div className="flex items-center">
                         <img
-                          src={product?.image}
+                          src={product?.image[0]}
                           className="w-12 h-12 rounded-lg object-cover mr-4"
                           alt=""
                         />

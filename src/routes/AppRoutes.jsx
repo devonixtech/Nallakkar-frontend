@@ -65,6 +65,7 @@ import EditProduct from "../Pages/admin/EditProduct";
 import AdminResetPassword from "../Pages/admin/AdminResetPassword";
 
 import ReturnPolicy from "../Pages/ReturnPolicy";
+import InvestorResetPassword from "../Pages/Investor/InvestorResetPassword";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -203,6 +204,11 @@ export default function AppRoutes() {
           <Route path="investorProduct" element={<InvestorProduct />} />
           <Route path="investorOrder" element={<InvestorOrder />} />
           <Route path="investorProfile" element={<InvestorProfile />} />
+          <Route
+  path="/investor/reset-password"
+  element={<InvestorResetPassword />}
+/>
+
           <Route path="investorProductDetails/:id" element={<InvestorProductDetails />} />
         </Route>
       </Route>
