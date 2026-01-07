@@ -33,7 +33,7 @@ const AddInvestor = () => {
   const investors = useSelector((state) => state.investors.investors);
 
   const addviewProduct = () => {
-    navigate("/admin/products/add");
+    navigate("/admin/investoreProductList");
   };
 
   // ✅ Handle Create / Update Investor

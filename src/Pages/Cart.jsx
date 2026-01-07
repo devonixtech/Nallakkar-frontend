@@ -1,6 +1,5 @@
 import { FaMinus, FaPlus, FaTimes } from "react-icons/fa";
 import shoppingcart from "../assets/ShoppingCart.png";
-import details from "../assets/details2.png";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -19,16 +18,12 @@ const userString = localStorage.getItem("user");
 const user = JSON.parse(userString);
 
 // Access the id
-const user_Id = user.id;
-  const userId = user_Id; // temp userId
+// const user_Id = user.id;
+  // const userId = user_Id; // temp userId
   const dispatch = useDispatch();
   const items = useSelector((state) => state.cart);
 
-  // useEffect(() => {
-  //   if (userId) {
-  //     dispatch(fetchCartByUserId(userId));
-  //   }
-  // }, [dispatch, userId]);
+ 
 
 useEffect(() => {
   const userString = localStorage.getItem("user");
@@ -77,37 +72,13 @@ const handleRemove = (cartId) => {
   }
 };
 
-
-  // Data for the right side 
-
-  // Calculate Price Details
 // ✅ Total Items
 const totalItems = items?.items?.reduce(
   (sum, item) => sum + Number(item?.quantity),
   0
 ) || 0;
 
-// ✅ Total Price
-// const totalPrice =
-// items?.reduce((sum, item) => {
-//   const price =
-//     item?.productPrice ||
-//     item?.variant?.price ||
-//     item?.product?.price ||
-//     0;
-
-//   return sum + price * (item?.quantity || 1);
-// }, 0) || 0;
   
-
-
-// // ✅ Discounts & GST
-// const discountRate = 0.05; // 5% discount
-// const discountAmount = totalPrice * discountRate;
-// const gstRate = 0.18; // 18% GST
-// const gstAmount = (totalPrice - discountAmount) * gstRate;
-
-// const finalAmount = totalPrice - discountAmount + gstAmount;
 
   return (
     <div className="w-full min-h-screen bg-white">

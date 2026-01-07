@@ -80,7 +80,7 @@ const currentProducts = investorProducts?.slice(indexOfFirstItem, indexOfLastIte
           </div>
             {/* ✅ Add Product Button */}
           <button
-            onClick={() => setShowAddModal(true)} // open popup
+            onClick={() =>   navigate("/admin/products/add")} // open popup
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center whitespace-nowrap cursor-pointer"
           >
             <i className="ri-add-line mr-2"></i>
