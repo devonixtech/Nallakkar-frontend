@@ -9,6 +9,9 @@ import {
 } from "../Redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
+// import shoppingcart from "../assets/ShoppingCart.png";
+
+
 const ShoppingCart = () => {
 
   // Get the user string from localStorage
@@ -78,7 +81,8 @@ const totalItems = items?.items?.reduce(
   0
 ) || 0;
 
-  
+
+
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -99,7 +103,31 @@ const totalItems = items?.items?.reduce(
         </div>
       </div>
 
+
+        {/* ✅ EMPTY CART STATE */}
+{items?.items?.length === 0 && (
+  <div className="flex flex-col items-center justify-center py-24 text-center">
+   
+
+    <h2 className="text-2xl font-bold mb-2">
+      Your Cart is Empty 🛒
+    </h2>
+
+    <p className="text-gray-600 mb-6">
+      Looks like you haven’t added anything to your cart yet.
+    </p>
+
+    <Link
+      to="/"
+      className="bg-darkpink text-white px-6 py-2 rounded hover:bg-pink transition"
+    >
+      Shop Now
+    </Link>
+  </div>
+)}
+
       {/* Cart Section */}
+      {items?.items?.length > 0 && (
       <div className="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left - Product List */}
         <div className="lg:col-span-2 space-y-6">
@@ -231,6 +259,7 @@ const totalItems = items?.items?.reduce(
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };

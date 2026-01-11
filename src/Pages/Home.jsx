@@ -6,29 +6,33 @@ import AboutNallakkar from "./HomeFolder/AboutNallakkar";
 import Features from "./HomeFolder/Features";
 import Testimonial from "./HomeFolder/Testimonial";
 import ContactCard from "./HomeFolder/ContactCard";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import HeroDesktop from "./HomeFolder/HeroDesktop";
 import HeroMobile from "./HomeFolder/HeroMobile";
 import FashionMobile from "./HomeFolder/FashionMobile";
-import { useSelector , useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { fetchAllCategories } from "../Redux/slices/categorySlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchAllProducts } from "../Redux/slices/productSlice";
 import { use } from "react";
+
 export default function Home() {
   const dispatch = useDispatch();
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(fetchAllCategories());
     dispatch(fetchAllProducts());
-  },[dispatch])
-  const categories  = useSelector((state) => state?.ctegory?.categories);
+  }, [dispatch])
+  const categories = useSelector((state) => state?.ctegory?.categories);
   const products = useSelector((state) => state?.products?.products);
-  
+
+
+
   return (
     <>
       <Helmet>
         <title>Home - Nallakkar</title>
       </Helmet>
+
 
       <div className="hidden md:block">
         <HeroDesktop />
@@ -61,42 +65,42 @@ export default function Home() {
       "
           >
             {
-            // [
-            //   { name: "Kids", img: kids, link: "/category/kids" },
-            //   { name: "Women", img: women, link: "/category/kids" },
-            //   { name: "Toys", img: toys, link: "/category/kids" },
-            //   {
-            //     name: "Accessories",
-            //     img: accessories,
-            //     link: "/category/kids",
-            //   },
-            //   {
-            //     name: "Home Decor",
-            //     img: homedecor,
-            //     link: "/category/kids",
-            //   },
-            // ]
-            categories?.map((cat) => (
-              <Link
-                to={"category/kids"}
-                key={cat.name}
-                className="flex flex-col items-center cursor-pointer group flex-shrink-0"
-                onClick={() => localStorage.setItem("selectedCategoryId", cat?.id)}
-              >
-                {/* Image */}
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-white transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:border-gray-300">
-                  <img
-                    src={cat?.image[0]}
-                    alt={cat?.name}
-                    className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
-                  />
-                </div>
-                {/* Text */}
-                <span className="text-sm sm:text-[16px] md:text-[18px] mt-2 font-semibold text-black group-hover:text-pink-500 transition-colors duration-300 ease-in-out">
-                  {cat.name}
-                </span>
-              </Link>
-            ))}
+              // [
+              //   { name: "Kids", img: kids, link: "/category/kids" },
+              //   { name: "Women", img: women, link: "/category/kids" },
+              //   { name: "Toys", img: toys, link: "/category/kids" },
+              //   {
+              //     name: "Accessories",
+              //     img: accessories,
+              //     link: "/category/kids",
+              //   },
+              //   {
+              //     name: "Home Decor",
+              //     img: homedecor,
+              //     link: "/category/kids",
+              //   },
+              // ]
+              categories?.map((cat) => (
+                <Link
+                  to={"category/kids"}
+                  key={cat.name}
+                  className="flex flex-col items-center cursor-pointer group flex-shrink-0"
+                  onClick={() => localStorage.setItem("selectedCategoryId", cat?.id)}
+                >
+                  {/* Image */}
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-white transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:border-gray-300">
+                    <img
+                      src={cat?.image[0]}
+                      alt={cat?.name}
+                      className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+                    />
+                  </div>
+                  {/* Text */}
+                  <span className="text-sm sm:text-[16px] md:text-[18px] mt-2 font-semibold text-black group-hover:text-pink-500 transition-colors duration-300 ease-in-out">
+                    {cat.name}
+                  </span>
+                </Link>
+              ))}
           </div>
         </div>
       </section>
@@ -196,7 +200,7 @@ export default function Home() {
 
 //           <div
 //             className="
-//               flex 
+//               flex
 //               md:flex-wrap md:justify-center
 //               gap-x-6 sm:gap-x-8 gap-y-6 sm:gap-y-8 mt-6
 //               overflow-x-auto md:overflow-x-visible

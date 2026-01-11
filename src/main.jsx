@@ -8,11 +8,10 @@ import { HelmetProvider } from 'react-helmet-async';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <GoogleOAuthProvider clientId="818643365160-rmi2qnhk40dn7l00n3pa19fovlmaukll.apps.googleusercontent.com">
-        <App />
-      </GoogleOAuthProvider>
-    </HelmetProvider>
-  </React.StrictMode>
+  <HelmetProvider>
+    <GoogleOAuthProvider clientId="XXXX">
+      <App />
+    </GoogleOAuthProvider>
+  </HelmetProvider>
 );
+

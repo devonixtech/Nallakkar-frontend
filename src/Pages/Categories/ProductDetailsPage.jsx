@@ -5,6 +5,7 @@ import img1 from "../../assets/details1.png";
 import img2 from "../../assets/details2.png";
 import img3 from "../../assets/details3.png";
 import img4 from "../../assets/details4.png";
+import { useAuthModal } from "../../Components/Custom/AuthModalContext";
 
 import { Heart } from "lucide-react";
 import discountIcon from "../../assets/Layer_2.png";
@@ -35,6 +36,7 @@ import { setBuyNowItem } from "../../Redux/slices/buyNowSlice";
 import ShareButton from "../../Components/Custom/ShareButton";
 import { fetchCartByUserId } from "../../Redux/slices/cartSlice";
 import { checkPincodeServiceability } from "../../Redux/slices/ordersSlice";
+import { toast } from "react-toastify";
 
 const productData = {
   id: 1,
@@ -115,6 +117,7 @@ export default function ProductDetailsPage() {
   const mainImageRef = useRef(null); // Main image container ko reference karne ke liye
   const wishlist = useSelector((state) => state.wishlist.items || []);
   const navigate = useNavigate();
+const { setShowLogin } = useAuthModal();
 
   // Mouse ko image par move karne par position calculate karta hai
   const handleMouseMove = (e) => {
@@ -174,6 +177,14 @@ export default function ProductDetailsPage() {
 
   // HERE ADDING THE FUNCTIONALITY OF ADDING THE PRODUCT TO WISHLIST
   const handleWishlist = async (productId) => {
+
+
+     if (!userId) {
+    toast.info("Please login to manage wishlist");
+    setShowLogin(true);
+     navigate("/", { replace: true });
+    return;
+  }
     const isFavourite = !wishlist?.some((w) => w.productId === productId);
     await dispatch(toggleWishlist({ productId, userId, isFavourite })).unwrap();
     dispatch(fetchWishlistByUserId(userId));
@@ -183,10 +194,13 @@ export default function ProductDetailsPage() {
 
 
   const handleAddToCart = () => {
-    if (!userId) {
-      alert("Please login to add items to cart");
-      return;
-    }
+  if (!userId) {
+    toast.info("Please login to add item to cart");
+    setShowLogin(true);
+     navigate("/", { replace: true });
+    return;
+  }
+
 
 
     // ProductDetailsPage function ke andar

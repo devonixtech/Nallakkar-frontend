@@ -11,7 +11,7 @@ const OtpForm = ({ changeNumber , goToVerified }) => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const emailOrMobile = localStorage.getItem("emailOrMobile");
-  const navigate = useNavigate();
+
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
@@ -41,8 +41,11 @@ const OtpForm = ({ changeNumber , goToVerified }) => {
       localStorage.setItem("user", JSON.stringify( res?.payload.user));
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userId", res?.payload.user.id);
-      toast.success("OTP Verified Successfully 🎉");
-      if (goToVerified) goToVerified();
+     toast.success("OTP Verified Successfully 🎉");
+
+if (typeof goToVerified === "function") {
+  goToVerified();   // ✅ closes modal
+}
     } catch (error) {
         console.error("❌ OTP Verification Failed:", error.response?.data || error.message);
       toast.error(error.response?.data?.message || "OTP verification failed!"); // ❌ error toast
