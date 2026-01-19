@@ -43,7 +43,8 @@ const buildTimelineDates = ({ orderDetails, tracking }) => {
 
   // 2️⃣ Order Dispatched → OUR SYSTEM (preferred)
   // Use the correct field you have (examples below)
-  dates.ORDER_DISPATCHED = orderDetails?.dispatched_at || tracking?.details?.shipment_track?.[0]?.pickup_date || "";
+  const hasAWB = Boolean(orderDetails?.awb_code);
+  dates.ORDER_DISPATCHED = hasAWB ? orderDetails?.dispatched_at || tracking?.details?.shipment_track?.[0]?.pickup_date || orderDetails?.created_at || "" : "";
   // 3️⃣ Courier events → SHIPROCKET
   const activities = tracking?.details?.shipment_track_activities || [];
 
