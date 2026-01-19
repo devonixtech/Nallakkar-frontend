@@ -8,18 +8,19 @@ import {
   fetchWishlistByUserId,
   toggleWishlist,
 } from "../Redux/slices/wishlistSlice";
+import ProductRating from "../Components/Custom/ProductRating";
 
 const Wishlist = () => {
   const [activeCard, setActiveCard] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   // Get the user string from localStorage
-const userString = localStorage.getItem("user");
+  const userString = localStorage.getItem("user");
 
-// Parse it into an object
-const user = JSON.parse(userString);
-// Access the id
-const userId = user?.id;
+  // Parse it into an object
+  const user = JSON.parse(userString);
+  // Access the id
+  const userId = user?.id;
 
   const dispatch = useDispatch();
   const { items = [], loading, toggleLoading, error } = useSelector((state) => state.wishlist);
@@ -27,7 +28,7 @@ const userId = user?.id;
   useEffect(() => {
     if (userId && !loading && items.length === 0) {
       dispatch(fetchWishlistByUserId(userId));
-    
+
     }
   }, [dispatch, userId]);
 
@@ -45,15 +46,15 @@ const userId = user?.id;
       })
     );
   };
-const activeWishlistItems = items.filter(
-  (item) => Number(item?.status) === 1
-);
+  const activeWishlistItems = items.filter(
+    (item) => Number(item?.status) === 1
+  );
 
   // pagination
-   const totalPages = Math.ceil(items.length / itemsPerPage);
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
 
 
   const paginate = (pageNumber) => {
@@ -135,11 +136,10 @@ const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
           {currentItems.map((item, index) => (
             <div
               key={item?.productId ?? item?.id ?? index}
-              className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
-                activeCard === index
-                  ? "shadow-xl scale-[1.02]"
-                  : "hover:shadow-lg hover:-translate-y-1"
-              }`}
+              className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
+                ? "shadow-xl scale-[1.02]"
+                : "hover:shadow-lg hover:-translate-y-1"
+                }`}
               onMouseDown={() => setActiveCard(index)}
               onMouseUp={() => setActiveCard(null)}
               onMouseLeave={() => setActiveCard(null)}
@@ -149,11 +149,10 @@ const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
                   <img
                     src={item?.image?.[0]}
                     alt={item?.name}
-                    className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                      activeCard === index
-                        ? "scale-105"
-                        : "group-hover:scale-105"
-                    }`}
+                    className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                      ? "scale-105"
+                      : "group-hover:scale-105"
+                      }`}
                   />
                 </Link>
 
@@ -181,8 +180,12 @@ const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
                   </Link>
                 </div> */}
 
-                <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                  <span>{item?.rating}</span> • <span>{item?.reviews}</span>
+                <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+                  <ProductRating
+                    rating={item?.rating || item?.avgRating}
+                    reviewCount={item?.reviewCount || item?.reviews}
+                    size="xs"
+                  />
                 </div>
 
                 {/* Wishlist button here --- handling the deleting functionality  */}
@@ -200,11 +203,10 @@ const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
                   }
                 >
                   <Heart
-                    className={`w-5 h-5 transition-colors ${
-                      items.some((wish) => wish.productId === item.productId)
-                        ? "fill-rose text-rose"
-                        : "text-gray-400"
-                    } ${toggleLoading ? "opacity-50 pointer-events-none" : ""}`}
+                    className={`w-5 h-5 transition-colors ${items.some((wish) => wish.productId === item.productId)
+                      ? "fill-rose text-rose"
+                      : "text-gray-400"
+                      } ${toggleLoading ? "opacity-50 pointer-events-none" : ""}`}
                   />
                 </button>
               </div>
@@ -219,7 +221,7 @@ const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
               <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
                 <span className="text-darkpink font-semibold text-sm">
                   {item?.final_price}
-            
+
                 </span>
                 <span className="text-gray-500 text-xs">( {item?.discount}% )</span>
               </div>
@@ -233,11 +235,10 @@ const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`w-8 h-8 flex items-center justify-center rounded-full text-sm transition ${
-                currentPage === 1
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-pinkLight hover:bg-pink text-white"
-              }`}
+              className={`w-8 h-8 flex items-center justify-center rounded-full text-sm transition ${currentPage === 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-pinkLight hover:bg-pink text-white"
+                }`}
             >
               {"<"}
             </button>
@@ -245,11 +246,10 @@ const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
               <button
                 key={number}
                 onClick={() => paginate(number)}
-                className={`w-8 h-8 flex items-center justify-center rounded-full text-sm transition ${
-                  currentPage === number
-                    ? "bg-darkpink text-white font-bold"
-                    : "bg-pinkLight hover:bg-pink hover:text-white text-white"
-                }`}
+                className={`w-8 h-8 flex items-center justify-center rounded-full text-sm transition ${currentPage === number
+                  ? "bg-darkpink text-white font-bold"
+                  : "bg-pinkLight hover:bg-pink hover:text-white text-white"
+                  }`}
               >
                 {number}
               </button>
@@ -257,11 +257,10 @@ const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`w-8 h-8 flex items-center justify-center rounded-full text-sm transition ${
-                currentPage === totalPages
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-pinkLight hover:bg-pink text-white"
-              }`}
+              className={`w-8 h-8 flex items-center justify-center rounded-full text-sm transition ${currentPage === totalPages
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-pinkLight hover:bg-pink text-white"
+                }`}
             >
               {">"}
             </button>

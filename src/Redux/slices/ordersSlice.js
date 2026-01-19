@@ -61,7 +61,7 @@ export const trackOrderByOrderId = createAsyncThunk(
   "orders/trackOrder",
   async (orderId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/orders/track/${orderId}`);
+      const res = await api.get(`orders/track/${orderId}`);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

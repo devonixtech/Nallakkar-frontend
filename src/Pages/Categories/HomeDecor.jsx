@@ -14,6 +14,7 @@ import infant from "../../assets/infant.png";
 import toy from "../../assets/access.png";
 import access from "../../assets/toy.png";
 import { Link } from "react-router-dom";
+import ProductRating from "../../Components/Custom/ProductRating";
 
 const products = [
   {
@@ -116,9 +117,8 @@ const CategoryPill = ({ name, img, isSelected, onClick }) => (
     </div>
     {/* The text color below the oval also changes on selection */}
     <p
-      className={`mt-2 text-sm font-semibold ${
-        isSelected ? "bg-opacity-35" : "text-gray-700"
-      }`}
+      className={`mt-2 text-sm font-semibold ${isSelected ? "bg-opacity-35" : "text-gray-700"
+        }`}
     >
       {name}
     </p>
@@ -349,11 +349,10 @@ export default function HomeDecor() {
               {products.map((item, index) => (
                 <div
                   key={index}
-                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
-                    activeCard === index
-                      ? "shadow-xl scale-[1.02]"
-                      : "hover:shadow-lg hover:-translate-y-1"
-                  }`}
+                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
+                    ? "shadow-xl scale-[1.02]"
+                    : "hover:shadow-lg hover:-translate-y-1"
+                    }`}
                   onMouseDown={() => setActiveCard(index)}
                   onMouseUp={() => setActiveCard(null)}
                   onMouseLeave={() => setActiveCard(null)}
@@ -364,11 +363,10 @@ export default function HomeDecor() {
                       <img
                         src={item.image}
                         alt={item.title}
-                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                          activeCard === index
-                            ? "scale-105"
-                            : "group-hover:scale-105"
-                        }`}
+                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                          ? "scale-105"
+                          : "group-hover:scale-105"
+                          }`}
                       />
                     </Link>
 
@@ -400,8 +398,12 @@ export default function HomeDecor() {
                     </Link> */}
 
                     {/* Rating */}
-                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                      <span>{item.rating}</span> • <span>{item.reviews}</span>
+                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+                      <ProductRating
+                        rating={item.rating}
+                        reviewCount={item.reviewCount || item.reviews}
+                        size="xs"
+                      />
                     </div>
 
                     {/* Heart Icon */}
@@ -410,11 +412,10 @@ export default function HomeDecor() {
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
                     >
                       <Heart
-                        className={`w-5 h-5 transition-colors ${
-                          wishlist.includes(index)
-                            ? "fill-rose text-rose"
-                            : "text-white"
-                        }`}
+                        className={`w-5 h-5 transition-colors ${wishlist.includes(index)
+                          ? "fill-rose text-rose"
+                          : "text-white"
+                          }`}
                         strokeWidth={2}
                       />
                     </button>

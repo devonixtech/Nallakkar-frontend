@@ -100,18 +100,36 @@ export default function ProductList() {
   };
   // ✅ Toggle Active/Inactive
   const handleToggleStatus = (product) => {
-    const newStatus = product.status === "1" ? "0" : "1";
-    dispatch(updateProductStatus({ id: product.id, status: newStatus }))
+    const newStatus = product.status == 1 ? "0" : "1";
+    // Use _id if available, otherwise id
+    const productId = product._id || product.id;
+    dispatch(updateProductStatus({ id: productId, status: newStatus }))
       .unwrap()
       .then(() => dispatch(fetchAllProducts()));
   };
 
   // ✅ Toggle Featured/Unfeatured
   const handleToggleFeatured = (product) => {
-    const newStatus = product.featuredStatus === 1 ? 0 : 1;
-    dispatch(updateFeaturedStatus({ id: product.id, featuredStatus: newStatus }))
+    // Force string status "0" or "1"
+    const newStatus = String(product.featuredStatus == 1 ? "0" : "1");
+    const productId = product._id || product.id;
+
+    if (!productId) {
+      console.error("❌ Toggle failed: Missing product ID", product);
+      return;
+    }
+
+    console.log("👉 DEBUG FEATURED TOGGLE:", {
+      id: productId,
+      currentStatus: product.featuredStatus,
+      newStatusToSend: newStatus,
+      typeOfNewStatus: typeof newStatus
+    });
+
+    dispatch(updateFeaturedStatus({ id: productId, featuredStatus: newStatus }))
       .unwrap()
-      .then(() => dispatch(fetchAllProducts()));
+      .then(() => dispatch(fetchAllProducts()))
+      .catch(err => console.error("Toggle featured failed:", err));
   };
 
 
@@ -124,8 +142,8 @@ export default function ProductList() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
   useEffect(() => {
-  setCurrentPage(1);
-}, [searchTerm]);
+    setCurrentPage(1);
+  }, [searchTerm]);
 
 
   return (
@@ -152,13 +170,13 @@ export default function ProductList() {
           <div className="p-4 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
-               <input
-  type="text"
-  placeholder="Search products..."
-  value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
-  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-/>
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                />
 
               </div>
               <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
@@ -213,8 +231,8 @@ export default function ProductList() {
                       <button
                         onClick={() => handleToggleStatus(product)}
                         className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${product?.status == 1
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
                           }`}
                       >
                         {product?.status == 1 ? "Active" : "Inactive"}
@@ -225,8 +243,8 @@ export default function ProductList() {
                       <button
                         onClick={() => handleToggleFeatured(product)}
                         className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${product?.featuredStatus == 1
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-gray-200 text-gray-700"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-gray-200 text-gray-700"
                           }`}
                       >
                         {product?.featuredStatus == 1 ? "Featured" : "Not Featured"}
@@ -241,12 +259,12 @@ export default function ProductList() {
                         >
                           <i className="ri-eye-line"></i>
                         </Link>
-                         <Link
-  to={`/admin/products/edit/${product.id}`}
-  className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-green-600"
->
-  <i className="ri-edit-line"></i>
-</Link>
+                        <Link
+                          to={`/admin/products/edit/${product.id}`}
+                          className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-green-600"
+                        >
+                          <i className="ri-edit-line"></i>
+                        </Link>
 
                         <button
                           onClick={() => handleDelete(product?.id)}
@@ -262,45 +280,44 @@ export default function ProductList() {
             </table>
           </div>
 
-         <div className="flex items-center space-x-2 mt-4 mb-4 ms-4">
+          <div className="flex items-center space-x-2 mt-4 mb-4 ms-4">
 
-  <button
-    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-    disabled={currentPage === 1}
-    className="px-3 py-1 border border-gray-300 rounded text-sm
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1 border border-gray-300 rounded text-sm
                disabled:opacity-50"
-  >
-    Previous
-  </button>
+            >
+              Previous
+            </button>
 
-  {pageList.map((p, index) =>
-    p === "..." ? (
-      <span key={index} className="px-3 py-1 text-gray-500">...</span>
-    ) : (
-      <button
-        key={p}
-        onClick={() => setCurrentPage(p)}
-        className={`px-3 py-1 rounded text-sm ${
-          currentPage === p
-            ? "bg-blue-600 text-white"
-            : "border border-gray-300 text-gray-700 hover:bg-gray-50"
-        }`}
-      >
-        {p}
-      </button>
-    )
-  )}
+            {pageList.map((p, index) =>
+              p === "..." ? (
+                <span key={index} className="px-3 py-1 text-gray-500">...</span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => setCurrentPage(p)}
+                  className={`px-3 py-1 rounded text-sm ${currentPage === p
+                    ? "bg-blue-600 text-white"
+                    : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                >
+                  {p}
+                </button>
+              )
+            )}
 
-  <button
-    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-    disabled={currentPage === totalPages}
-    className="px-3 py-1 border border-gray-300 rounded text-sm
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 border border-gray-300 rounded text-sm
                disabled:opacity-50"
-  >
-    Next
-  </button>
+            >
+              Next
+            </button>
 
-</div>
+          </div>
 
         </div>
       </div>

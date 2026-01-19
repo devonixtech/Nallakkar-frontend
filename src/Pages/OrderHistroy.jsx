@@ -3,8 +3,8 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import order from "../assets/order.png";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrdersByUserId,trackOrderByOrderId } from "../Redux/slices/ordersSlice";
- 
+import { fetchOrdersByUserId, trackOrderByOrderId } from "../Redux/slices/ordersSlice";
+
 const OrderFilters = () => (
   <div className="bg-white p-4 sm:p-6 border border-gray-100 rounded-lg shadow-sm">
     <h3 className="font-bold text-gray-800 mb-4 text-lg">Price Details</h3>
@@ -50,19 +50,19 @@ const OrderHistory = () => {
   const isFilterOpen = false;
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
-    const tracking = useSelector((state) => state?.orders?.tracking);
+  const tracking = useSelector((state) => state?.orders?.tracking);
   const orders = useSelector((state) => state?.orders?.orders || []);
-  
+
   useEffect(() => {
     if (userId) {
       dispatch(fetchOrdersByUserId(userId));
     }
   }, [dispatch, userId]);
-// useEffect(() => {
-//   if (orderDetails?.order_id) {
-//     dispatch(trackOrderByOrderId(orderDetails.order_id));
-//   }
-// }, [dispatch, orderDetails?.order_id]);
+  // useEffect(() => {
+  //   if (orderDetails?.order_id) {
+  //     dispatch(trackOrderByOrderId(orderDetails.order_id));
+  //   }
+  // }, [dispatch, orderDetails?.order_id]);
 
   return (
     <>
@@ -124,7 +124,7 @@ const OrderHistory = () => {
                     {/* Product Info */}
                     <div className="sm:col-span-2 flex items-center gap-4">
                       <img
-                        src=  "https://res.cloudinary.com/dkqcqrrbp/image/upload/v1765119636/categories/giwu5fc3dplz4o5cqops.jpg"
+                        src="https://res.cloudinary.com/dkqcqrrbp/image/upload/v1765119636/categories/giwu5fc3dplz4o5cqops.jpg"
                         alt={order?.productName}
                         className="w-16 h-16 object-cover rounded-md border border-gray-100"
                       />
@@ -137,7 +137,7 @@ const OrderHistory = () => {
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
                           Ordered on: {new Date(order?.created_at
-).toDateString()}
+                          ).toDateString()}
                         </p>
                       </div>
                     </div>
@@ -145,7 +145,7 @@ const OrderHistory = () => {
                     {/* Price */}
                     <div className="sm:col-span-1 text-left sm:text-center pt-2 sm:pt-0">
                       <p className="text-lg font-semibold text-gray-800">
-                        ₹{order?.order_details?.amount/100}
+                        ₹{order?.order_details?.amount / 100}
                       </p>
                     </div>
 
@@ -164,10 +164,13 @@ const OrderHistory = () => {
                       <p className="text-xs text-gray-500 mt-1">
                         {order?.description}
                       </p>
-                      {order?.status === "Delivered" && (
-                        <span className="text-sm text-yellow-600 font-bold mt-1 inline-block hover:text-yellow-700">
+                      {order?.tracking_status === "Delivered" && (
+                        <Link
+                          to={`/writeReview/${order.id}`}
+                          className="text-sm text-yellow-600 font-bold mt-1 inline-block hover:text-yellow-700"
+                        >
                           ⭐ Rate & Review Product
-                        </span>
+                        </Link>
                       )}
                     </div>
                   </div>

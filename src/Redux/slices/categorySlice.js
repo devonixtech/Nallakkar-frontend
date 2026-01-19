@@ -3,13 +3,38 @@ import api from "../../utils/api";
 
 const BASE_URL = "/category";
 
+// Helper to parse category data
+const parseCategory = (category) => {
+  if (!category) return category;
+
+  let parsedImage = category.image;
+
+  // Parse image if it's a JSON string
+  if (typeof category.image === 'string') {
+    try {
+      parsedImage = JSON.parse(category.image);
+    } catch (e) {
+      parsedImage = category.image; // Keep as string if parsing fails
+    }
+  }
+
+  // ✅ Return NEW object with parsed image (immutable)
+  // ✅ Normalize data types: convert id and status to numbers
+  return {
+    ...category,
+    id: typeof category.id === 'string' ? parseInt(category.id, 10) : category.id,
+    status: typeof category.status === 'string' ? parseInt(category.status, 10) : category.status,
+    image: parsedImage
+  };
+};
+
 // ✅ Create category
 export const createCategory = createAsyncThunk(
   "categories/create",
   async (categoryData, { rejectWithValue }) => {
     try {
       const res = await api.post(`${BASE_URL}/createCategory`, categoryData);
-      return res.data.data;
+      return parseCategory(res.data.data);
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -22,7 +47,8 @@ export const fetchAllCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get(`${BASE_URL}/getAllCategories`);
-      return res.data.data;
+      const categories = res.data.data || [];
+      return categories.map(parseCategory);
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -42,7 +68,7 @@ export const fetchCategoryById = createAsyncThunk(
   }
 );
 
- // ✅ Update category
+// ✅ Update category
 export const updateCategory = createAsyncThunk(
   "categories/update",
   async ({ id, data }, { rejectWithValue }) => {
@@ -52,7 +78,10 @@ export const updateCategory = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       });
-      return res.data.data;
+      console.log("✅ Backend response for updateCategory:", res.data);
+      const parsedData = parseCategory(res.data.data);
+      console.log("✅ Parsed category data:", parsedData);
+      return parsedData;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -135,7 +164,9 @@ const categorySlice = createSlice({
       .addCase(updateCategory.fulfilled, (state, action) => {
         state.loading = false;
         state.categories = state.categories.map((c) =>
-          c._id === action.payload._id ? action.payload : c
+          c.id === action.payload.id
+            ? { ...c, ...action.payload, subcategories: c.subcategories || [] }
+            : c
         );
       })
       .addCase(updateCategory.rejected, (state, action) => {
@@ -151,7 +182,7 @@ const categorySlice = createSlice({
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.loading = false;
         state.categories = state.categories.filter(
-          (c) => c._id !== action.payload
+          (c) => c.id !== action.payload
         );
       })
       .addCase(deleteCategory.rejected, (state, action) => {

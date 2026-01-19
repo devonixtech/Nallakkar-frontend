@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSubcategoryBycategoryId } from "../../Redux/slices/subcategorySlice";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
+import ProductRating from "../../Components/Custom/ProductRating";
 
 const products = [
   {
@@ -126,9 +127,8 @@ const CategoryPill = ({ name, img, isSelected, onClick }) => (
     </div>
     {/* The text color below the oval also changes on selection */}
     <p
-      className={`mt-2 text-sm font-semibold ${
-        isSelected ? "bg-opacity-35" : "text-gray-700"
-      }`}
+      className={`mt-2 text-sm font-semibold ${isSelected ? "bg-opacity-35" : "text-gray-700"
+        }`}
     >
       {name}
     </p>
@@ -176,7 +176,7 @@ const ProductListing = () => {
     (product) => String(product.categoryId) === String(selectedCategoryId)
   );
 
- 
+
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -202,20 +202,20 @@ const ProductListing = () => {
           {/* [CHANGED] The mapping now passes selection state and click handler to each pill */}
           <div className="flex gap-8 overflow-x-auto pb-4 -mx-4 px-4 lg:px-[10rem] hide-scrollbar pt-0 lg:pt-0 md:pt-16">
             {categories.map((cat) => (
-                       <CategoryPill
-              key={cat?.id}
-              img={cat?.img}
-              name={cat?.name}
-              isSelected={selectedCategory === cat?.name}
-              onClick={() => {
-                setSelectedCategory(cat.name);
-                setSelectedFilters(cat.filters || {});
-                if (cat.id) {
-                  dispatch(fetchAllProducts({ subCategoryId: cat.id }));
-                }
-              
-              }}
-            />
+              <CategoryPill
+                key={cat?.id}
+                img={cat?.img}
+                name={cat?.name}
+                isSelected={selectedCategory === cat?.name}
+                onClick={() => {
+                  setSelectedCategory(cat.name);
+                  setSelectedFilters(cat.filters || {});
+                  if (cat.id) {
+                    dispatch(fetchAllProducts({ subCategoryId: cat.id }));
+                  }
+
+                }}
+              />
             ))}
           </div>
         </div>
@@ -264,11 +264,10 @@ const ProductListing = () => {
           {filteredProducts?.map((item, index) => (
             <div
               key={index}
-              className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
-                activeCard === index
-                  ? "shadow-xl scale-[1.02]"
-                  : "hover:shadow-lg hover:-translate-y-1"
-              }`}
+              className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
+                ? "shadow-xl scale-[1.02]"
+                : "hover:shadow-lg hover:-translate-y-1"
+                }`}
               onMouseDown={() => setActiveCard(index)}
               onMouseUp={() => setActiveCard(null)}
               onMouseLeave={() => setActiveCard(null)}
@@ -279,11 +278,10 @@ const ProductListing = () => {
                   <img
                     src={item?.image[0]}
                     alt={item?.name}
-                    className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                      activeCard === index
-                        ? "scale-105"
-                        : "group-hover:scale-105"
-                    }`}
+                    className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                      ? "scale-105"
+                      : "group-hover:scale-105"
+                      }`}
                   />
                 </Link>
 
@@ -315,8 +313,12 @@ const ProductListing = () => {
                 </Link> */}
 
                 {/* Rating */}
-                <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                  <span>{item?.rating}</span> • <span>{item?.reviewCount}</span>
+                <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+                  <ProductRating
+                    rating={item?.rating}
+                    reviewCount={item?.reviewCount}
+                    size="xs"
+                  />
                 </div>
 
                 {/* Heart Icon */}
@@ -325,11 +327,10 @@ const ProductListing = () => {
                   className="absolute top-2 right-2 p-1 transition hover:scale-110"
                 >
                   <Heart
-                    className={`w-5 h-5 transition-colors ${
-                      wishlist?.includes(index)
-                        ? "fill-rose text-rose"
-                        : "text-white"
-                    }`}
+                    className={`w-5 h-5 transition-colors ${wishlist?.includes(index)
+                      ? "fill-rose text-rose"
+                      : "text-white"
+                      }`}
                     strokeWidth={2}
                   />
                 </button>
