@@ -37,6 +37,7 @@ import ShareButton from "../../Components/Custom/ShareButton";
 import { fetchCartByUserId } from "../../Redux/slices/cartSlice";
 import { checkPincodeServiceability } from "../../Redux/slices/ordersSlice";
 import { toast } from "react-toastify";
+import ProductRating from "../../Components/Custom/ProductRating";
 
 const productData = {
   id: 1,
@@ -74,12 +75,9 @@ const ProductCard = ({ product }) => (
       <div className="absolute top-2 right-2 p-1.5 bg-white bg-opacity-70 rounded-full cursor-pointer">
         <FiHeart className="text-gray-600" />
       </div>
-      {product?.rating && (
-        <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm text-xs font-semibold flex items-center gap-1">
-          {product?.rating} <span className="text-pink-500">|</span>{" "}
-          {product?.reviews}
-        </div>
-      )}
+      <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+        <ProductRating rating={product?.avgRating} reviewCount={product?.reviewCount} size="xs" />
+      </div>
     </div>
     <div className="mt-2 text-sm">
       <p className="font-bold text-gray-800"> Nallakkar</p>
@@ -117,7 +115,7 @@ export default function ProductDetailsPage() {
   const mainImageRef = useRef(null); // Main image container ko reference karne ke liye
   const wishlist = useSelector((state) => state.wishlist.items || []);
   const navigate = useNavigate();
-const { setShowLogin } = useAuthModal();
+  const { setShowLogin } = useAuthModal();
 
   // Mouse ko image par move karne par position calculate karta hai
   const handleMouseMove = (e) => {
@@ -151,12 +149,30 @@ const { setShowLogin } = useAuthModal();
   const userId = user?.id;
 
   useEffect(() => {
-    dispatch(fetchReviewsByProduct(2));
+    // Fetch reviews for the actual product, not hardcoded ID
+    if (productId?.id) {
+      dispatch(fetchReviewsByProduct(productId.id));
+    }
     dispatch(fetchProductById(productId?.id));
     dispatch(fetchSimilarProducts(productId?.id));
     dispatch(addRecentlyViewed({ userId, productId: productId?.id }));
     dispatch(fetchRecentlyViewed(userId));
   }, [dispatch, productId?.id]);
+
+  // Smart polling for real-time review updates (only when tab is visible)
+  useEffect(() => {
+    if (!productId?.id) return;
+
+    const pollInterval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        dispatch(fetchReviewsByProduct(productId.id));
+        dispatch(fetchProductById(productId.id));
+      }
+    }, 30000); // Poll every 30 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [dispatch, productId?.id]);
+
   const reviews = useSelector((state) => state)?.reviews?.productReviews;
 
   const product = useSelector((state) => state)?.products?.productData?.data;
@@ -179,12 +195,12 @@ const { setShowLogin } = useAuthModal();
   const handleWishlist = async (productId) => {
 
 
-     if (!userId) {
-    toast.info("Please login to manage wishlist");
-    setShowLogin(true);
-     navigate("/", { replace: true });
-    return;
-  }
+    if (!userId) {
+      toast.info("Please login to manage wishlist");
+      setShowLogin(true);
+      navigate("/", { replace: true });
+      return;
+    }
     const isFavourite = !wishlist?.some((w) => w.productId === productId);
     await dispatch(toggleWishlist({ productId, userId, isFavourite })).unwrap();
     dispatch(fetchWishlistByUserId(userId));
@@ -194,12 +210,12 @@ const { setShowLogin } = useAuthModal();
 
 
   const handleAddToCart = () => {
-  if (!userId) {
-    toast.info("Please login to add item to cart");
-    setShowLogin(true);
-     navigate("/", { replace: true });
-    return;
-  }
+    if (!userId) {
+      toast.info("Please login to add item to cart");
+      setShowLogin(true);
+      navigate("/", { replace: true });
+      return;
+    }
 
 
 

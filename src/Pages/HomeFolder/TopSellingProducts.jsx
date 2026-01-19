@@ -5,6 +5,7 @@ import { fetchAllProducts } from "../../Redux/slices/productSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchWishlistByUserId, toggleWishlist } from "../../Redux/slices/wishlistSlice";
 import { fetchCartByUserId } from "../../Redux/slices/cartSlice";
+import ProductRating from "../../Components/Custom/ProductRating";
 // const products = [
 //   {
 //     title: "Men Regular Fit Self Design Light Shirt",
@@ -64,6 +65,7 @@ export default function TopSellingProducts() {
   const userId = user?.id;
 
   const products = useSelector((state) => state?.products?.products);
+  console.log("All products in the TopSellingProdcuts Section:", products);
   const wishlist = useSelector((state) => state.wishlist.items || []);
   const cart = useSelector((state) => state.cart.items || []);
 
@@ -97,14 +99,14 @@ export default function TopSellingProducts() {
   };
 
   // --- Filter products based on active tab ---
-   const filteredProducts =
-  activeTab === "Featured"
-    ? products?.filter(
+  const filteredProducts =
+    activeTab === "Featured"
+      ? products?.filter(
         (p) =>
           Number(p.featuredStatus) === 1 &&
           Number(p.status) === 1
       )
-    : products?.filter(
+      : products?.filter(
         (p) => Number(p.status) === 1
       );
 
@@ -133,8 +135,8 @@ export default function TopSellingProducts() {
                 if (isClickable) setActiveTab(tab);
               }}
               className={`px-3 md:px-4 py-1 text-sm md:text-[18px] font-semibold ${activeTab === tab
-                  ? "bg-rose text-white"
-                  : "text-black hover:text-rose"
+                ? "bg-rose text-white"
+                : "text-black hover:text-rose"
                 } ${!isClickable ? "cursor-default hover:text-black" : ""}`}
             >
               {tab}
@@ -153,8 +155,8 @@ export default function TopSellingProducts() {
             <div
               key={index}
               className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
-                  ? "shadow-xl scale-[1.02]"
-                  : "hover:shadow-lg hover:-translate-y-1"
+                ? "shadow-xl scale-[1.02]"
+                : "hover:shadow-lg hover:-translate-y-1"
                 }`}
               onMouseDown={() => setActiveCard(index)}
               onMouseUp={() => setActiveCard(null)}
@@ -222,8 +224,12 @@ export default function TopSellingProducts() {
                 </Link>
 
                 {/* Rating */}
-                <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                  <span>{item?.rating}</span> . <span>{item?.reviewCount}</span>
+                <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+                  <ProductRating
+                    rating={item?.rating}
+                    reviewCount={item?.reviewCount}
+                    size="xs"
+                  />
                 </div>
 
                 {/* Heart Icon */}
@@ -233,8 +239,8 @@ export default function TopSellingProducts() {
                 >
                   <Heart
                     className={`w-5 h-5 transition-colors ${wishlist.some((w) => w.productId == (item.id || item.productId))
-                        ? "fill-rose text-rose"
-                        : "text-white"
+                      ? "fill-rose text-rose"
+                      : "text-white"
                       }`}
                     strokeWidth={2}
                   />
@@ -278,8 +284,8 @@ export default function TopSellingProducts() {
             key={idx}
             onClick={() => setCurrentPage(idx + 1)}
             className={`w-8 h-8 flex items-center justify-center rounded-full text-sm ${currentPage === idx + 1
-                ? "bg-darkpink text-white"
-                : "bg-pinkLight hover:bg-pink text-white"
+              ? "bg-darkpink text-white"
+              : "bg-pinkLight hover:bg-pink text-white"
               }`}
           >
             {idx + 1}

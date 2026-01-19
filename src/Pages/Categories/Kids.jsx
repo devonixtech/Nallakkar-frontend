@@ -11,6 +11,7 @@ import { fetchSubcategoryBycategoryId } from "../../Redux/slices/subcategorySlic
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
 import { toggleWishlist } from "../../Redux/slices/wishlistSlice";
 import { fetchWishlistByUserId } from "../../Redux/slices/wishlistSlice";
+import ProductRating from "../../Components/Custom/ProductRating";
 
 const CategoryPill = ({ name, img, isSelected, onClick }) => (
   <div
@@ -27,9 +28,8 @@ const CategoryPill = ({ name, img, isSelected, onClick }) => (
       )}
     </div>
     <p
-      className={`mt-2 text-sm font-semibold ${
-        isSelected ? "bg-opacity-35" : "text-gray-700"
-      }`}
+      className={`mt-2 text-sm font-semibold ${isSelected ? "bg-opacity-35" : "text-gray-700"
+        }`}
     >
       {name}
     </p>
@@ -437,11 +437,10 @@ export default function ProductListingPage() {
               {displayedProducts?.map((item, index) => (
                 <div
                   key={index}
-                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${
-                    activeCard === index
-                      ? "shadow-xl scale-[1.02]"
-                      : "hover:shadow-lg hover:-translate-y-1"
-                  }`}
+                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
+                    ? "shadow-xl scale-[1.02]"
+                    : "hover:shadow-lg hover:-translate-y-1"
+                    }`}
                   onMouseDown={() => setActiveCard(index)}
                   onMouseUp={() => setActiveCard(null)}
                   onMouseLeave={() => setActiveCard(null)}
@@ -452,11 +451,10 @@ export default function ProductListingPage() {
                       <img
                         src={item.image[0]}
                         alt={item.title}
-                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${
-                          activeCard === index
-                            ? "scale-105"
-                            : "group-hover:scale-105"
-                        }`}
+                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                          ? "scale-105"
+                          : "group-hover:scale-105"
+                          }`}
                       />
                     </Link>
 
@@ -488,9 +486,12 @@ export default function ProductListingPage() {
                     </Link> */}
 
                     {/* Rating */}
-                    <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-4">
-                      <span>{item?.rating}</span>{" "}
-                      <span>{item?.reviewCount}</span>
+                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+                      <ProductRating
+                        rating={item?.rating} // Reverted to rating based on backend code
+                        reviewCount={item?.reviewCount}
+                        size="xs"
+                      />
                     </div>
 
                     {/* Heart Icon */}
@@ -499,13 +500,12 @@ export default function ProductListingPage() {
                       className="absolute top-2 right-2 p-1 transition hover:scale-110"
                     >
                       <Heart
-                        className={`w-5 h-5 transition-colors ${
-                          wishlist.some(
-                            (w) => w.productId == (item.id || item.productId)
-                          )
-                            ? "fill-rose text-rose"
-                            : "text-white"
-                        }`}
+                        className={`w-5 h-5 transition-colors ${wishlist.some(
+                          (w) => w.productId == (item.id || item.productId)
+                        )
+                          ? "fill-rose text-rose"
+                          : "text-white"
+                          }`}
                         strokeWidth={2}
                       />
                     </button>

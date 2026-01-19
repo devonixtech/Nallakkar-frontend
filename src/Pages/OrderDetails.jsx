@@ -1,8 +1,94 @@
-import React, { useEffect } from "react";
+
+
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrderByOrderId,trackOrderByOrderId } from "../Redux/slices/ordersSlice";
+import { fetchOrderByOrderId, trackOrderByOrderId } from "../Redux/slices/ordersSlice";
+
+
+// ORDER TIME LINE DETIALS ------------------
+
+const ORDER_TIMELINE = [
+  { key: "ORDER_PLACED", label: "Order Placed" },
+  { key: "ORDER_DISPATCHED", label: "Order Dispatched" },
+  { key: "PICKED_UP", label: "Picked Up" },
+  { key: "IN_TRANSIT", label: "In Transit" },
+  { key: "OUT_FOR_DELIVERY", label: "Out for Delivery" },
+  { key: "DELIVERED", label: "Delivered" },
+];
+
+// Map backend status → timeline key
+const STATUS_TO_TIMELINE_KEY = {
+  "Order Placed": "ORDER_PLACED",
+  "Order Confirmed": "ORDER_PLACED",
+  "Order Dispatched": "ORDER_DISPATCHED",
+  "Picked Up": "PICKED_UP",
+  "In Transit": "IN_TRANSIT",
+  "Out For Delivery": "OUT_FOR_DELIVERY",
+  "Delivered": "DELIVERED",
+};
+
+
+
+
+
+
+// builidng timeline states.. 
+const buildTimelineDates = ({ orderDetails, tracking }) => {
+  const dates = {};
+
+  // 1️⃣ Order Placed → OUR SYSTEM
+  dates.ORDER_PLACED = orderDetails?.created_at || "";
+
+  // 2️⃣ Order Dispatched → OUR SYSTEM (preferred)
+  // Use the correct field you have (examples below)
+  dates.ORDER_DISPATCHED = orderDetails?.dispatched_at || tracking?.details?.shipment_track?.[0]?.pickup_date || "";
+  // 3️⃣ Courier events → SHIPROCKET
+  const activities = tracking?.details?.shipment_track_activities || [];
+
+  for (const event of activities) {
+    const label = event["sr-status-label"];
+    const date = event.date;
+    if (!date) continue;
+
+    if (label === "PICKED UP" && !dates.PICKED_UP) {
+      dates.PICKED_UP = date;
+    }
+
+    if (label === "IN TRANSIT" && !dates.IN_TRANSIT) {
+      dates.IN_TRANSIT = date;
+    }
+
+    if (label === "OUT FOR DELIVERY" && !dates.OUT_FOR_DELIVERY) {
+      dates.OUT_FOR_DELIVERY = date;
+    }
+
+    if (label === "DELIVERED") {
+      dates.DELIVERED = date;
+    }
+  }
+
+  return dates;
+};
+
+
+// Formating the date to the dd MMM YYYY
+
+const formatTimelineDate = (dateString) => {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (isNaN(date)) return "";
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+};
+
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -10,17 +96,52 @@ const OrderDetails = () => {
   const orderDetails = useSelector((state) => state?.orders?.orderData || null);
   const tracking = useSelector((state) => state?.orders?.tracking);
 
-  
+  // Get reviewed products from Redux (localStorage-based)
+  const reviewedProducts = useSelector(
+    (state) => state?.reviewedProducts?.reviewedProducts[orderDetails?.id]
+  );
+
+  // Calculate if all products are reviewed (client-side)
+  const totalProducts = orderDetails?.order_details?.order_items?.length || 0;
+  const reviewedCount = reviewedProducts?.productIds?.length || 0;
+  const allReviewed = totalProducts > 0 && reviewedCount >= totalProducts;
+
+
+  //GETTING THE ORDERS STATUSES HERE 
+
+  const hasAWB = Boolean(orderDetails?.awb_code);
+
+  const rawStatus = hasAWB ?
+    tracking?.display_status ||
+    tracking?.status ||
+    orderDetails?.tracking_status : "Order Placed";
+
+  const activeTimelineKey =
+    STATUS_TO_TIMELINE_KEY[rawStatus] || "ORDER_PLACED";
+
+  const activeIndex = ORDER_TIMELINE.findIndex(
+    step => step.key === activeTimelineKey
+  );
+
+  const statusDates = buildTimelineDates({
+    orderDetails,
+    tracking,
+  });
+
+  // --------------------------------------
+
+
   useEffect(() => {
     if (id) {
       dispatch(fetchOrderByOrderId(id));
     }
   }, [dispatch, id]);
-useEffect(() => {
-  if (orderDetails?.order_id) {
-    dispatch(trackOrderByOrderId(orderDetails.order_id));
-  }
-}, [dispatch, orderDetails?.order_id]);
+
+  useEffect(() => {
+    if (orderDetails?.order_id) {
+      dispatch(trackOrderByOrderId(orderDetails.order_id));
+    }
+  }, [dispatch, orderDetails?.order_id]);
   if (!orderDetails) {
     return (
       <div className="text-center py-20 text-gray-600">
@@ -59,26 +180,93 @@ useEffect(() => {
           <div className="space-y-8">
             {/* Order Info */}
             <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md border border-gray-200">
-              <div className="flex justify-between items-center border-b pb-4 mb-4">
+              <div className="flex justify-between flex-col border-b pb-4 mb-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-[#141A44]">
                   Order #{orderDetails?.order_id}
                 </h2>
-                <span className="text-lg font-semibold text-gray-600">
-  {tracking?.display_status ||
-    tracking?.status ||
-    orderDetails?.tracking_status ||
-    "Order Confirmed"}
-</span>
-{tracking?.tracking_url && (
-  <a
-    href={tracking.tracking_url}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="block mt-2 text-sm text-blue-600 hover:underline"
-  >
-    Track Shipment
-  </a>
-)}
+
+
+                {/* TIMELINE CODE START HERE */}
+                <div className="mt-6 overflow-x-auto">
+                  <div className="relative min-w-[800px] pb-2">
+                    <div className="grid grid-cols-6 items-start">
+                      {ORDER_TIMELINE.map((step, index) => {
+                        const isCompleted = index < activeIndex;
+                        const isActive = index === activeIndex;
+                        const isFuture = index > activeIndex;
+
+                        const date =
+                          tracking?.status_dates?.[step.key] ||
+                          statusDates?.[step.key] ||
+                          "";
+
+                        return (
+                          <div
+                            key={step.key}
+                            className="relative flex flex-col items-center text-center"
+                          >
+                            {/* LEFT CONNECTOR (not for first item) */}
+                            {index !== 0 && (
+                              <div
+                                className={`absolute top-[32px] left-0 w-1/2 h-[1px] ${isCompleted || isActive
+                                  ? "bg-green-500"
+                                  : "bg-gray-300"
+                                  }`}
+                              />
+                            )}
+
+                            {/* RIGHT CONNECTOR (not for last item) */}
+                            {index !== ORDER_TIMELINE.length - 1 && (
+                              <div
+                                className={`absolute top-[32px] right-0 w-1/2 h-[1px] ${isCompleted
+                                  ? "bg-green-500"
+                                  : isActive
+                                    ? "bg-gray-400"
+                                    : "bg-gray-300"
+                                  }`}
+                              />
+                            )}
+
+                            {/* LABEL */}
+                            <span
+                              className={`text-sm font-medium mb-2 ${isActive
+                                ? "text-gray-900"
+                                : isCompleted
+                                  ? "text-gray-600"
+                                  : "text-gray-300"
+                                }`}
+                            >
+                              {step.label}
+                            </span>
+
+                            {/* DOT */}
+                            <div
+                              className={`z-10 w-3.5 h-3.5 rounded-full ${isCompleted
+                                ? "bg-green-500"
+                                : isActive
+                                  ? "bg-blue-600"
+                                  : "bg-gray-300"
+                                }`}
+                            />
+
+                            {/* DATE */}
+                            <span
+                              className={`mt-2 text-xs ${isFuture ? "text-gray-300" : "text-gray-500"
+                                }`}
+                            >
+                              {formatTimelineDate(date)}
+                            </span>
+
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+                {/* TIMELINE CODE END */}
+
+
+
 
 
               </div>
@@ -92,7 +280,7 @@ useEffect(() => {
                   >
                     {/* Placeholder product image */}
                     <img
-                      src= {item?.image}
+                      src={item?.image}
                       alt={item.name}
                       className="w-24 h-24 object-cover rounded-md border border-gray-100"
                     />
@@ -153,7 +341,7 @@ useEffect(() => {
                   </div>
                   <div className="flex justify-between pt-2 border-t font-bold text-base text-gray-800">
                     <span>Total Amount:</span>
-                    <span>₹{orderDetails?.total_amount/100}</span>
+                    <span>₹{orderDetails?.total_amount / 100}</span>
                   </div>
                 </div>
               </div>
@@ -168,12 +356,21 @@ useEffect(() => {
               )}
 
               {tracking?.display_status === "Delivered" && (
-                <Link
-                  to={`/writeReview`}
-                  className="w-full sm:w-auto px-6 py-2 bg-[#141A44] text-white font-semibold rounded-lg text-center hover:bg-opacity-90 transition duration-150"
-                >
-                  ⭐ Rate Products
-                </Link>
+                allReviewed ? (
+                  <Link
+                    to="/"
+                    className="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-semibold rounded-lg text-center hover:bg-green-700 transition duration-150"
+                  >
+                    🛍️ Shop More
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/writeReview/${orderDetails.id}`}
+                    className="w-full sm:w-auto px-6 py-2 bg-[#141A44] text-white font-semibold rounded-lg text-center hover:bg-opacity-90 transition duration-150"
+                  >
+                    ⭐ Rate Products
+                  </Link>
+                )
               )}
 
               <p className="text-sm text-gray-500 sm:ml-auto flex items-center">

@@ -85,11 +85,11 @@ export default function AppRoutes() {
             path="/TermsAndConditions"
             element={<TermsAndConditions></TermsAndConditions>}
           ></Route>
-           <Route
+          <Route
             path="/privacyPolicy"
             element={<PrivacyPolicy></PrivacyPolicy>}
           ></Route>
-           <Route
+          <Route
             path="/returnPolicy"
             element={<ReturnPolicy></ReturnPolicy>}
           ></Route>
@@ -150,7 +150,7 @@ export default function AppRoutes() {
               element={<OrderConfirmation></OrderConfirmation>}
             ></Route>
             <Route
-              path="WriteReview"
+              path="writeReview/:orderId"
               element={<WriteReview></WriteReview>}
             ></Route>
           </Route>
@@ -164,9 +164,9 @@ export default function AppRoutes() {
           <Route path="products" element={<ProductList />} />
           <Route path="products/add" element={<AddProduct />} />
           <Route path="/admin/products/edit/:id" element={<EditProduct />} />
-          <Route path="/admin/orders/:id" element={<AdminOrderDetails />}/>
+          <Route path="/admin/orders/:id" element={<AdminOrderDetails />} />
 
-          <Route  path="/admin/banner" element={<Banner/>}></Route>
+          <Route path="/admin/banner" element={<Banner />}></Route>
 
           <Route path="orders" element={<Orders />} />
           <Route path="users" element={<Users />} />
@@ -176,9 +176,9 @@ export default function AppRoutes() {
             element={<InvestoreProductList />}
           />
           <Route
-  path="/admin/reset-password"
-  element={<AdminResetPassword />}
-/>
+            path="/admin/reset-password"
+            element={<AdminResetPassword />}
+          />
 
           <Route path="categories" element={<Categories></Categories>}></Route>
           <Route path="Inquiries" element={<ContactPage></ContactPage>}></Route>
@@ -205,9 +205,9 @@ export default function AppRoutes() {
           <Route path="investorOrder" element={<InvestorOrder />} />
           <Route path="investorProfile" element={<InvestorProfile />} />
           <Route
-  path="/investor/reset-password"
-  element={<InvestorResetPassword />}
-/>
+            path="/investor/reset-password"
+            element={<InvestorResetPassword />}
+          />
 
           <Route path="investorProductDetails/:id" element={<InvestorProductDetails />} />
         </Route>

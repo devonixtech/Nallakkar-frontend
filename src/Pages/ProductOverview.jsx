@@ -1,4 +1,4 @@
-// src/pages/ProductOverview.jsx
+ // src/pages/ProductOverview.jsx
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FaArrowLeft } from "react-icons/fa";
@@ -95,7 +95,7 @@ useEffect(() => {
   // ✅ Calculate totals
   const totalProductPrice =
     itemsToShow?.reduce(
-      (sum, item) => sum + item.productPrice * (item.quantity || 1),
+      (sum, item) => sum + item.itemTotal * (item.quantity || 1),
       0
     ) || 0;
 
@@ -171,7 +171,7 @@ useEffect(() => {
                         Qty: {item.quantity}
                       </p>
                       <p className="text-base font-bold text-gray-900 mt-1">
-                        ₹{item.productPrice }
+                        ₹{item.itemTotal }
                       </p>
 
                       {item.discount > 0 && (
