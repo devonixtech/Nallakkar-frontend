@@ -63,7 +63,7 @@ export default function InvestorDashboard() {
     investorProducts.every((product) => Number(product.stock) === 0);
 
   const handleClaimAll = () => {
-    dispatch(claimAllProducts())
+    dispatch(claimAllProducts(investorId))
       .unwrap()
       .then((res) => {
         toast.success(res.message || "Claim request sent successfully!");

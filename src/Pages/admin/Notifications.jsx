@@ -57,6 +57,7 @@ export default function Notifications() {
                             No notifications found.
                         </div>
                     ) : (
+
                         <div className="divide-y divide-gray-200">
                             {notifications.map((notif) => (
                                 <div key={notif.id} className={`p-4 hover:bg-gray-50 transition-colors ${!notif.isRead ? 'bg-blue-50' : ''}`}>
@@ -70,13 +71,39 @@ export default function Notifications() {
                                                 {formatDate(notif.createdAt)}
                                             </p>
                                         </div>
+                                        <div className="flex items-center">
+                                            <button
+                                                onClick={async () => {
+                                                    try {
+                                                        const newStatus = notif.status === 'Paid' ? 'Unpaid' : 'Paid';
+                                                        const res = await api.patch('/admin/notification/update-status', {
+                                                            id: notif.id,
+                                                            status: newStatus
+                                                        });
+                                                        if (res.data?.success) {
+                                                            toast.success(`Marked as ${newStatus}`);
+                                                            fetchNotifications(); // Refresh list
+                                                        }
+                                                    } catch (err) {
+                                                        console.error("Failed to update status", err);
+                                                        toast.error(err.response?.data?.message || "Failed to update status");
+                                                    }
+                                                }}
+                                                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${notif.status === 'Paid'
+                                                    ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200'
+                                                    : 'bg-red-100 text-red-800 border-red-200 hover:bg-red-200'
+                                                    }`}
+                                            >
+                                                {notif.status === 'Paid' ? 'Paid' : 'Unpaid'}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
-            </div>
+            </div >
         </>
     );
 }
