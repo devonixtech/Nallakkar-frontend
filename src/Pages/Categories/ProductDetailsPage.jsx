@@ -595,7 +595,7 @@ export default function ProductDetailsPage() {
                       <div key={review?.id}>
                         <div className="flex items-center gap-3">
                           <img
-                            src="https://i.pravatar.cc/50"
+                            src={review?.userImage || `https://i.pravatar.cc/50`}
                             alt="Reviewer"
                             className="w-12 h-12 rounded-full"
                           />
@@ -958,9 +958,13 @@ export default function ProductDetailsPage() {
                     </div>
                   </Link> */}
 
-                  <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                    <span>{item?.rating}</span> •{" "}
-                    <span>{item?.reviewCount}</span>
+                  {/* Rating */}
+                  <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+                    <ProductRating
+                      rating={item?.rating}
+                      reviewCount={item?.reviewCount}
+                      size="xs"
+                    />
                   </div>
 
                   {/* --------------------------------------- WORKING ----------------------------------- */}
@@ -1056,9 +1060,13 @@ export default function ProductDetailsPage() {
                     </div>
                   </Link> */}
 
-                  <div className="absolute bottom-2 left-2 bg-white text-xs px-2 py-1 rounded shadow text-gray-700 flex items-center gap-1">
-                    <span>{item.rating}</span> •{" "}
-                    <span>{item?.reviewCount}</span>
+                  {/* Rating */}
+                  <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+                    <ProductRating
+                      rating={item?.rating}
+                      reviewCount={item?.reviewCount}
+                      size="xs"
+                    />
                   </div>
 
                   <button

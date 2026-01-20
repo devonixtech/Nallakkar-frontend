@@ -9,6 +9,7 @@ import {
   ChevronDown,
   LogOut,
   User,
+  Bell,
 } from "lucide-react";
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -63,30 +64,36 @@ export default function Sidebar({ isOpen, onClose }) {
         { id: "banners", label: "Banners", icon: Users, href: "/admin/banner" },
         { id: "users", label: "Users", icon: Users, href: "/admin/users" },
         {
-      id: "settings",
-      label: "Settings",
-      icon: Settings,
-      hasSubmenu: true,
-      submenu: [
-        {
-          label: "Reset Password",
-          href: "/admin/reset-password",
+          id: "settings",
+          label: "Settings",
+          icon: Settings,
+          hasSubmenu: true,
+          submenu: [
+            {
+              label: "Reset Password",
+              href: "/admin/reset-password",
+            },
+          ],
         },
-      ],
-    },
         {
           id: "addinvestor",
           label: "Investor",
           icon: User,
           href: "/admin/addinvestor",
         },
-           {
+        {
+          id: "notifications",
+          label: "Notifications",
+          icon: Bell,
+          href: "/admin/notifications",
+        },
+        {
           id: "logout",
           label: "Logout",
           icon: LogOut,
           href: "/",
         },
-       
+
       ];
     } else if (role === "investor") {
       return [
@@ -97,23 +104,23 @@ export default function Sidebar({ isOpen, onClose }) {
           href: "/investor/investorDashboard",
         },
         {
-          id: "profile", 
+          id: "profile",
           label: "My Profile",
           icon: User,
           href: "/investor/investorProfile",
         },
         {
-      id: "settings",
-      label: "Settings",
-      icon: Settings,
-      hasSubmenu: true,
-      submenu: [
-        {
-          label: "Reset Password",
-          href: "/investor/reset-password",
+          id: "settings",
+          label: "Settings",
+          icon: Settings,
+          hasSubmenu: true,
+          submenu: [
+            {
+              label: "Reset Password",
+              href: "/investor/reset-password",
+            },
+          ],
         },
-      ],
-    },
         { id: "logout", label: "Logout", icon: User, href: "/" },
       ];
     }
@@ -164,9 +171,8 @@ export default function Sidebar({ isOpen, onClose }) {
                           {item.label}
                         </div>
                         <ChevronDown
-                          className={`w-4 h-4 transition-transform duration-200 ${
-                            expandedMenus[item.id] ? "rotate-180" : ""
-                          }`}
+                          className={`w-4 h-4 transition-transform duration-200 ${expandedMenus[item.id] ? "rotate-180" : ""
+                            }`}
                         />
                       </button>
 
@@ -176,11 +182,10 @@ export default function Sidebar({ isOpen, onClose }) {
                             <li key={index}>
                               <Link
                                 to={subItem.href}
-                                className={`block px-4 py-2 text-sm rounded-lg transition-colors ${
-                                  location.pathname === subItem.href
-                                    ? "bg-gray-200 text-gray-900"
-                                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                                }`}
+                                className={`block px-4 py-2 text-sm rounded-lg transition-colors ${location.pathname === subItem.href
+                                  ? "bg-gray-200 text-gray-900"
+                                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                                  }`}
                                 onClick={onClose}
                               >
                                 {subItem.label}
@@ -193,11 +198,10 @@ export default function Sidebar({ isOpen, onClose }) {
                   ) : (
                     <Link
                       to={item.href || "#"}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
-                        location.pathname === item.href
-                          ? "bg-gray-200 text-gray-900"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${location.pathname === item.href
+                        ? "bg-gray-200 text-gray-900"
+                        : "text-gray-700 hover:bg-gray-100"
+                        }`}
                       onClick={onClose}
                     >
                       <item.icon className="w-5 h-5 mr-3" />

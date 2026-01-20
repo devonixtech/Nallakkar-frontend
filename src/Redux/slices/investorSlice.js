@@ -68,6 +68,19 @@ export const deleteInvestor = createAsyncThunk(
   }
 );
 
+/* ✅ Claim All Products */
+export const claimAllProducts = createAsyncThunk(
+  "investors/claimAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`${BASE_URL}/claimAll`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 /* 🔽 Slice */
 const investorSlice = createSlice({
   name: "investors",

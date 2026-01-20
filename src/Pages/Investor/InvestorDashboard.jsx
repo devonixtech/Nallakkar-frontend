@@ -1,24 +1,26 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import InvestorProduct from "./InvestorProduct";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts } from "../../Redux/slices/productSlice";
+import { claimAllProducts } from "../../Redux/slices/investorSlice";
+import { toast } from "react-toastify";
 
 export default function InvestorDashboard() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const investorId = localStorage.getItem('investorId');
   // const investorId = 5;
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
   const products = useSelector((state) => state?.products?.products);
-const investorProducts = products?.filter(
-  (product) => product?.investorId == investorId
-);
+  const investorProducts = products?.filter(
+    (product) => product?.investorId == investorId
+  );
 
-  
+
   const stats = [
-   
+
     {
       title: "Total Products",
       value: investorProducts?.length,
@@ -36,7 +38,7 @@ const investorProducts = products?.filter(
     },
   ];
 
-  
+
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -53,6 +55,25 @@ const investorProducts = products?.filter(
     }
   };
 
+
+
+  // ✅ Check if all products of the investor are sold out (stock === 0)
+  const isAllSoldOut =
+    investorProducts?.length > 0 &&
+    investorProducts.every((product) => Number(product.stock) === 0);
+
+  const handleClaimAll = () => {
+    dispatch(claimAllProducts())
+      .unwrap()
+      .then((res) => {
+        toast.success(res.message || "Claim request sent successfully!");
+
+      })
+      .catch((err) => {
+        toast.error(err.message || "Failed to submit claim request.");
+      });
+  };
+
   return (
     <>
       <Helmet>
@@ -60,6 +81,21 @@ const investorProducts = products?.filter(
       </Helmet>
 
       <div className="space-y-6">
+        {/* ✅ Claim All Button */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleClaimAll}
+            disabled={!isAllSoldOut}
+            className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm flex items-center gap-2 ${isAllSoldOut
+              ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:shadow-md transform hover:-translate-y-0.5"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
+              }`}
+          >
+            <i className="ri-money-dollar-circle-line text-lg"></i>
+            Claim All Earnings
+          </button>
+        </div>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
@@ -84,7 +120,7 @@ const investorProducts = products?.filter(
           ))}
         </div>
 
-      <InvestorProduct/>
+        <InvestorProduct />
       </div>
     </>
   );

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import order from "../assets/order.png";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrdersByUserId, trackOrderByOrderId } from "../Redux/slices/ordersSlice";
+import { fetchReviewsByUserId } from "../Redux/slices/reviewSlice";
 
 const OrderFilters = () => (
   <div className="bg-white p-4 sm:p-6 border border-gray-100 rounded-lg shadow-sm">
@@ -52,10 +53,12 @@ const OrderHistory = () => {
   const userId = localStorage.getItem("userId");
   const tracking = useSelector((state) => state?.orders?.tracking);
   const orders = useSelector((state) => state?.orders?.orders || []);
+  const userReviews = useSelector((state) => state?.reviews?.userReviews || []);
 
   useEffect(() => {
     if (userId) {
       dispatch(fetchOrdersByUserId(userId));
+      dispatch(fetchReviewsByUserId(userId));
     }
   }, [dispatch, userId]);
   // useEffect(() => {
@@ -165,12 +168,21 @@ const OrderHistory = () => {
                         {order?.description}
                       </p>
                       {order?.tracking_status === "Delivered" && (
-                        <Link
-                          to={`/writeReview/${order.id}`}
-                          className="text-sm text-yellow-600 font-bold mt-1 inline-block hover:text-yellow-700"
-                        >
-                          ⭐ Rate & Review Product
-                        </Link>
+                        (() => {
+                          const productId = order?.productId || order?.product_id;
+                          const review = userReviews.find(
+                            (r) => String(r.orderId) === String(order.id) && String(r.productId) === String(productId)
+                          );
+
+                          return (
+                            <Link
+                              to={`/writeReview/${order.id}`}
+                              className="text-sm text-yellow-600 font-bold mt-1 inline-block hover:text-yellow-700"
+                            >
+                              {review ? "✍ Edit Review" : "⭐ Rate & Review Product"}
+                            </Link>
+                          );
+                        })()
                       )}
                     </div>
                   </div>
