@@ -53,6 +53,7 @@ import InvestorProfile from "../Pages/Investor/InvestorProfile";
 import Addinvestor from "../Pages/admin/Addinvestor";
 import InvestoreProductList from "../Pages/admin/InvestoreProductList";
 import EditDeliveryAddress from "../Pages/EditDeliveryAddress";
+import Notifications from "../Pages/admin/Notifications";
 
 import PublicRoute from "./PublicRoute";
 import AdminLayout from "../layouts/AdminLayout";
@@ -186,10 +187,9 @@ export default function AppRoutes() {
             path="categories/add"
             element={<AddCategory></AddCategory>}
           ></Route>
-          <Route
-            path="productsDetails/:id"
-            element={<ProductDetails></ProductDetails>}
+          <Route path="productsDetails/:id" element={<ProductDetails></ProductDetails>}
           ></Route>
+          <Route path="notifications" element={<Notifications />} />
         </Route>
       </Route>
 

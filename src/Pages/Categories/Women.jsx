@@ -171,12 +171,9 @@ const ProductCard = ({ product }) => (
       <div className="absolute top-2 right-2 p-1.5 bg-white bg-opacity-70 rounded-full cursor-pointer">
         <FiHeart className="text-gray-600" />
       </div>
-      {product.rating && (
-        <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm text-xs font-semibold flex items-center gap-1">
-          {product.rating} <span className="text-pink-500">|</span>{" "}
-          {product.reviews}
-        </div>
-      )}
+      <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+        <ProductRating rating={product.rating} reviewCount={product.reviews} size="xs" />
+      </div>
     </div>
     <div className="mt-2 text-sm">
       <p className="font-bold text-gray-800">{product.brand}</p>

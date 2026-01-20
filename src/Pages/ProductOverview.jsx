@@ -75,13 +75,13 @@ useEffect(() => {
           const finalPrice = parseFloat(product?.final_price ?? variantPrice);
           const discount = parseFloat(product?.discount ?? 0);
 
-          const productPrice = finalPrice
+          const itemTotal = finalPrice
 
           return [
             {
               productName: product?.name || "Unnamed Product",
               productImage: image,
-              productPrice,
+              itemTotal: itemTotal,
               quantity: quantity || 1,
               variant: variant || null,
               productCode: product?.productCode || null,
