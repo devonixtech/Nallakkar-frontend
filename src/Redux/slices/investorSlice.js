@@ -71,9 +71,9 @@ export const deleteInvestor = createAsyncThunk(
 /* ✅ Claim All Products */
 export const claimAllProducts = createAsyncThunk(
   "investors/claimAll",
-  async (_, { rejectWithValue }) => {
+  async (investorId, { rejectWithValue }) => {
     try {
-      const res = await api.post(`${BASE_URL}/claimAll`);
+      const res = await api.post(`${BASE_URL}/claimAll`, { investorId });
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
