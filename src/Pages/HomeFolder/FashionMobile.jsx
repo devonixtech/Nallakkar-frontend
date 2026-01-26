@@ -65,17 +65,17 @@ const FashionMobile = () => {
         >
           <div className="absolute inset-0"></div>
           <div className="relative z-10 text-center p-8">
-            <h3 className="text-4xl md:text-6xl font-bold">Women</h3>
-            <h3 className="text-4xl md:text-6xl font-bold">Trendy</h3>
+            {/* <h3 className="text-4xl md:text-6xl font-bold">Women</h3>
+            <h3 className="text-4xl md:text-6xl font-bold">Trendy</h3> */}
             <button  onClick={()=>navigate( "/category/kids")} className="mt-6 bg-white text-black font-semibold px-8 py-3 hover:bg-gray-200 transition-colors duration-300">
               SHOP NOW
             </button>
           </div>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 transform -rotate-90 origin-center">
+          {/* <div className="absolute right-4 top-1/2 -translate-y-1/2 transform -rotate-90 origin-center">
             <p className="text-white uppercase tracking-[0.2em] text-sm whitespace-nowrap">
               fashion choices
             </p>
-          </div>
+          </div> */}
         </section>
 
         {/* Section 3: Find your style */}
@@ -92,9 +92,9 @@ const FashionMobile = () => {
             <span className="w-2 h-2 border-2 border-white rounded-full"></span>
           </div>
           <div className="relative z-10 p-8 md:p-12 text-right">
-            <h3 className="text-4xl md:text-6xl font-bold leading-tight">
+            {/* <h3 className="text-4xl md:text-6xl font-bold leading-tight">
               Find your <br /> style
-            </h3>
+            </h3> */}
             <button  onClick={()=>navigate( "/category/kids")} className="mt-6 bg-white text-black font-semibold px-8 py-3 hover:bg-gray-200 transition-colors duration-300">
               SHOP NOW
             </button>
@@ -109,7 +109,7 @@ const FashionMobile = () => {
           }} // Replace with your image
         >
           <div className="absolute inset-0 bg-black opacity-10"></div>
-          <div className="relative z-10 p-8 md:p-12">
+          {/* <div className="relative z-10 p-8 md:p-12">
             <h3
               className="text-pink-500 text-3xl md:text-4xl text-rose"
               style={{ fontFamily: "'Dancing Script', cursive" }}
@@ -119,7 +119,7 @@ const FashionMobile = () => {
             <h2 className="text-5xl md:text-7xl font-extrabold uppercase tracking-wider">
               Fashion
             </h2>
-          </div>
+          </div> */}
         </section>
       </main>
     </div>

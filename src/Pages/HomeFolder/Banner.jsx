@@ -38,7 +38,7 @@ const Banner = () => {
           className="h-[180px] w-auto mb-2 mx-auto md:mx-0"
         />
         <p className="text-black text-sm md:text-base mt-2 mb-5 max-w-sm mx-auto md:mx-0 leading-tight font-semibold">
-            {banners && banners.length > 0 ? banners[5].name : "" }
+            {/* {banners && banners.length > 0 ? banners[5].name : "" } */}
         </p>
         <Link
           to={"/category/kids"}

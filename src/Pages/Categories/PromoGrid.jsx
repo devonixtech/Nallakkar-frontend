@@ -30,13 +30,17 @@ export default function PromoGrid() {
 
             <div className="relative z-10 px-8 py-10 md:px-12 md:py-12">
               <p className="text-[11px] tracking-wide uppercase">
-                New arrivals
+                {/* New arrivals */}
               </p>
               <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-900">
-                Minimalist <br /> Sneaker
+                {/* Minimalist  */}
+                <br /> 
+                {/* Sneaker */}
               </h2>
               <p className="mt-3 max-w-xs text-[13px] leading-relaxed">
-                Stretch, fresh-cool help you always <br /> comfortable
+                {/* Stretch, fresh-cool help you always  */}
+                <br /> 
+                {/* comfortable */}
               </p>
               <button  onClick={()=>navigate( "/category/kids")} className="mt-5 inline-flex items-center rounded-sm bg-rose px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white hover:bg-pink-700">
                 Shop now
@@ -56,15 +60,17 @@ export default function PromoGrid() {
             {/* Content left aligned */}
             <div className="relative z-10 px-8 py-10 md:px-12 md:py-12">
               <p className="text-[11px] tracking-wide uppercase">
-                Mega sale
+                {/* Mega sale */}
               </p>
               <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-900">
-                <span className="text-rose">50% </span>off
+                {/* <span className="text-rose">50% </span>off */}
                 <br />
-                For Autumn
+                {/* For Autumn */}
               </h2>
               <p className="mt-3 max-w-xs text-[13px] leading-relaxed">
-                Stretch, fresh-cool help you always <br /> comfortable
+                {/* Stretch, fresh-cool help you always */}
+                 <br />
+                  {/* comfortable */}
               </p>
               <button  onClick={()=>navigate( "/category/kids")} className="mt-5 inline-flex items-center rounded-sm bg-rose px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white hover:bg-pink-700">
                 Shop now

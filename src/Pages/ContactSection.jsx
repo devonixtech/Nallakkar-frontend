@@ -221,7 +221,7 @@ const ContactSection = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Naveena"
+              placeholder="Enter your name"
               required
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
             />
@@ -236,7 +236,7 @@ const ContactSection = () => {
               name="mobile"
               value={formData.mobile}
               onChange={handleChange}
-              placeholder="6360--------"
+              placeholder="Enter your contact number"
               required
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
             />
@@ -251,7 +251,7 @@ const ContactSection = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="naveen@gmail.com"
+              placeholder="Enter your email"
               required
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1a214c]"
             />
