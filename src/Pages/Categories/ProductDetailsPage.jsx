@@ -471,6 +471,12 @@ export default function ProductDetailsPage() {
       </div>
     );
   };
+const fields = [
+  { data: product?.extraFields?.field1, icon: discountIcon },
+  { data: product?.extraFields?.field2, icon: packageIcon },
+  { data: product?.extraFields?.field3, icon: daysIcon },
+  { data: product?.extraFields?.field4, icon: arrivalIcon },
+];
 
 
   return (
@@ -784,50 +790,35 @@ export default function ProductDetailsPage() {
 
             {/* Product Details - Updated Structure */}
 
-            <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+            {/* <div className="grid grid-cols-2 gap-y-4 gap-x-6"> */}
 
-              {/* Item */}
-              <div className="grid grid-cols-[24px_1fr] gap-3 items-start">
-                <img src={discountIcon} alt="Discount" className="w-6 h-6 mt-1" />
-                <div>
-                  <p className="text-sm text-gray-500 leading-tight">Discount</p>
-                  <p className="text-sm font-semibold leading-tight">Dis 30%</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-[24px_1fr] gap-3 items-start">
-                <img src={packageIcon} alt="Package" className="w-6 h-6 mt-1" />
-                <div>
-                  <p className="text-sm text-gray-500 leading-tight">Package</p>
-                  <p className="text-sm font-semibold leading-tight">
-                    Regular Package
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-[24px_1fr] gap-3 items-start">
-                <img src={daysIcon} alt="Working Days" className="w-6 h-6 mt-1" />
-                <div>
-                  <p className="text-sm text-gray-500 leading-tight">Delivery Time</p>
-                  <p className="text-sm font-semibold leading-tight">
-                    3–4 Working Days
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-[24px_1fr] gap-3 items-start">
-                <img src={arrivalIcon} alt="Arrival" className="w-6 h-6 mt-1" />
-                <div>
-                  <p className="text-sm text-gray-500 leading-tight">Estimated Arrival</p>
-                  <p className="text-sm font-semibold leading-tight">
-                    23-06-2025
-                  </p>
-                </div>
-              </div>
-
+ {/* const fields = [
+  { data: product?.extraFields?.field1, icon: discountIcon },
+  { data: product?.extraFields?.field2, icon: packageIcon },
+  { data: product?.extraFields?.field3, icon: daysIcon },
+  { data: product?.extraFields?.field4, icon: arrivalIcon },
+]; */}
+ <div className="grid grid-cols-[24px_1fr] gap-3 items-start"></div>
+{fields.some(f => f.data) && (
+  <div className="text-sm">
+    {fields.map(
+      (item, index) =>
+        item.data && (
+          <div key={index} className="grid grid-cols-[24px_1fr] gap-3 items-start">
+            <img src={item.icon} className="w-6 h-6 mt-1" />
+            <div>
+              <p className="text-sm text-gray-500">{item.data.key}</p>
+              <p className="text-sm font-semibold">{item.data.value}</p>
             </div>
-            <div className="mt-4 pt-4 text-[15px] font-bold text-gray-600 space-y-2">
-              <p>{product?.description2}</p>
+          </div>
+        )
+    )}
+  </div>
+)}
+
+           
+        <div className="mt-4 pt-4 text-[15px] font-bold text-gray-600 space-y-2">
+          <p>{product?.description2}</p>
 
             </div>
           </div>
