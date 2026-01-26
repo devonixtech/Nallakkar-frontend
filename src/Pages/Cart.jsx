@@ -15,31 +15,31 @@ import { clearBuyNowItem } from "../Redux/slices/buyNowSlice";
 const ShoppingCart = () => {
 
   // Get the user string from localStorage
-const userString = localStorage.getItem("user");
+  const userString = localStorage.getItem("user");
 
-// Parse it into an object
-const user = JSON.parse(userString);
+  // Parse it into an object
+  const user = JSON.parse(userString);
 
-// Access the id
-// const user_Id = user.id;
+  // Access the id
+  // const user_Id = user.id;
   // const userId = user_Id; // temp userId
   const dispatch = useDispatch();
   const items = useSelector((state) => state.cart);
 
- 
 
-useEffect(() => {
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
-  const userId = user?.id;
 
-  if (userId) {
-    dispatch(fetchCartByUserId(userId))
-      .unwrap()
-      // .then((res) => console.log("Fetched cart:", res))
-      .catch((err) => console.error("Fetch error:", err));
-  }
-}, [dispatch]);
+  useEffect(() => {
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : null;
+    const userId = user?.id;
+
+    if (userId) {
+      dispatch(fetchCartByUserId(userId))
+        .unwrap()
+        // .then((res) => console.log("Fetched cart:", res))
+        .catch((err) => console.error("Fetch error:", err));
+    }
+  }, [dispatch]);
 
 
   // ✅ Clear BuyNow item if user opens the cart
@@ -59,27 +59,27 @@ useEffect(() => {
     }
   }, [dispatch]);
 
-const handleIncrement = (item) => {
-  dispatch(updateCartItem({ cartId: item.cartId, action: 1 }));
-};
+  const handleIncrement = (item) => {
+    dispatch(updateCartItem({ cartId: item.cartId, action: 1 }));
+  };
 
-const handleDecrement = (item) => {
-  if (item.quantity > 1) {
-    dispatch(updateCartItem({ cartId: item.cartId, action: -1 }));
-  }
-};
+  const handleDecrement = (item) => {
+    if (item.quantity > 1) {
+      dispatch(updateCartItem({ cartId: item.cartId, action: -1 }));
+    }
+  };
 
-const handleRemove = (cartId) => {
-  if (window.confirm("Are you sure you want to remove this item?")) {
-    dispatch(removeFromCart(cartId));
-  }
-};
+  const handleRemove = (cartId) => {
+    if (window.confirm("Are you sure you want to remove this item?")) {
+      dispatch(removeFromCart(cartId));
+    }
+  };
 
-// ✅ Total Items
-const totalItems = items?.items?.reduce(
-  (sum, item) => sum + Number(item?.quantity),
-  0
-) || 0;
+  // ✅ Total Items
+  const totalItems = items?.items?.reduce(
+    (sum, item) => sum + Number(item?.quantity),
+    0
+  ) || 0;
 
 
 
@@ -104,161 +104,161 @@ const totalItems = items?.items?.reduce(
       </div>
 
 
-        {/* ✅ EMPTY CART STATE */}
-{items?.items?.length === 0 && (
-  <div className="flex flex-col items-center justify-center py-24 text-center">
-   
+      {/* ✅ EMPTY CART STATE */}
+      {items?.items?.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-24 text-center">
 
-    <h2 className="text-2xl font-bold mb-2">
-      Your Cart is Empty 🛒
-    </h2>
 
-    <p className="text-gray-600 mb-6">
-      Looks like you haven’t added anything to your cart yet.
-    </p>
+          <h2 className="text-2xl font-bold mb-2">
+            Your Cart is Empty 🛒
+          </h2>
 
-    <Link
-      to="/"
-      className="bg-darkpink text-white px-6 py-2 rounded hover:bg-pink transition"
-    >
-      Shop Now
-    </Link>
-  </div>
-)}
+          <p className="text-gray-600 mb-6">
+            Looks like you haven’t added anything to your cart yet.
+          </p>
+
+          <Link
+            to="/"
+            className="bg-darkpink text-white px-6 py-2 rounded hover:bg-pink transition"
+          >
+            Shop Now
+          </Link>
+        </div>
+      )}
 
       {/* Cart Section */}
       {items?.items?.length > 0 && (
-      <div className="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left - Product List */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Table Headings - hidden on mobile */}
-          <div className="hidden sm:grid grid-cols-4 font-semibold text-sm border-b pb-2">
-            <p>PRODUCT NAME</p>
-            <p className="text-center">UNIT PRICE</p>
-            <p className="text-center">QUANTITY</p>
-            <p className="text-right">TOTAL</p>
-          </div>
+        <div className="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left - Product List */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Table Headings - hidden on mobile */}
+            <div className="hidden sm:grid grid-cols-4 font-semibold text-sm border-b pb-2">
+              <p>PRODUCT NAME</p>
+              <p className="text-center">UNIT PRICE</p>
+              <p className="text-center">QUANTITY</p>
+              <p className="text-right">TOTAL</p>
+            </div>
 
-          {/* Product Item */}
-          {items?.items?.map((item, index) => (
-            <div
-              key={item?.id}
-              className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
-            >
+            {/* Product Item */}
+            {items?.items?.map((item, index) => (
+              <div
+                key={item?.id}
+                className="flex flex-col sm:grid sm:grid-cols-4 gap-4 items-start sm:items-center border-b pb-4 pt-4"
+              >
 
-              
-              {/* Product Info */}
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <img
-                  src={item?.productImage[0]}
-                  alt="product"
-                  className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded"
-                />
-                <div>
-                  <p className="text-sm text-gray-400">Nallakkar</p>
-                  <p className="text-xs sm:text-sm font-semibold">
-                    {item?.productName} ({" "}
-                    {item?.variant &&
-                      Object?.entries(item?.variant)?.map(
-                        ([key, value], index) => (
-                          <span key={key}>
-                            {key}: {value}
-                            {index < Object?.entries(item.variant).length - 1
-                              ? ", "
-                              : ""}
-                          </span>
-                        )
-                      )}{" "}
-                    )
-                  </p>
-                  {/* <div className="w-5 h-5 rounded-full bg-yellow-700 border mt-2"></div> */}
+
+                {/* Product Info */}
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <img
+                    src={item?.productImage[0]}
+                    alt="product"
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded"
+                  />
+                  <div>
+                    <p className="text-sm text-gray-400">Nallakkar</p>
+                    <p className="text-xs sm:text-sm font-semibold">
+                      {item?.productName} ({" "}
+                      {item?.variant &&
+                        Object?.entries(item?.variant)?.map(
+                          ([key, value], index) => (
+                            <span key={key}>
+                              {key}: {value}
+                              {index < Object?.entries(item.variant).length - 1
+                                ? ", "
+                                : ""}
+                            </span>
+                          )
+                        )}{" "}
+                      )
+                    </p>
+                    {/* <div className="w-5 h-5 rounded-full bg-yellow-700 border mt-2"></div> */}
+                  </div>
+                </div>
+
+                {/* Unit Price */}
+                <p className="text-gray-700 sm:text-center text-sm sm:text-base">
+                  {item?.discountedPrice}
+                </p>
+
+                {/* Quantity */}
+                <div className="flex items-center gap-2 sm:justify-center">
+                  <button
+                    className="px-2 py-1 border rounded"
+                    onClick={() => handleDecrement(item)}
+                  >
+                    <FaMinus size={12} />
+                  </button>
+                  <span className="text-sm sm:text-base">{item?.quantity}</span>
+                  <button
+                    className="px-2 py-1 border rounded"
+                    onClick={() => handleIncrement(item)}
+                  >
+                    <FaPlus size={12} />
+                  </button>
+                </div>
+
+                {/* Total */}
+                <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                  <p className="text-gray-700 text-sm sm:text-base">
+                    {(
+                      (item?.discountedPrice || 0) * (item?.quantity || 1)
+                    ).toFixed(2)}                </p>
+                  <button
+                    className="text-gray-500 hover:text-red-500"
+                    onClick={() => handleRemove(item?.cartId)}
+                  >
+                    <FaTimes />
+                  </button>
                 </div>
               </div>
+            ))}
+          </div>
 
-              {/* Unit Price */}
-              <p className="text-gray-700 sm:text-center text-sm sm:text-base">
-                {item?.discountedPrice}
-              </p>
-
-              {/* Quantity */}
-              <div className="flex items-center gap-2 sm:justify-center">
-                <button
-                  className="px-2 py-1 border rounded"
-                  onClick={() => handleDecrement(item)}
-                >
-                  <FaMinus size={12} />
-                </button>
-                <span className="text-sm sm:text-base">{item?.quantity}</span>
-                <button
-                  className="px-2 py-1 border rounded"
-                  onClick={() => handleIncrement(item)}
-                >
-                  <FaPlus size={12} />
-                </button>
+          {/* Right - Price Details */}
+          {/* I have updated the right side too now everything is in sync */}
+          <div className="pb-12 lg:pb-0 font-semibold text-black">
+            <div className="border rounded-lg shadow p-6 space-y-4">
+              <h2 className="text-lg font-semibold">Price Details</h2>
+              <div className="flex justify-between text-sm sm:text-base">
+                <p>Price ({parseInt(totalItems, 10)} items)</p>
+                <p>₹ {items?.totalPrice?.toFixed(2)}/-</p>
               </div>
 
-              {/* Total */}
-              <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-                <p className="text-gray-700 text-sm sm:text-base">
-{(
-  (item?.discountedPrice || 0) * (item?.quantity || 1)
-).toFixed(2)}                </p>
-                <button
-                  className="text-gray-500 hover:text-red-500"
-                  onClick={() => handleRemove(item?.cartId)}
-                >
-                  <FaTimes />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Right - Price Details */}
-        {/* I have updated the right side too now everything is in sync */}
-        <div className="pb-12 lg:pb-0 font-semibold text-black">
-          <div className="border rounded-lg shadow p-6 space-y-4">
-            <h2 className="text-lg font-semibold">Price Details</h2>
-            <div className="flex justify-between text-sm sm:text-base">
-              <p>Price ({parseInt(totalItems, 10)} items)</p>
-              <p>₹ {items?.totalPrice?.toFixed(2)}/-</p>
-            </div>
-
-            {/* <div className="flex justify-between text-sm sm:text-base">
+              {/* <div className="flex justify-between text-sm sm:text-base">
               <p>Discount</p>
               <p>- ₹ {discountAmount.toFixed(2)}</p>
             </div> */}
-{/* 
+              {/* 
             <div className="flex justify-between text-sm sm:text-base">
               <p>GST (18%)</p>
               <p>₹ {gstAmount.toFixed(2)}</p>
             </div> */}
 
-            <div className="flex justify-between font-semibold border-t pt-3 text-sm sm:text-base">
-              <p>Total Amount</p>
-              <p>₹ {items?.totalPrice?.toFixed(2)}/-</p>
-            </div>
+              <div className="flex justify-between font-semibold border-t pt-3 text-sm sm:text-base">
+                <p>Total Amount</p>
+                <p>₹ {items?.totalPrice?.toFixed(2)}/-</p>
+              </div>
 
-            {/* <p className="text-green-600 text-xs sm:text-sm">
+              {/* <p className="text-green-600 text-xs sm:text-sm">
               You saved ₹ {discountAmount.toFixed(2)} on this order
             </p> */}
 
-            {/* Buttons */}
-            <Link
-              to={"/category/kids"}
-              className="block text-center w-full border py-2 font-medium hover:bg-gray-100 text-sm sm:text-base"
-            >
-              Continue Shopping
-            </Link>
-            <Link
-              to={"/SelectAddress"}
-              className="block text-center w-full bg-primary text-white py-2 font-semibold hover:bg-rose text-sm sm:text-base"
-            >
-              Order Now
-            </Link>
+              {/* Buttons */}
+              <Link
+                to={"/category/kids"}
+                className="block text-center w-full border py-2 font-medium hover:bg-gray-100 text-sm sm:text-base"
+              >
+                Continue Shopping
+              </Link>
+              <Link
+                to={"/SelectAddress"}
+                className="block text-center w-full bg-primary text-white py-2 font-semibold hover:bg-rose text-sm sm:text-base"
+              >
+                Order Now
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
       )}
     </div>
   );

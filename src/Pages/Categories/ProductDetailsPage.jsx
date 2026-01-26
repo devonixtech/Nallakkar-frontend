@@ -471,12 +471,12 @@ export default function ProductDetailsPage() {
       </div>
     );
   };
-const fields = [
-  { data: product?.extraFields?.field1, icon: discountIcon },
-  { data: product?.extraFields?.field2, icon: packageIcon },
-  { data: product?.extraFields?.field3, icon: daysIcon },
-  { data: product?.extraFields?.field4, icon: arrivalIcon },
-];
+  const fields = [
+    { data: product?.extraFields?.field1, icon: discountIcon },
+    { data: product?.extraFields?.field2, icon: packageIcon },
+    { data: product?.extraFields?.field3, icon: daysIcon },
+    { data: product?.extraFields?.field4, icon: arrivalIcon },
+  ];
 
 
   return (
@@ -792,23 +792,30 @@ const fields = [
 
             {/* <div className="grid grid-cols-2 gap-y-4 gap-x-6"> */}
 
- {/* const fields = [
+            {/* const fields = [
   { data: product?.extraFields?.field1, icon: discountIcon },
   { data: product?.extraFields?.field2, icon: packageIcon },
   { data: product?.extraFields?.field3, icon: daysIcon },
   { data: product?.extraFields?.field4, icon: arrivalIcon },
 ]; */}
- <div className="grid grid-cols-[24px_1fr] gap-3 items-start"></div>
-{fields.some(f => f.data) && (
-  <div className="text-sm">
+            <div className="grid grid-cols-[24px_1fr] gap-3 items-start"></div>
+         {fields.some(f => f.data) && (
+  <div className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
     {fields.map(
       (item, index) =>
         item.data && (
-          <div key={index} className="grid grid-cols-[24px_1fr] gap-3 items-start">
+          <div
+            key={index}
+            className="grid grid-cols-[24px_1fr] gap-3 items-start"
+          >
             <img src={item.icon} className="w-6 h-6 mt-1" />
             <div>
-              <p className="text-sm text-gray-500">{item.data.key}</p>
-              <p className="text-sm font-semibold">{item.data.value}</p>
+              <p className="text-sm text-gray-500">
+                {item.data.key}
+              </p>
+              <p className="text-sm font-semibold">
+                {item.data.value}
+              </p>
             </div>
           </div>
         )
@@ -816,9 +823,10 @@ const fields = [
   </div>
 )}
 
-           
-        <div className="mt-4 pt-4 text-[15px] font-bold text-gray-600 space-y-2">
-          <p>{product?.description2}</p>
+
+
+            <div className="mt-4 pt-4 text-[15px] font-bold text-gray-600 space-y-2">
+              <p>{product?.description2}</p>
 
             </div>
           </div>
