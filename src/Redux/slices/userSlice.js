@@ -1,4 +1,4 @@
- 
+
 // export default userSlice.reducer;
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
@@ -156,26 +156,21 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ Update User (Edit Profile)
-      .addCase(updateUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
 
+        const updatedUser = action.payload;
         // Update users array
         state.users = state.users.map(u =>
-          u.id === action.payload.id ? action.payload : u
+          u.id === updatedUser.id ? updatedUser : u
         );
 
-        // Update current user data
-        if (state.userData?.id === action.payload.id) {
-          state.userData = action.payload;
+        // ✅ Only update localStorage and userData if the edited user is the logged-in user
+        const loggedInUser = JSON.parse(localStorage.getItem("user"));
+        if (loggedInUser && loggedInUser.id === updatedUser.id) {
+          state.userData = updatedUser;
+          localStorage.setItem("user", JSON.stringify(updatedUser));
         }
-
-        // Save updated user to localStorage
-        localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;

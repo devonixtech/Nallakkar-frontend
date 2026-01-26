@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchAllUsers } from '../../Redux/slices/userSlice';
+import { fetchAllUsers, updateUser, createUser, deleteUser } from '../../Redux/slices/userSlice';
 import { useSelector, useDispatch } from "react-redux";
 export default function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -149,58 +149,80 @@ export default function UsersPage() {
   };
 
   const handleAddUser = () => {
-    const user = {
-      id: (users.length + 1).toString(),
+    const userData = {
       name: newUser.name,
       email: newUser.email,
-      phone: newUser.phone,
+      mobileNumber: newUser.phone,
       role: newUser.role,
       status: newUser.status,
-      location: newUser.location,
-      joinDate: new Date().toISOString().split('T')[0],
-      lastLogin: 'Never',
-      orders: 0,
-      totalSpent: '$0',
-      avatar: 'https://readdy.ai/api/search-image?query=professional%20person%20portrait%20headshot%20clean%20background%20corporate%20style%20default%20avatar&width=80&height=80&seq=newuser&orientation=squarish'
+      address: newUser.location,
     };
 
-    setUsers([...users, user]);
-    setNewUser({ name: '', email: '', phone: '', role: 'Customer', status: 'Active', location: '' });
-    setShowAddModal(false);
+    dispatch(createUser(userData))
+      .unwrap()
+      .then(() => {
+        setNewUser({ name: '', email: '', phone: '', role: 'Customer', status: 'Active', location: '' });
+        setShowAddModal(false);
+      })
+      .catch((err) => {
+        console.error("Failed to add user:", err);
+      });
   };
 
   const handleEditUser = () => {
     if (!selectedUser) return;
 
-    setUsers(users.map(user =>
-      user.id === selectedUser.id ? selectedUser : user
-    ));
-    setShowEditModal(false);
-    setSelectedUser(null);
+    // Map back fields if necessary for API (e.g., mobileNumber)
+    const updateData = {
+      name: selectedUser.name,
+      email: selectedUser.email,
+      mobileNumber: selectedUser.phone, // UI uses phone, API likely uses mobileNumber
+      role: selectedUser.role,
+      status: selectedUser.status
+    };
+
+    dispatch(updateUser({ id: selectedUser.id, data: updateData }))
+      .unwrap()
+      .then(() => {
+        setShowEditModal(false);
+        setSelectedUser(null);
+      })
+      .catch((err) => {
+        console.error("Failed to update user:", err);
+      });
   };
 
   const handleDeleteUser = () => {
     if (!selectedUser) return;
 
-    setUsers(users.filter(user => user.id !== selectedUser.id));
-    setShowDeleteModal(false);
-    setSelectedUser(null);
+    dispatch(deleteUser(selectedUser.id))
+      .unwrap()
+      .then(() => {
+        setShowDeleteModal(false);
+        setSelectedUser(null);
+      })
+      .catch((err) => {
+        console.error("Failed to delete user:", err);
+      });
   };
 
   const toggleUserStatus = (userId) => {
-    setUsers(users.map(user => {
-      if (user.id === userId) {
-        return {
-          ...user,
-          status: user.status === 'Active' ? 'Inactive' : 'Active'
-        };
-      }
-      return user;
-    }));
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+
+    const newStatus = user.status === 'Active' ? 'Inactive' : 'Active';
+    dispatch(updateUser({ id: userId, data: { status: newStatus } }))
+      .unwrap()
+      .catch((err) => {
+        console.error("Failed to toggle user status:", err);
+      });
   };
 
   const openEditModal = (user) => {
-    setSelectedUser({ ...user });
+    setSelectedUser({
+      ...user,
+      phone: user.mobileNumber || user.phone // Ensure phone field is populated from mobileNumber if available
+    });
     setShowEditModal(true);
   };
 
@@ -416,20 +438,14 @@ export default function UsersPage() {
                         >
                           <i className={user.status === 'Active' ? 'ri-pause-circle-line' : 'ri-play-circle-line'}></i>
                         </button> */}
-                        {/* <button
+                        <button
                           onClick={() => openEditModal(user)}
-                          className="w-8 h-8 flex items-center justify-center text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Edit User"
                         >
-                          <i className="ri-edit-line"></i>
-                        </button> */}
-                        {/* <Link
-                          to={`/admin/users/${user?.id}`}
-                          className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
-                          title="View Details"
-                        >
-                          <i className="ri-eye-line"></i>
-                        </Link> */}
+                          <i className="ri-edit-line mr-1.5"></i>
+                          Edit
+                        </button>
                         {/* <button
                           onClick={() => openDeleteModal(user)}
                           className="w-8 h-8 flex items-center justify-center text-red-600 hover:bg-red-50 rounded-lg transition-colors"
@@ -465,8 +481,8 @@ export default function UsersPage() {
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
                   className={`px-3 py-1 rounded text-sm cursor-pointer ${currentPage === i + 1
-                      ? "bg-blue-600 text-white"
-                      : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    ? "bg-blue-600 text-white"
+                    : "border border-gray-300 text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   {i + 1}
