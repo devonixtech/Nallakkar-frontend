@@ -104,15 +104,14 @@ export default function ProductListingPage() {
     dispatch(fetchAllProducts({ categoryId: selectedCategoryId }));
   }, [dispatch, selectedCategoryId]);
 
-  // ✅ Filter subcategories to show only active ones (status === 1)
   const subcategory = useSelector(
-    (state) => (state?.subcategory?.subcategoryData?.data || []).filter(sub => Number(sub.status) === 1)
+    (state) => state?.subcategory?.subcategoryData?.data
   );
   const products = useSelector((state) => state?.products?.products);
 
-  // useEffect(() => {
-  //   dispatch(fetchAllProducts());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
   useEffect(() => {
     if (subcategory?.length > 0) {
       // Always reset to first subcategory of this category when category changes
