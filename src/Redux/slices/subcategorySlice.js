@@ -1,4 +1,4 @@
- import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
 const BASE_URL = "/subCategory";
@@ -37,7 +37,7 @@ export const fetchSubcategoryById = createAsyncThunk(
       return res.data;
     } catch (err) {
       return rejectWithValue({
-        status: err.response?.status,  
+        status: err.response?.status,
         message: err.response?.data || err.message,
       });
     }
@@ -88,7 +88,7 @@ export const deleteSubcategory = createAsyncThunk(
 );
 
 // 🔽 Slice
- // 🔽 Slice
+// 🔽 Slice
 const subcategorySlice = createSlice({
   name: "subcategories",
   initialState: {

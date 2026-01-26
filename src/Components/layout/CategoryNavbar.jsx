@@ -55,9 +55,9 @@ export default function CategoryNavbar() {
   //   setIsLoggedIn(loggedIn);
   // }, []);
 
-  const categories = useSelector((state) => state?.ctegory?.categories || []);
+  const categories = useSelector((state) => (state?.ctegory?.categories || []).filter(cat => cat.status === 1));
   const subcategories = useSelector(
-    (state) => state?.subcategory?.subcategories || []
+    (state) => (state?.subcategory?.subcategories || []).filter(sub => sub.status === 1)
   );
   const products = useSelector((state) => state?.product?.products || []);
 
@@ -77,9 +77,9 @@ export default function CategoryNavbar() {
       );
 
   const filteredProducts =
-  searchQuery.trim() === ""
-    ? []
-    : products.filter(
+    searchQuery.trim() === ""
+      ? []
+      : products.filter(
         (prod) =>
           prod.status === 1 && // ✅ only active products
           prod.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -96,7 +96,7 @@ export default function CategoryNavbar() {
     setSelectedCategory(id);
     setSearchQuery("");
     setShowSearchDropdown(false);
-    navigate("/category/kids" );
+    navigate("/category/kids");
     window.dispatchEvent(new Event("storage"));
   };
 
