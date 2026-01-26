@@ -110,9 +110,9 @@ export default function ProductListingPage() {
   );
   const products = useSelector((state) => state?.products?.products);
 
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchAllProducts());
+  // }, [dispatch]);
   useEffect(() => {
     if (subcategory?.length > 0) {
       // Always reset to first subcategory of this category when category changes
