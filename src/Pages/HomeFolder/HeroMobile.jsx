@@ -27,12 +27,12 @@ const HeroMobile = () => {
     dispatch(getBanners());
 
   }, [dispatch]);
-  
-  
+
+
   const { banners, loading } = useSelector((state) => state.banners);
-  const categories = useSelector((state) => state?.ctegory?.categories || []);
+  const categories = useSelector((state) => (state?.ctegory?.categories || []).filter(cat => cat.status === 1));
   const subcategories = useSelector(
-    (state) => state?.subcategory?.subcategories || []
+    (state) => (state?.subcategory?.subcategories || []).filter(sub => sub.status === 1)
   );
   const products = useSelector((state) => state?.product?.products || []);
 
@@ -41,22 +41,22 @@ const HeroMobile = () => {
     searchQuery.trim() === ""
       ? []
       : categories.filter((cat) =>
-          cat.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
   const filteredSubcategories =
     searchQuery.trim() === ""
       ? []
       : subcategories.filter((sub) =>
-          sub.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        sub.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
   const filteredProducts =
     searchQuery.trim() === ""
       ? []
       : products.filter((prod) =>
-          prod.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        prod.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
   const hasResults =
     filteredCategories.length > 0 ||
@@ -197,7 +197,7 @@ const HeroMobile = () => {
             </div>
 
             <p className="text-[#17171A] font-semibold leading-tight mt-[66px] text-[10px]">
-              {banners && banners.length > 0 ? banners[0].name : "" }
+              {banners && banners.length > 0 ? banners[0].name : ""}
             </p>
 
             <Link
@@ -210,7 +210,7 @@ const HeroMobile = () => {
 
           <div className="absolute right-[-90px] bottom-0 w-[340px] h-[211px] z-10">
             <img
-            src={banners && banners.length > 0 ? banners[0].images : ""}
+              src={banners && banners.length > 0 ? banners[0].images : ""}
               alt="Model showcasing Nallakkar fashion"
               className="w-full h-full object-contain"
             />

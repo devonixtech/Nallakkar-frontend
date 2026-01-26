@@ -22,7 +22,7 @@ export default function Home() {
     dispatch(fetchAllCategories());
     dispatch(fetchAllProducts());
   }, [dispatch])
-  const categories = useSelector((state) => state?.ctegory?.categories);
+  const categories = useSelector((state) => (state?.ctegory?.categories || []).filter(cat => cat.status === 1));
   const products = useSelector((state) => state?.products?.products);
 
 

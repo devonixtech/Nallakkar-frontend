@@ -1,8 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { Home, Heart, ShoppingCart, List, User } from "lucide-react";
-import { Link, useLocation,useNavigate } from "react-router-dom";
-import { useSelector,useDispatch } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import AuthModal from "../Custom/AuthModal";
 import SuccessModal from "../Custom/SuccessModal";
 import LoginForm from "../../Pages/LoginForm";
@@ -26,9 +26,9 @@ export default function MobileBottomNav() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
-      dispatch(fetchAllCategories());
-    }, [dispatch]);
-  const categories = useSelector((state) => state?.ctegory?.categories || []);
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
+  const categories = useSelector((state) => (state?.ctegory?.categories || []).filter(cat => cat.status === 1));
   const openModal = (type) => {
     setModalType(type);
     setIsModalOpen(true);
@@ -47,55 +47,55 @@ export default function MobileBottomNav() {
   // ✅ Nav items (based on login state)
   const navItems = isLoggedIn
     ? [
-        { to: "/", icon: <Home size={22} />, label: "Home", type: "link" },
-        {
-          icon: <List size={22} />,
-          label: "Categories",
-          onClick: () => setShowCategories(true),
-          type: "button",
-        },
-        {
-          to: "/wishlist",
-          icon: <Heart size={22} />,
-          label: "Wishlist",
-          type: "link",
-        },
-        {
-          to: "/cart",
-          icon: <ShoppingCart size={22} />,
-          label: "Cart",
-          type: "link",
-        },
-        {
-          to: "/profile",
-          icon: <User size={22} />,
-          label: "Profile",
-          type: "link",
-        },
-      ]
+      { to: "/", icon: <Home size={22} />, label: "Home", type: "link" },
+      {
+        icon: <List size={22} />,
+        label: "Categories",
+        onClick: () => setShowCategories(true),
+        type: "button",
+      },
+      {
+        to: "/wishlist",
+        icon: <Heart size={22} />,
+        label: "Wishlist",
+        type: "link",
+      },
+      {
+        to: "/cart",
+        icon: <ShoppingCart size={22} />,
+        label: "Cart",
+        type: "link",
+      },
+      {
+        to: "/profile",
+        icon: <User size={22} />,
+        label: "Profile",
+        type: "link",
+      },
+    ]
     : [
-        { to: "/", icon: <Home size={22} />, label: "Home", type: "link" },
-        {
-          icon: <List size={22} />,
-          label: "Categories",
-          onClick: () => setShowCategories(true),
-          type: "button",
-        },
-        {
-          icon: <User size={22} />,
-          label: "Login",
-          onClick: () => openModal("login"), // ✅ direct modal open
-          type: "button",
-        },
-      ];
-        const handleCategoryClick = (id) => {
+      { to: "/", icon: <Home size={22} />, label: "Home", type: "link" },
+      {
+        icon: <List size={22} />,
+        label: "Categories",
+        onClick: () => setShowCategories(true),
+        type: "button",
+      },
+      {
+        icon: <User size={22} />,
+        label: "Login",
+        onClick: () => openModal("login"), // ✅ direct modal open
+        type: "button",
+      },
+    ];
+  const handleCategoryClick = (id) => {
     localStorage.setItem("selectedCategoryId", id);
     // console.log("Selected Category ID set to:", id);
     setShowCategories(false)
     // setSelectedCategory(id);
     // setSearchQuery("");
     // setShowSearchDropdown(false);
-    navigate("/category/kids" );
+    navigate("/category/kids");
     window.dispatchEvent(new Event("storage"));
   };
 
@@ -109,16 +109,14 @@ export default function MobileBottomNav() {
             const content = (
               <div className="flex flex-col items-center">
                 <div
-                  className={`p-2 rounded-full transition-all duration-200 ${
-                    isActive ? "text-darkpink" : "text-gray-500"
-                  }`}
+                  className={`p-2 rounded-full transition-all duration-200 ${isActive ? "text-darkpink" : "text-gray-500"
+                    }`}
                 >
                   {item.icon}
                 </div>
                 <span
-                  className={`text-[10px] mt-1 ${
-                    isActive ? "text-darkpink font-semibold" : "text-gray-500"
-                  }`}
+                  className={`text-[10px] mt-1 ${isActive ? "text-darkpink font-semibold" : "text-gray-500"
+                    }`}
                 >
                   {item.label}
                 </span>
@@ -174,7 +172,7 @@ export default function MobileBottomNav() {
                   key={cat?.id}
                   to={`/category/kids`}
                   className="p-3 rounded-lg border hover:bg-gray-100"
-                  onClick={() =>  
+                  onClick={() =>
                     handleCategoryClick(cat?.id)
                   }
                 >

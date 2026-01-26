@@ -104,8 +104,9 @@ export default function ProductListingPage() {
     dispatch(fetchAllProducts({ categoryId: selectedCategoryId }));
   }, [dispatch, selectedCategoryId]);
 
+  // ✅ Filter subcategories to show only active ones (status === 1)
   const subcategory = useSelector(
-    (state) => state?.subcategory?.subcategoryData?.data
+    (state) => (state?.subcategory?.subcategoryData?.data || []).filter(sub => Number(sub.status) === 1)
   );
   const products = useSelector((state) => state?.products?.products);
 
