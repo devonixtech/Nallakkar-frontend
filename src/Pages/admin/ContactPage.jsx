@@ -218,7 +218,7 @@ const itemsPerPage = 10; // change if needed
   const stats = useMemo(() => {
     return {
       total: inquiries?.length,
-      pending: inquiries?.filter(i => i.status === 'Pending').length,
+      pending: inquiries?.filter(i => i.status === 'pending').length,
       resolved: inquiries?.filter(i => i.status === 'Resolved').length,
       escalated: inquiries?.filter(i => i.status === 'Escalated').length,
     };

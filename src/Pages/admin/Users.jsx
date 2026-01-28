@@ -259,17 +259,17 @@ export default function UsersPage() {
             <h2 className="text-2xl font-bold text-gray-900">Users Management</h2>
             <p className="text-gray-600 mt-1">Manage all registered users and their permissions</p>
           </div>
-          <button
+          {/* <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
           >
             <i className="ri-user-add-line w-4 h-4 mr-2"></i>
             Add New User
-          </button>
+          </button> */}
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-white rounded-lg p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
@@ -312,7 +312,7 @@ export default function UsersPage() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Revenue</p>
                 <p className="text-2xl font-bold text-gray-900 mt-2">
-                  $3,103
+                  ₹3,103
                 </p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -320,7 +320,7 @@ export default function UsersPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Filters and Search */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
