@@ -8,13 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 export default function FashionLayout() {
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  
-    useEffect(() => {
-      dispatch(getBanners());
-    }, [dispatch]);
-    
-    const { banners, loading } = useSelector((state) => state.banners);
-  
+
+  useEffect(() => {
+    dispatch(getBanners());
+  }, [dispatch]);
+
+  const { banners, loading } = useSelector((state) => state.banners);
+
   return (
     <div className="flex flex-wrap overflow-x-hidden">
       {/* Left main block (desktop unchanged) */}
@@ -48,16 +48,21 @@ export default function FashionLayout() {
               className="object-cover w-full h-44 sm:h-56 md:h-72 opacity-100"
             />
             {/* Text Content */}
-            <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-10 md:px-20 leading-tight mt-4 sm:mt-8 md:mt-16">
+            <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8">
+
               {/* <h2 className="text-white font-normal text-sm sm:text-xl">
                 Women <br />
                 <span className="text-white text-xl sm:text-3xl font-semibold">
                   Trendy
                 </span>
               </h2> */}
-              <Link   to={"/category/kids"} className="mt-2 sm:mt-4 py-1.5 px-4 bg-white text-black text-xs sm:text-sm md:text-base font-semibold w-fit tracking-wide">
+              <Link
+                to={"/category/kids"}
+                className="py-1.5 px-4 bg-white text-black text-xs sm:text-sm md:text-base font-semibold tracking-wide"
+              >
                 SHOP NOW
               </Link>
+
             </div>
             {/* Vertical Side Text */}
             {/* <div className="absolute top-1/2 right-1 md:right-0 -translate-y-1/2 text-[10px] sm:text-xs md:text-sm text-gray-300 rotate-90 tracking-widest">
@@ -74,14 +79,19 @@ export default function FashionLayout() {
             />
 
             {/* Text + Button */}
-            <div className="absolute inset-0 flex flex-col justify-center items-end mt-11 text-right px-2 sm:px-12 md:px-3">
+            <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8">
+
               {/* <h2 className="text-white font-bold text-lg sm:text-2xl md:text-2xl leading-tight">
                 Find your <br />
                 <span className="text-white">style</span>
               </h2> */}
-              <button  onClick={()=>navigate( "/category/kids")} className="mt-2 sm:mt-4 py-1 px-3 bg-white text-black text-xs sm:text-sm md:text-base font-semibold tracking-wide">
+              <Link
+                to={"/category/kids"}
+                className="py-1.5 px-4 bg-white text-black text-xs sm:text-sm md:text-base font-semibold tracking-wide"
+              >
                 SHOP NOW
-              </button>
+              </Link>
+
             </div>
           </div>
         </div>
