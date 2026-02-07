@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import watermark from "../assets/Path.png";
 import {
   Sparkle,
@@ -17,6 +17,8 @@ import support from "../assets/svg/Support 247.svg";
 import path from "../assets/Path.png";
 import background from "../assets/background.png";
 import MissionVision from "./MissionVision";
+import { useDispatch, useSelector } from "react-redux";
+import { getBanners } from "../Redux/slices/bannerSlice";
 
 const features = [
   {
@@ -64,6 +66,13 @@ const features = [
 ];
 
 export default function WorkSection() {
+  const dispatch = useDispatch();
+    
+      useEffect(() => {
+        dispatch(getBanners());
+      }, [dispatch]);
+      
+      const { banners, loading } = useSelector((state) => state.banners);
   return (
     <div>
       <div className="flex flex-col md:flex-row bg-white px-[2rem] md:px-[7rem] py-10 md:py-16 items-center md:items-start overflow-x-hidden">
@@ -98,7 +107,7 @@ export default function WorkSection() {
             {/* Profile 1 */}
             <div className="flex items-center gap-3">
               <img
-                src="https://randomuser.me/api/portraits/women/68.jpg"
+              src={banners && banners.length > 0 ? banners[11].images : ""} 
                 alt="Sumedha NR"
                 className="h-12 w-12 rounded-full object-cover ring-2 ring-[#1e2241]"
               />
@@ -112,7 +121,7 @@ export default function WorkSection() {
             {/* Profile 2 */}
             <div className="flex items-center gap-3">
               <img
-                src="https://randomuser.me/api/portraits/women/82.jpg"
+                src={banners && banners.length > 0 ? banners[12].images : ""} 
                 alt="Boomika T.S"
                 className="h-12 w-12 rounded-full object-cover ring-2 ring-[#1e2241]"
               />
@@ -130,14 +139,14 @@ export default function WorkSection() {
         <div className="hidden md:block md:w-1/2">
           <div className="relative flex items-center justify-center min-h-[540px] w-[420px] mx-[13rem]">
             {/* Pink Paint Blob */}
-            <img
+            {/* <img
               src={path}
               alt=""
               className="absolute -left-14 top-[280px] w-[400px] h-[220px] z-0 select-none pointer-events-none"
               draggable={false}
             />
 
-            {/* Top Oval - Background */}
+           
             <div className="absolute -left-11 top-0 w-[250px] h-[390px] rounded-[55%/40%] overflow-hidden z-10 shadow-md">
               <img
                 src={background}
@@ -147,7 +156,7 @@ export default function WorkSection() {
               />
             </div>
 
-            {/* Main Oval - People */}
+           
             <div className="absolute left-0 top-[85px] w-[250px] h-[410px] rounded-[55%/40%] overflow-hidden z-20 border-4 border-white shadow-xl bg-white">
               <img
                 src="https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?auto=format&fit=facearea&w=400&q=80"
@@ -155,7 +164,8 @@ export default function WorkSection() {
                 className="object-cover w-full h-full"
                 draggable={false}
               />
-            </div>
+            </div> */}
+            <img  src={banners && banners.length > 0 ? banners[10].images : ""} alt="" />
           </div>
         </div>
       </div>

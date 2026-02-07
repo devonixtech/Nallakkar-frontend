@@ -1,4 +1,4 @@
-import  { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import modelImg from "../../assets/banner.png";
 import NallakkarSVG from "../../assets/NALLAKKAR.png";
@@ -16,7 +16,7 @@ const HeroDesktop = () => {
   useEffect(() => {
     dispatch(getBanners());
   }, [dispatch]);
-  
+
   const { banners, loading } = useSelector((state) => state.banners);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const HeroDesktop = () => {
               <span className="text-rose font-bold">NALLAKKAR</span>
             </h2>
             <p className="text-[#17171A] font-semibold leading-tight mt-8 lg:mt-[14rem] md:mt-[12rem] text-[18px] lg:text-[21px] md:text-[18px]">
-              {banners && banners.length > 0 ? banners[0].name : "" }
+              {banners && banners.length > 0 ? banners[0].name : ""}
             </p>
             <Link
               // to="/login"
@@ -72,7 +72,7 @@ const HeroDesktop = () => {
         </div>
 
         {/* Image Section */}
-        <div
+        {/* <div
           ref={imgRef}
           className="hidden md:flex absolute right-0 top-0 h-full w-auto justify-center items-center z-10"
         >
@@ -85,7 +85,21 @@ const HeroDesktop = () => {
       lg:max-w-none        
     "
           />
-        </div>
+        </div> */}
+
+
+       <div
+  ref={imgRef}
+  className="hidden md:flex absolute right-0 top-0 h-full w-[55%] justify-center items-center z-10"
+>
+  <img
+    src={banners && banners.length > 0 ? banners[0].images : ""}
+    alt="Banner"
+    className="max-h-[85%] max-w-[85%] object-contain object-center drop-shadow-xl"
+  />
+</div>
+
+
       </section>
     </>
   );

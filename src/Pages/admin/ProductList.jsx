@@ -17,18 +17,33 @@ export default function ProductList() {
   const categories = useSelector((state) => state?.category?.categories);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const productsPerPage = 10;
 
   // FILTERED LIST
-  const filteredProducts = useMemo(() => {
-    const search = searchTerm?.toLowerCase();
+const filteredProducts = useMemo(() => {
+  const search = searchTerm?.toLowerCase();
 
-    return products.filter((p) =>
+  return products.filter((p) => {
+    const matchesSearch =
       p.name?.toLowerCase().includes(search) ||
-      p.categoryName?.toLowerCase().includes(search)
-    );
-  }, [products, searchTerm]);
+      p.categoryName?.toLowerCase().includes(search);
+
+    const matchesCategory =
+      selectedCategory === "" ||
+      p.categoryName === selectedCategory;
+
+    const matchesStatus =
+      selectedStatus === "" ||
+      String(p.status) === selectedStatus;
+
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+}, [products, searchTerm, selectedCategory, selectedStatus]);
+
+
 
   // PAGINATION
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -65,6 +80,11 @@ export default function ProductList() {
 
     return pages;
   };
+  const uniqueCategories = useMemo(() => {
+    if (!products) return [];
+
+    return [...new Set(products.map(p => p.categoryName))];
+  }, [products]);
 
   const pageList = getPageList(totalPages, currentPage);
 
@@ -141,9 +161,11 @@ export default function ProductList() {
   const prevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
+
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [searchTerm, selectedCategory, selectedStatus]);
 
 
   return (
@@ -179,20 +201,30 @@ export default function ProductList() {
                 />
 
               </div>
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8"
+              >
                 <option value="">All Categories</option>
-                {categories?.map((cat) => (
-                  <option key={cat.d} value={cat.id}>
-                    {cat.name}
+
+                {uniqueCategories.map((cat, index) => (
+                  <option key={index} value={cat}>
+                    {cat}
                   </option>
                 ))}
               </select>
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8">
+
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-8"
+              >
                 <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="low-stock">Low Stock</option>
-                <option value="out-of-stock">Out of Stock</option>
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
               </select>
+
             </div>
           </div>
 
