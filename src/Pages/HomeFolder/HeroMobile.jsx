@@ -208,7 +208,7 @@ const HeroMobile = () => {
             </Link>
           </div>
 
-          <div className="absolute right-[-90px] bottom-0 w-[340px] h-[211px] z-10">
+          <div className="absolute right-[-50px] bottom-0 w-[240px] h-[180px] z-10">
             <img
               src={banners && banners.length > 0 ? banners[0].images : ""}
               alt="Model showcasing Nallakkar fashion"

@@ -88,16 +88,16 @@ const HeroDesktop = () => {
         </div> */}
 
 
-       <div
-  ref={imgRef}
-  className="hidden md:flex absolute right-0 top-0 h-full w-[55%] justify-center items-center z-10"
->
-  <img
-    src={banners && banners.length > 0 ? banners[0].images : ""}
-    alt="Banner"
-    className="max-h-[85%] max-w-[85%] object-contain object-center drop-shadow-xl"
-  />
-</div>
+        <div
+          ref={imgRef}
+          className="hidden md:flex absolute right-0 top-0 h-full w-[55%] justify-center items-center z-10"
+        >
+          <img
+            src={banners && banners.length > 0 ? banners[0].images : ""}
+            alt="Banner"
+            className="max-h-[85%] max-w-[85%] object-contain object-center drop-shadow-xl"
+          />
+        </div>
 
 
       </section>

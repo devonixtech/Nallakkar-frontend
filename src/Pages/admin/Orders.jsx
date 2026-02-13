@@ -1,14 +1,16 @@
- 
+
 
 import { Helmet } from "react-helmet-async";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllOrders } from "../../Redux/slices/ordersSlice";
 import { useNavigate } from "react-router-dom";
- 
+import InvoiceModal from "../../Components/Custom/InvoiceModal";
+
 export default function Orders() {
   const dispatch = useDispatch();
-  const navigate=useNavigate();
+  const [showInvoice, setShowInvoice] = useState(false);
+  const navigate = useNavigate();
   // fetch orders once on mount
   useEffect(() => {
     dispatch(fetchAllOrders());
@@ -21,6 +23,7 @@ export default function Orders() {
   const [statusFilter, setStatusFilter] = useState(""); // "" means all
   const [fromDate, setFromDate] = useState(""); // YYYY-MM-DD
   const [toDate, setToDate] = useState(""); // YYYY-MM-DD
+const [selectedOrder, setSelectedOrder] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // change if you want fewer/more rows per page
@@ -84,7 +87,7 @@ export default function Orders() {
       // status match
       const matchesStatus = statusFilter
         ? (order?.tracking_status || "").toLowerCase() ===
-          statusFilter.toLowerCase()
+        statusFilter.toLowerCase()
         : true;
 
       // date match - consider created_at field exists and is parseable
@@ -296,13 +299,14 @@ export default function Orders() {
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Items</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Total</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Status</th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {currentOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50" >
                     <td className="py-4 px-4">
-                      <span className="text-sm font-medium text-blue-600" onClick={() => {navigate(`/admin/orders/${order.id}`)}} style={{cursor: 'pointer'}}>
+                      <span className="text-sm font-medium text-blue-600" onClick={() => { navigate(`/admin/orders/${order.id}`) }} style={{ cursor: 'pointer' }}>
                         {order?.shiprocket_order_id || order?.id}
                       </span>
                     </td>
@@ -314,13 +318,28 @@ export default function Orders() {
                     </td>
                     <td className="py-4 px-4 text-sm text-gray-700">{formatDate(order?.created_at)}</td>
                     <td className="py-4 px-4 text-sm text-gray-700">{order?.order_details?.
-order_items?.length}</td>
-                    <td className="py-4 px-4 text-sm font-medium text-gray-900">{order?.total_amount/100}</td>
+                      order_items?.length}</td>
+                    <td className="py-4 px-4 text-sm font-medium text-gray-900">{order?.total_amount / 100}</td>
                     <td className="py-4 px-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order?.tracking_status)}`}>
                         {order?.tracking_status || "-"}
                       </span>
                     </td>
+                    <td className="py-4 px-4 text-sm font-medium text-gray-900">
+                   <button
+  onClick={() => {
+    setSelectedOrder(order);
+    setShowInvoice(true);
+  }}
+  className="btn btn-primary flex items-center gap-1"
+>
+  <i className="ri-eye-line"></i>
+  Invoice
+</button>
+
+
+                    </td>
+
                   </tr>
                 ))}
 
@@ -381,6 +400,12 @@ order_items?.length}</td>
           </div>
         </div>
       </div>
+     <InvoiceModal
+  open={showInvoice}
+  order={selectedOrder}
+  onClose={() => setShowInvoice(false)}
+/>
+
     </>
   );
 }
