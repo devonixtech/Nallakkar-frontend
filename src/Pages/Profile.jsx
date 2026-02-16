@@ -240,7 +240,6 @@ const EditProfileView = ({ onGoBackClick, authUser }) => {
           placeholder="Mobile Number"
           value={number}
           onChange={(e) => setNumber(e.target.value)}
-          disabled
           className="w-full p-2 border border-gray-300 rounded-lg"
         />
 
