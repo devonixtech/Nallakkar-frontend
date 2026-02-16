@@ -350,11 +350,11 @@ const OrderDetails = () => {
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200">
-              {tracking?.display_status !== "Delivered" && orderDetails?.tracking_status !== "Cancelled" && (
+              {/* {tracking?.display_status !== "Delivered" && orderDetails?.tracking_status !== "Cancelled" && (
                 <button className="w-full sm:w-auto px-6 py-2 border border-red-500 text-red-500 font-semibold rounded-lg hover:bg-red-50 transition duration-150">
                   Cancel Order
                 </button>
-              )}
+              )} */}
 
               {tracking?.display_status === "Delivered" && (
                 allReviewed ? (
