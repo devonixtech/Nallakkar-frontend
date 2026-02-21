@@ -300,9 +300,10 @@
 import React, { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-
+// import imgData from "./logo1.png"
 const BRAND_RED = "#ec3557";
-
+// const imgData = "./logo1.png"
+import logo from "./logo1.png";
 const InvoiceModal = ({ open, onClose, order }) => {
   const invoiceRef = useRef(null);
   if (!open || !order) return null;
@@ -324,31 +325,26 @@ const InvoiceModal = ({ open, onClose, order }) => {
   const totalPaid = subtotal;
 
 
-  // ✅ PDF DOWNLOAD (SAFE)
-  const downloadPDF = async () => {
-    const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
-    const imgData = canvas.toDataURL("image/png");
+const downloadPDF = async () => {
+  const canvas = await html2canvas(invoiceRef.current, {
+    scale: 3,              // 🔥 better sharpness
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = 210;
-    const pageHeight = 297;
+  const imgData = canvas.toDataURL("image/png");
 
-    const imgHeight = (canvas.height * pageWidth) / canvas.width;
-    let heightLeft = imgHeight;
-    let position = 0;
+  const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+  });
 
-    pdf.addImage(imgData, "PNG", 0, position, pageWidth, imgHeight);
-    heightLeft -= pageHeight;
+  // Directly fit into A4 (no height calculation, no loop)
+  pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
 
-    while (heightLeft > pageHeight) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, pageWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
-
-    pdf.save(`Invoice-${invoiceNo}.pdf`);
-  };
+  pdf.save(`Invoice-${invoiceNo}.pdf`);
+};
 
   return (
     <>
@@ -373,11 +369,7 @@ const InvoiceModal = ({ open, onClose, order }) => {
           >
             {/* HEADER */}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <img
-                src="https://i.ibb.co/zhqcS6RS/download.png"
-                alt="logo"
-                style={{ height: 48 }}
-              />
+              <img src={logo} alt="logo" style={{ height: 48 }} />
 
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontSize: 34, fontWeight: 500 }}>Invoice</div>
@@ -439,27 +431,31 @@ const InvoiceModal = ({ open, onClose, order }) => {
                 <tr style={{ background: BRAND_RED, color: "#fff" }}>
                   <th style={{ padding: 10, textAlign: "left" }}>Product</th>
                   <th style={{ padding: 10, textAlign: "center" }}>Qty</th>
-                  <th style={{ padding: 10, textAlign: "right" }}>Unit Price</th>
+                  {/* <th style={{ padding: 10, textAlign: "right" }}>Unit Price</th> */}
                   <th style={{ padding: 10, textAlign: "right" }}>Total</th>
                 </tr>
               </thead>
 
-              <tbody>
-                {items.map((item, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid #eee" }}>
-                    <td style={{ padding: 10 }}>{item.name}</td>
-                    <td style={{ padding: 10, textAlign: "center" }}>
-                      {item.units}
-                    </td>
-                    <td style={{ padding: 10, textAlign: "right" }}>
-                      ₹{Number(item.selling_price).toFixed(2)}
-                    </td>
-                    <td style={{ padding: 10, textAlign: "right" }}>
-                      ₹{(item.units * Number(item.selling_price)).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+             <tbody>
+  {items.map((item, i) => {
+    const totalAmountInRupees = Number(order.total_amount || 0) / 100;
+    const itemTotal = totalAmountInRupees / (item.units || 1);
+
+    return (
+      <tr key={i} style={{ borderBottom: "1px solid #eee" }}>
+        <td style={{ padding: 10 }}>{item.name}</td>
+
+        <td style={{ padding: 10, textAlign: "center" }}>
+          {item.units}
+        </td>
+
+        <td style={{ padding: 10, textAlign: "right" }}>
+          ₹{itemTotal.toFixed(2)}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
             </table>
 
             {/* TOTALS */}
