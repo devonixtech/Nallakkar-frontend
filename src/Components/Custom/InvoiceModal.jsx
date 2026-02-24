@@ -509,6 +509,7 @@ const downloadPDF = async () => {
                 lineHeight: 1.8,
               }}
             >
+              <span>All prices are inclusive of applicable GST.</span> <br />
               <strong>Payment Policy:</strong>
               <br />
               By making a payment, you agree to Nallakkar’s Privacy Policy and Terms & Conditions.
