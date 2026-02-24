@@ -332,17 +332,17 @@ const SettingsView = ({ onNavigate }) => (
     </div>
 
     <div className="space-y-5 md:space-y-6 text-primary font-medium text-sm md:text-base">
-      <div className="flex justify-between items-center cursor-pointer hover:text-red-500">
+      {/* <div className="flex justify-between items-center cursor-pointer hover:text-red-500">
         <span>Get Alerts on whatsapp</span>
         <span>›</span>
-      </div>
-      <div
+      </div> */}
+      {/* <div
         onClick={() => onNavigate("languages")}
         className="flex justify-between items-center cursor-pointer hover:text-red-500"
       >
         <span>My Languages</span>
         <span>›</span>
-      </div>
+      </div> */}
       <Link to={"/FAQSection"} className="block hover:text-red-500">
         Help & Supports
       </Link>
