@@ -907,7 +907,9 @@ export default function ProductDetailsPage() {
 
 
           <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-10 px-2 md:px-12 scrollbar-hide">
-            {similarProducts?.map((item, index) => (
+            {similarProducts
+  ?.filter((item) => item.status == 1)
+  .map((item, index) => (
               <div
                 key={index}
                 className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
@@ -1011,7 +1013,7 @@ export default function ProductDetailsPage() {
           </h2>
           <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-10 px-2 md:px-12 scrollbar-hide">
 
-            {recentlyViewed?.map((item, index) => (
+            {recentlyViewed?.filter((item) => item.status == 1)?.map((item, index) => (
               <div
                 key={index}
                 className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
