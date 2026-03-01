@@ -345,7 +345,7 @@ const selling_price = buyNowItem
                   shipping_email: user?.email,
                   shipping_phone: userdetails.contactNumber,
                   order_items:  orderItems,
-                  shipping_charges: 50,
+                  shipping_charges: 0,
                   sub_total: selling_price,
                   user_id: user_Id,
                   length: totalLength,
