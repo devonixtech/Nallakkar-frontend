@@ -29,6 +29,8 @@ const investorProducts = products
   ?.filter((product) =>
     product?.name?.toLowerCase().includes(searchTerm)
   );
+  console.log('INVESTOR ID:', investorId);
+  console.log("Filtered Products for Investor:", investorProducts);
 const itemsPerPage = 10; // you can change
 const indexOfLastItem = currentPage * itemsPerPage;
 const indexOfFirstItem = indexOfLastItem - itemsPerPage;
