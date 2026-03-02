@@ -105,13 +105,13 @@ const AdminOrderDetails = () => {
 
         {/* Admin Actions */}
         <div className="flex gap-4 mt-6">
-          <button className="px-6 py-2 bg-green-600 text-white rounded">
+          {/* <button className="px-6 py-2 bg-green-600 text-white rounded">
             Mark as Shipped
-          </button>
+          </button> */}
 
-          <button className="px-6 py-2 bg-red-600 text-white rounded">
+          {/* <button className="px-6 py-2 bg-red-600 text-white rounded">
             Cancel Order
-          </button>
+          </button> */}
 
           <Link
             to="/admin/orders"
