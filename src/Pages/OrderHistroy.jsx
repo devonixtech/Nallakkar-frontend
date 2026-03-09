@@ -93,14 +93,14 @@ const OrderHistory = () => {
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 bg-gray-50">
           {/* Mobile Filter Button */}
-          <div className="flex justify-end mb-4 lg:hidden">
+          {/* <div className="flex justify-end mb-4 lg:hidden">
             <button
               onClick={() => setIsFilterOpen(true)}
               className="px-4 py-2 bg-[#141A44] text-white font-semibold rounded-md shadow-md hover:bg-opacity-90 transition duration-150"
             >
               Filter Orders
             </button>
-          </div>
+          </div> */}
 
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Orders List */}

@@ -118,7 +118,7 @@ export default function CategoryNavbar() {
 
   return (
     <>
-      <nav className="fixed z-40 font-[Montserrat] bg-white w-full h-[80px] flex items-center justify-between px-4 md:px-[5rem] border-b-2 shadow-md">
+      <nav className="fixed z-40 hidenavbar font-[Montserrat] bg-white w-full h-[80px] flex items-center justify-between px-4 md:px-[5rem] border-b-2 shadow-md">
         {/* Left Section */}
         <div className="flex items-center space-x-10">
           <div className="flex items-center gap-3">
@@ -255,7 +255,7 @@ export default function CategoryNavbar() {
         <div className="flex items-center space-x-6 text-sm">
           {isLoggedIn ? (
             <>
-              <span className="text-gray-800 font-medium">
+              <span className="text-gray-800 font-medium username">
                 Hi, {userName || "User"}
               </span>
               <Link to={"/profile"}>

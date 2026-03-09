@@ -644,7 +644,7 @@ export default function ProductDetailsPage() {
           <div className="flex flex-col gap-y-6 lg:mt-0 lg:pl-[2rem] lg:border-l-2">
             <div>
 
-              <h1 className="text-3xl -mb-2 font-extrabold text-gray-900">
+              <h1 className="text-3xl -mb-2 font-extrabold text-gray-900 prdname">
                 {product?.name}
               </h1>
             </div>
@@ -699,14 +699,14 @@ export default function ProductDetailsPage() {
               </Link> */}
               <button
                 onClick={handleAddToCart}
-                className="py-3 px-6 bg-primary text-white font-bold transition-colors"
+                className="py-3 px-6 bg-primary text-white font-bold transition-colors buybtn"
               >
                 {isInCart ? "Go to Cart" : "Add to Cart"}
               </button>
               <Link
                 to={"/buyNow"}
                 onClick={handleBuyNow}
-                className="py-3 px-8 bg-rose text-white font-bold transition-colors"
+                className="py-3 px-8 bg-rose text-white font-bold transition-colors buybtn"
               >
                 Buy Now
               </Link>
@@ -717,7 +717,7 @@ export default function ProductDetailsPage() {
               >
                 <FiHeart
                   size={24}
-                  className={`w-5 h-5 transition-colors ${wishlist.some(
+                  className={`w-5 h-5 transition-colors heartcion ${wishlist.some(
                     (w) => w.productId == (product?.id || product?.id)
                   )
                     ? "fill-rose text-rose"
@@ -799,29 +799,29 @@ export default function ProductDetailsPage() {
   { data: product?.extraFields?.field4, icon: arrivalIcon },
 ]; */}
             <div className="grid grid-cols-[24px_1fr] gap-3 items-start"></div>
-         {fields.some(f => f.data) && (
-  <div className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
-    {fields.map(
-      (item, index) =>
-        item.data && (
-          <div
-            key={index}
-            className="grid grid-cols-[24px_1fr] gap-3 items-start"
-          >
-            <img src={item.icon} className="w-6 h-6 mt-1" />
-            <div>
-              <p className="text-sm text-gray-500">
-                {item.data.key}
-              </p>
-              <p className="text-sm font-semibold">
-                {item.data.value}
-              </p>
-            </div>
-          </div>
-        )
-    )}
-  </div>
-)}
+            {fields.some(f => f.data) && (
+              <div className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                {fields.map(
+                  (item, index) =>
+                    item.data && (
+                      <div
+                        key={index}
+                        className="grid grid-cols-[24px_1fr] gap-3 items-start"
+                      >
+                        <img src={item.icon} className="w-6 h-6 mt-1" />
+                        <div>
+                          <p className="text-sm text-gray-500">
+                            {item.data.key}
+                          </p>
+                          <p className="text-sm font-semibold">
+                            {item.data.value}
+                          </p>
+                        </div>
+                      </div>
+                    )
+                )}
+              </div>
+            )}
 
 
 
@@ -908,33 +908,33 @@ export default function ProductDetailsPage() {
 
           <div className="flex overflow-x-auto md:grid md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-10 px-2 md:px-12 scrollbar-hide">
             {similarProducts
-  ?.filter((item) => item.status == 1)
-  .map((item, index) => (
-              <div
-                key={index}
-                className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
-                  ? "shadow-xl scale-[1.02]"
-                  : "hover:shadow-lg hover:-translate-y-1 "
-                  }`}
+              ?.filter((item) => item.status == 1)
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className={`group text-center min-w-[160px] sm:min-w-[200px] md:min-w-0 bg-white transition-all duration-300 transform ${activeCard === index
+                    ? "shadow-xl scale-[1.02]"
+                    : "hover:shadow-lg hover:-translate-y-1 "
+                    }`}
 
 
-                onMouseDown={() => setActiveCard(index)}
-                onMouseUp={() => setActiveCard(null)}
-                onMouseLeave={() => setActiveCard(null)}
-              >
-                <div className="relative overflow-hidden rounded-t-lg ">
-                  <Link to={`/product/${item.id}`}>
-                    <img
-                      src={item?.image[0]}
-                      alt={item?.title}
-                      className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
-                        ? "scale-105"
-                        : "group-hover:scale-105"
-                        }`}
-                    />
-                  </Link>
+                  onMouseDown={() => setActiveCard(index)}
+                  onMouseUp={() => setActiveCard(null)}
+                  onMouseLeave={() => setActiveCard(null)}
+                >
+                  <div className="relative overflow-hidden rounded-t-lg ">
+                    <Link to={`/product/${item.id}`}>
+                      <img
+                        src={item?.image[0]}
+                        alt={item?.title}
+                        className={`w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                          ? "scale-105"
+                          : "group-hover:scale-105"
+                          }`}
+                      />
+                    </Link>
 
-                  {/* <Link to={`/product/${item?.id}`}>
+                    {/* <Link to={`/product/${item?.id}`}>
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <Link
                         to={"/cart"}
@@ -959,50 +959,50 @@ export default function ProductDetailsPage() {
                     </div>
                   </Link> */}
 
-                  {/* Rating */}
-                  <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
-                    <ProductRating
-                      rating={item?.rating}
-                      reviewCount={item?.reviewCount}
-                      size="xs"
-                    />
+                    {/* Rating */}
+                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-white bg-opacity-80 rounded-sm">
+                      <ProductRating
+                        rating={item?.rating}
+                        reviewCount={item?.reviewCount}
+                        size="xs"
+                      />
+                    </div>
+
+                    {/* --------------------------------------- WORKING ----------------------------------- */}
+                    <button
+                      onClick={() => handleWishlist(item.id)}
+                      className="absolute top-2 right-2 p-1 transition hover:scale-110"
+                    >
+                      <Heart
+                        className={`w-5 h-5 transition-colors ${wishlist.some(
+                          (w) => w.productId == (item.id || item.productId)
+                        )
+                          ? "fill-rose text-rose"
+                          : "text-white"
+                          }`}
+                        strokeWidth={2}
+                      />
+                    </button>
                   </div>
 
-                  {/* --------------------------------------- WORKING ----------------------------------- */}
-                  <button
-                    onClick={() => handleWishlist(item.id)}
-                    className="absolute top-2 right-2 p-1 transition hover:scale-110"
-                  >
-                    <Heart
-                      className={`w-5 h-5 transition-colors ${wishlist.some(
-                        (w) => w.productId == (item.id || item.productId)
-                      )
-                        ? "fill-rose text-rose"
-                        : "text-white"
-                        }`}
-                      strokeWidth={2}
-                    />
-                  </button>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
+                    Nallakkar
+                  </p>
+
+                  <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
+                    {item?.name}
+                  </p>
+
+                  <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
+                    <span className="text-darkpink font-semibold text-sm">
+                      {item?.final_price}
+                    </span>
+                    <span className="text-gray-500 text-xs">
+                      ( {item?.discount}% )
+                    </span>
+                  </div>
                 </div>
-
-                <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
-                  Nallakkar
-                </p>
-
-                <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                  {item?.name}
-                </p>
-
-                <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
-                  <span className="text-darkpink font-semibold text-sm">
-                    {item?.final_price}
-                  </span>
-                  <span className="text-gray-500 text-xs">
-                    ( {item?.discount}% )
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
 

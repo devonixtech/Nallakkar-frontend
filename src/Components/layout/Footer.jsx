@@ -15,34 +15,34 @@ import { useEffect, useState } from "react";
 
 const Footer = () => {
   const categories = useSelector((state) => state?.ctegory?.categories);
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState(
     localStorage.getItem("selectedCategoryId") || null
   );
 
 
-   const handleCategoryClick = (id) => {
+  const handleCategoryClick = (id) => {
     localStorage.setItem("selectedCategoryId", id);
     setSelectedCategory(id); // ✅ immediately update state
     window.dispatchEvent(new Event("storage")); // ✅ notify same tab
   };
-    useEffect(() => {
-      const handleStorageChange = () => {
-        setSelectedCategory(localStorage.getItem("selectedCategoryId"));
-      };
-      window.addEventListener("storage", handleStorageChange);
-  
-      // ✅ Also check on mount in case it was updated in same tab
+  useEffect(() => {
+    const handleStorageChange = () => {
       setSelectedCategory(localStorage.getItem("selectedCategoryId"));
-  
-      return () => window.removeEventListener("storage", handleStorageChange);
-    }, []);
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    // ✅ Also check on mount in case it was updated in same tab
+    setSelectedCategory(localStorage.getItem("selectedCategoryId"));
+
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
   const hoverClasses =
     "hover:text-rose hover:underline transition-colors duration-200";
   const linkClass = (id) =>
     `${selectedCategory == id ? "text-darkpink font-bold" : ""}`;
   return (
-    <footer className="bg-[#151a3e] text-white text-sm">
+    <footer className="bg-[#151a3e] text-white text-sm hidefooter">
       <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row md:justify-between gap-8">
         {/* Left: Logo and Description */}
         <div className="md:w-1/3 mb-8 md:mb-0">
@@ -136,7 +136,7 @@ const Footer = () => {
                     Shipping
                   </Link>
                 </li>
-               
+
                 <li>
                   <Link to={"/FAQSection"} className={hoverClasses}>
                     FAQ
