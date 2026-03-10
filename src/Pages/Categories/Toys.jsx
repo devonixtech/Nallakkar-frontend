@@ -250,7 +250,7 @@ export default function Toys() {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8 py-8">
           {/* Filters Sidebar (No changes here) */}
-          <aside className="w-full lg:w-1/4 lg:pr-8">
+          <aside className="w-full lg:w-[260px] lg:min-w-[260px] lg:pr-8">
             <div className="sticky top-8">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-gray-800">FILTERS</h2>
@@ -326,7 +326,7 @@ export default function Toys() {
 
           {/* Products Section (No changes here) */}
           {/* Products Section */}
-          <section className="w-full lg:w-3/4">
+          <section className="flex-1">
             <div className="flex flex-wrap items-center gap-2 mb-6">
               {appliedFiltersData.map((filter) => (
                 <span
@@ -348,7 +348,7 @@ export default function Toys() {
             </div>
 
             {/* Mobile → Horizontal scroll | Desktop → Grid */}
-            <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 sm:overflow-visible overflow-x-auto flex sm:flex-none flex-nowrap gap-4 pb-9">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))] gap-x-6 gap-y-10 sm:overflow-visible overflow-x-auto flex sm:flex-none flex-nowrap gap-4 pb-9">
               {products.map((item, index) => (
                 <div
                   key={index}

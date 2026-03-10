@@ -803,10 +803,10 @@ export default function ProductListingPage() {
         </div>
       </div>
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8 py-8">
           {/* Filters Sidebar (No changes here) -- -DESKTOP VERSION */}
-          <aside className="w-full lg:w-1/4 lg:pr-8 hidden lg:block">
+          <aside className="w-full lg:w-[260px] lg:min-w-[260px] lg:pr-8 hidden lg:block">
             <div className="sticky top-8">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-gray-800">FILTERS</h2>
@@ -864,22 +864,10 @@ export default function ProductListingPage() {
                     </div>
                   </div>
                 </FilterSection>
-
-                {/* <FilterSection title="Color">
-                  <div className="flex flex-wrap gap-3 mt-2">
-                    {colorsData.map((color) => (
-                      <button
-                        key={color}
-                        className="w-6 h-6 rounded-full border border-gray-300"
-                        style={{ backgroundColor: color }}
-                      ></button>
-                    ))}
-                  </div>
-                </FilterSection> */}
               </div>
             </div>
           </aside>
-          <div>
+          <div className="flex-1">
             {/* Sticky Filter/Sort Bar (Mobile) */}
             <div className="lg:hidden sticky top-0 z-20 bg-white py-2 border-y flex justify-between px-2 mb-4">
               <button
@@ -986,144 +974,132 @@ export default function ProductListingPage() {
                 </div>
               </div>
             )}
-          </div>
 
-          {/* Products Section (No changes here) */}
-          {/* Products Section */}
-          <section className="w-full lg:w-3/4">
-            <div className="flex flex-wrap items-center gap-2 mb-6">
-              {Object.entries(appliedFilters).map(([filterName, values]) =>
-                values.map((val) => (
-                  <span
-                    key={`${filterName}-${val}`}
-                    className="flex items-center bg-white border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700"
-                  >
-                    {val}
-                    <button
-                      onClick={() => handleFilterChange(filterName, val)}
-                      className="ml-2 text-gray-500 hover:text-gray-800"
+            {/* Products Section */}
+            <section className="w-full">
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                {Object.entries(appliedFilters).map(([filterName, values]) =>
+                  values.map((val) => (
+                    <span
+                      key={`${filterName}-${val}`}
+                      className="flex items-center bg-white border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700"
                     >
-                      <IoClose size={16} />
-                    </button>
-                  </span>
-                ))
-              )}
-            </div>
+                      {val}
+                      <button
+                        onClick={() => handleFilterChange(filterName, val)}
+                        className="ml-2 text-gray-500 hover:text-gray-800"
+                      >
+                        <IoClose size={16} />
+                      </button>
+                    </span>
+                  ))
+                )}
+              </div>
 
-            {/* Mobile → Horizontal scroll | Desktop → Grid */}
-            {/* Mobile → 2 column grid | Desktop → same grid */}
-            <div
-              className="grid grid-cols-2 gap-x-4 gap-y-6 
-             sm:grid-cols-2 
-             md:grid-cols-3 
-             xl:grid-cols-4 
-             pb-9"
-            >
-              {currentProducts.map((item, index) => (
-                <div
-                  key={item.id}
-                  className={`group text-center bg-white transition-all duration-300 transform ${activeCard === index
+              {/* Responsive Grid */}
+              <div
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-6 pb-9 2xl:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]"
+              >
+                {currentProducts.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className={`group text-center bg-white transition-all duration-300 transform ${activeCard === index
                       ? "shadow-xl scale-[1.02]"
                       : "hover:shadow-lg hover:-translate-y-1"
-                    }`}
-                  onMouseDown={() => setActiveCard(index)}
-                  onMouseUp={() => setActiveCard(null)}
-                  onMouseLeave={() => setActiveCard(null)}
-                >
+                      }`}
+                    onMouseDown={() => setActiveCard(index)}
+                    onMouseUp={() => setActiveCard(null)}
+                    onMouseLeave={() => setActiveCard(null)}
+                  >
                     <Link to={`/product/${item.id}`}>
-                  <div className="relative overflow-hidden rounded-t-lg">
-                      <img
-                        src={item.image[0]}
-                        alt={item.name}
-                        className={`w-full h-[180px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
+                      <div className="relative overflow-hidden rounded-t-lg">
+                        <img
+                          src={item.image[0]}
+                          alt={item.name}
+                          className={`w-full h-[180px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 ${activeCard === index
                             ? "scale-105"
                             : "group-hover:scale-105"
-                          }`}
-                      />
-                   
+                            }`}
+                        />
 
-                    {/* Rating */}
-                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-white/80 rounded-sm">
-                      <ProductRating
-                        rating={item?.rating}
-                        reviewCount={item?.reviewCount}
-                        size="xs"
-                      />
-                    </div>
+                        {/* Rating */}
+                        <div className="absolute bottom-2 left-2 px-2 py-1 bg-white/80 rounded-sm">
+                          <ProductRating
+                            rating={item?.rating}
+                            reviewCount={item?.reviewCount}
+                            size="xs"
+                          />
+                        </div>
 
-                    {/* Wishlist */}
-                    <button
-                      onClick={() => handleWishlist(item.id)}
-                      className="absolute top-2 right-2 p-1 transition hover:scale-110"
-                    >
-                      <Heart
-                        className={`w-5 h-5 ${wishlist.some((w) => w.productId === item.id)
-                            ? "fill-rose text-rose"
-                            : "text-white"
-                          }`}
-                      />
-                    </button>
+                        {/* Wishlist */}
+                        <button
+                          onClick={() => handleWishlist(item.id)}
+                          className="absolute top-2 right-2 p-1 transition hover:scale-110"
+                        >
+                          <Heart
+                            className={`w-5 h-5 ${wishlist.some((w) => w.productId === item.id)
+                              ? "fill-rose text-rose"
+                              : "text-white"
+                              }`}
+                          />
+                        </button>
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
+                        Nallakkar
+                      </p>
+
+                      <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
+                        {item.name}
+                      </p>
+
+                      <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
+                        <span className="text-darkpink font-semibold text-sm">
+                          {item.final_price}
+                        </span>
+                        <span className="text-gray-500 text-xs">
+                          (off {item.discount}%)
+                        </span>
+                      </div>
+                    </Link>
                   </div>
+                ))}
+              </div>
+            </section>
 
-                  <p className="text-xs sm:text-sm text-gray-500 mt-1 text-left px-2">
-                    Nallakkar
-                  </p>
+            <div className="w-full">
+              <div className="flex justify-center items-center gap-2 mt-5 pb-20">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => p - 1)}
+                  className="w-8 h-8 rounded-full bg-pinkLight text-white disabled:opacity-50"
+                >
+                  &lt;
+                </button>
 
-                  <p className="text-sm md:text-base font-medium text-gray-800 mt-1 text-left px-2 line-clamp-2">
-                    {item.name}
-                  </p>
+                {[...Array(totalPages || 1)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`w-8 h-8 rounded-full text-white ${currentPage === i + 1 ? "bg-darkpink" : "bg-pinkLight"
+                      }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
 
-                  <div className="flex justify-between items-center gap-2 mt-1 px-2 pb-2">
-                    <span className="text-darkpink font-semibold text-sm">
-                      {item.final_price}
-                    </span>
-                    <span className="text-gray-500 text-xs">
-                      (off {item.discount}%)
-                    </span>
-                  </div>
-                   </Link>
-                </div>
-              ))}
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                  className="w-8 h-8 rounded-full bg-pinkLight text-white disabled:opacity-50"
+                >
+                  &gt;
+                </button>
+              </div>
             </div>
-
-
-          </section>
-
+          </div>
         </div>
-      <div className="w-full lg:w-3/4 lg:ml-auto">
-  <div className="flex justify-center items-center gap-2 mt-5 pb-20">
-    <button
-      disabled={currentPage === 1}
-      onClick={() => setCurrentPage((p) => p - 1)}
-      className="w-8 h-8 rounded-full bg-pinkLight text-white disabled:opacity-50"
-    >
-      &lt;
-    </button>
-
-    {[...Array(totalPages || 1)].map((_, i) => (
-      <button
-        key={i}
-        onClick={() => setCurrentPage(i + 1)}
-        className={`w-8 h-8 rounded-full text-white ${
-          currentPage === i + 1 ? "bg-darkpink" : "bg-pinkLight"
-        }`}
-      >
-        {i + 1}
-      </button>
-    ))}
-
-    <button
-      disabled={currentPage === totalPages}
-      onClick={() => setCurrentPage((p) => p + 1)}
-      className="w-8 h-8 rounded-full bg-pinkLight text-white disabled:opacity-50"
-    >
-      &gt;
-    </button>
-  </div>
-</div>
-
       </main>
     </div>
   );
 }
-
