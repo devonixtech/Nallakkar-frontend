@@ -197,7 +197,7 @@ const HeroMobile = () => {
             </div>
 
             <p className="text-[#17171A] font-semibold leading-tight mt-[66px] text-[10px]">
-              {banners && banners.length > 0 ? banners[0].name : ""}
+              {banners && banners.length > 0 ? banners[13].name : ""}
             </p>
 
             <Link
@@ -208,9 +208,9 @@ const HeroMobile = () => {
             </Link>
           </div>
 
-          <div className="absolute right-[-50px] bottom-0 w-[240px] h-[180px] z-10">
+          <div className="absolute right-[-20px] bottom-0 w-[200px] h-[200px] z-10">
             <img
-              src={banners && banners.length > 0 ? banners[0].images : ""}
+              src={banners && banners.length > 0 ? banners[13].images : ""}
               alt="Model showcasing Nallakkar fashion"
               className="w-full h-full object-contain"
             />

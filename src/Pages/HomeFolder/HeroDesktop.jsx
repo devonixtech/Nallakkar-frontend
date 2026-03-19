@@ -51,7 +51,7 @@ const HeroDesktop = () => {
         />
 
         {/* Main Content */}
-        <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-6 md:px-[2rem] py-6 md:py-[3rem] gap-6 md:gap-10">
+        <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between  py-6 md:py-[3rem] gap-6 md:gap-10">
           {/* Text Section - Static */}
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h2 className="font-bold text-[22px] lg:text-[27px] md:text-[20px]">
