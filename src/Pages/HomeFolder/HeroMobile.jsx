@@ -452,7 +452,7 @@ const HeroMobile = () => {
           {/* Product Image */}
           <div className="relative z-10 w-[200px] h-[200px] mb-6">
             <img
-              src={banners && banners.length > 0 ? banners[13].images : ""}
+              src={banners && banners.length > 0 ? banners[13]?.images : ""}
               alt="Nallakkar signature jewellery"
               className="w-full h-full object-contain drop-shadow-lg"
             />
@@ -461,7 +461,7 @@ const HeroMobile = () => {
           {/* Description */}
           <p className="relative z-10 text-gray-800 text-[13px] leading-relaxed max-w-[280px] mb-6">
             {banners && banners.length > 0
-              ? banners[13].name
+              ? banners[13]?.name
               : "Step into the world of NALLAKKAR – where tradition meets modern elegance. From timeless weaves to bold essentials, discover your next signature look."}
           </p>
 
