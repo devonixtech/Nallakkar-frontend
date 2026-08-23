@@ -27,7 +27,8 @@
 
 ## 🌐 Live Demo
 
-https://nallakarfrontend.netlify.app/
+Frontend - https://nallakarfrontend.netlify.app/
+liveLink - https://nallakkar.com/
 
 ## ✨ Features
 
